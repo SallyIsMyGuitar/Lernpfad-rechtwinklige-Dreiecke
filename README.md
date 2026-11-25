@@ -9,8 +9,8 @@ Die Seite besteht aus **einer einzigen Datei** (`index.html`) ohne Abhängigkeit
 1. **Entdecken:** interaktives Experiment oder geführte Schritte, optional mit Erklärvideo (YouTube).
 2. **Regel formulieren:** Lückentext oder Auswahlfragen mit direkter Rückmeldung.
 3. **Merkheft-Eintrag:** gelb markierter Kasten mit Beispielen, der ins Merkheft abgeschrieben wird (Bestätigung per Häkchen).
-4. **Üben:** drei Niveaus (leicht, standard, plus) mit zufällig erzeugten Aufgaben, Tipps und Lösungsweg.
-5. **Exit-Ticket:** drei Fragen. Ab 2 von 3 richtig erscheint eine Check-in-Karte mit Datum und Kontrollcode, und die nächste Station wird freigeschaltet.
+4. **Üben:** drei Niveaus (leicht, standard, plus) mit zufällig erzeugten Aufgaben, Tipps und Lösungsweg. Eine Aufgabe zählt nur, wenn sie ohne angezeigten Lösungsweg gelöst wird (Auswahlaufgaben im 1. Versuch, Rechenaufgaben spätestens im 2. Versuch).
+5. **Exit-Ticket:** drei Fragen aus einem Fragen-Pool in zufälliger Reihenfolge, je ein Versuch. Die Lösungen erscheinen erst in der Auswertung, bei einer Wiederholung kommen neue Fragen. Ab 2 von 3 richtig erscheint eine Check-in-Karte mit Datum, geübtem Niveau und Kontrollcode, und die nächste Station wird freigeschaltet.
 
 Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen, Drucken oder als PDF sichern.
 
@@ -36,7 +36,11 @@ Noch offen: Sinus, Kosinus und Tangens (Lehrplan), eine Auffrischung der quadrat
 
 **Über GitHub Pages:** im Repository unter *Settings → Pages* den Branch `main` und den Ordner `/ (root)` auswählen. Die Seite ist danach unter `https://<benutzername>.github.io/<repository>/` erreichbar.
 
-**Lehrkraft-Ansicht:** Mit `?lehrer=1` an der Adresse (`…/index.html?lehrer=1`) sind alle Stationen freigeschaltet.
+**Lehrkraft-Ansicht:** Mit `?lehrer=1` an der Adresse (`…/index.html?lehrer=1`) sind alle Stationen freigeschaltet. Auf der Übersicht steht dann eine Tabelle mit den gültigen Kontrollcodes je Station und Punktzahl für ein wählbares Datum.
+
+**Geteilte iPads:** Auf der Übersicht gibt es den Button „Fortschritt zurücksetzen“ (mit Sicherheitsabfrage). Er löscht alle gespeicherten Daten auf dem Gerät.
+
+**Fortsetzen:** Erledigte Schritte einer Station werden gespeichert. Nach dem Neuladen geht es beim nächsten offenen Schritt weiter; erledigte Schritte lassen sich erneut ansehen.
 
 ## Erklärvideos einbinden
 
@@ -52,7 +56,7 @@ const VIDEOS={
 ## Datenschutz
 
 - Es werden keine Namen oder Konten abgefragt und keine Daten an einen Server gesendet.
-- Der Fortschritt (Station, Ergebnis, Datum, Kontrollcode) liegt nur im `localStorage` des jeweiligen Browsers.
+- Der Fortschritt (Station, erledigte Schritte, geübtes Niveau, Ergebnis, Datum, Kontrollcode) liegt nur im `localStorage` des jeweiligen Browsers und lässt sich auf der Übersicht löschen.
 - Der Kontrollcode auf der Check-in-Karte ist ein Plausibilitätscheck, kein Manipulationsschutz.
 - Externe Inhalte werden nur beim Klick auf den YouTube-Link oder bei eingetragener Video-ID geladen.
 
@@ -63,5 +67,13 @@ const VIDEOS={
 - Grafiken sind SVG und werden im Code erzeugt.
 
 ## Hinweise zu den Inhalten
+
+Die Schreibweisen folgen dem [Zeichenkatalog des ISB für Mathematik an der Realschule, Jgst. 5–10](https://www.lehrplanplus.bayern.de/fm/71/RS_M_5_10_Zeichenkatalog.pdf) (Stand 12.07.2022):
+
+- rechter Winkel in Zeichnungen: kleiner Winkelbogen mit einem Punkt in der Mitte
+- Strecke: AB mit Strich darüber, Länge der Strecke: |AB| mit Strich über AB (AB ohne Strich bezeichnet die Gerade)
+- Quadratwurzel mit Wurzelstrich über dem Radikanden, Brüche mit Bruchstrich
+- Winkelmaße α, β, γ; Umfang u; Flächeninhalt A
+
 
 Alle Aufgaben, Merkkästen und Texte sind eigene Formulierungen. Es sind keine Inhalte aus Schulbüchern oder Leistungsnachweisen übernommen.
