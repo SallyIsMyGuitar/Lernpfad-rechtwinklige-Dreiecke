@@ -68,4 +68,12 @@ const VIDEOS={
 
 ## Hinweise zu den Inhalten
 
+Die Schreibweisen folgen dem [Zeichenkatalog des ISB für Mathematik an der Realschule, Jgst. 5–10](https://www.lehrplanplus.bayern.de/fm/71/RS_M_5_10_Zeichenkatalog.pdf) (Stand 12.07.2022):
+
+- rechter Winkel in Zeichnungen: kleiner Winkelbogen mit einem Punkt in der Mitte
+- Strecke: AB mit Strich darüber, Länge der Strecke: |AB| mit Strich über AB (AB ohne Strich bezeichnet die Gerade)
+- Quadratwurzel mit Wurzelstrich über dem Radikanden, Brüche mit Bruchstrich
+- Winkelmaße α, β, γ; Umfang u; Flächeninhalt A
+
+
 Alle Aufgaben, Merkkästen und Texte sind eigene Formulierungen. Es sind keine Inhalte aus Schulbüchern oder Leistungsnachweisen übernommen.

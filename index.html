@@ -61,6 +61,11 @@ svg .hit:hover{stroke:rgba(37,99,235,.35)}
 .pb{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.pb i{display:block;height:100%;background:var(--green)}
 .checkin{border:3px dashed var(--green);border-radius:14px;padding:14px;background:#f0fdf4;margin:12px 0}
 .code{font-family:ui-monospace,Menlo,monospace;font-size:22px;font-weight:700;letter-spacing:2px}
+/* Notation nach Zeichenkatalog (ISB, LehrplanPLUS RS M 5–10) */
+.ov{text-decoration:overline;text-decoration-thickness:1px}
+.rad{border-top:1.5px solid currentColor;padding:0 1px;margin-left:1px}
+.nw{white-space:nowrap}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.15;margin:0 2px}.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
 #printArea{display:none}
 @media print{
  body.printing header.top,body.printing main{display:none}
@@ -106,6 +111,13 @@ const fmt=(x,d=2)=>Number(x.toFixed(d)).toString().replace('.',',');
 const parseNum=s=>{const t=String(s).trim().replace(/\s*(mm|cm|dm|km|m)?\s*[²³]?$/i,'').replace(/\s+/g,'').replace(',','.');return /^-?(\d+(\.\d*)?|\.\d+)$/.test(t)?parseFloat(t):NaN;};
 const once=fn=>{let d=false;return(...a)=>{if(d)return;d=true;return fn(...a);};};
 
+// Notation nach Zeichenkatalog: Strecke AB̅, Länge |AB̅|, Quadratwurzel mit Wurzelstrich, Bruch
+const ov=s=>`<span class="ov">${s}</span>`;
+const len=s=>`|${ov(s)}|`;
+const sq=s=>`√<span class="rad">${s}</span>`;
+const fr=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const HALF=fr(1,2);
+
 let state={};
 try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
@@ -120,15 +132,15 @@ Die Seite gegenüber dem rechten Winkel heißt <b>Hypotenuse</b> (c) – sie ist
 <p><b>Satz des Pythagoras:</b> In jedem rechtwinkligen Dreieck ist die Summe der Flächeninhalte der Quadrate über den Katheten so groß wie der Flächeninhalt des Quadrats über der Hypotenuse.</p>
 <div class="formel">a² + b² = c²</div>
 <div class="ex"><b>Beispiel 1:</b> Dreieck PQR mit rechtem Winkel bei Q.<br>
-Hypotenuse: PR (liegt gegenüber von Q)<br>
-Satz des Pythagoras: PQ² + QR² = PR²</div>
+Hypotenuse: ${ov('PR')} (liegt gegenüber von Q)<br>
+Satz des Pythagoras: ${len('PQ')}² + ${len('QR')}² = ${len('PR')}²</div>
 <div class="ex"><b>Beispiel 2:</b> Die Kathetenquadrate haben 9 cm² und 16 cm².<br>
 Hypotenusenquadrat: 9 cm² + 16 cm² = 25 cm²</div>`},
 2:{title:'Seitenlängen berechnen',html:`
 <div class="mh">Seitenlängen im rechtwinkligen Dreieck berechnen</div>
 <p>Immer zuerst: <b>Skizze</b> anfertigen, rechten Winkel markieren, Hypotenuse bestimmen. Die Hypotenuse liegt dem rechten Winkel gegenüber (bei α = 90° ist a die Hypotenuse). Vor dem Rechnen alle Längen in <b>dieselbe Einheit</b> umrechnen.</p>
-<p><b>Hypotenuse gesucht:</b> &nbsp; c² = a² + b² &nbsp;⇒&nbsp; <b>c = √(a² + b²)</b></p>
-<p><b>Kathete gesucht:</b> &nbsp; a² = c² − b² &nbsp;⇒&nbsp; <b>a = √(c² − b²)</b> &nbsp; (entsprechend b = √(c² − a²))</p>
+<p><b>Hypotenuse gesucht:</b> &nbsp; c² = a² + b² &nbsp;⇒&nbsp; <b>c = ${sq('a² + b²')}</b></p>
+<p><b>Kathete gesucht:</b> &nbsp; a² = c² − b² &nbsp;⇒&nbsp; <b>a = ${sq('c² − b²')}</b> &nbsp; (entsprechend b = ${sq('c² − a²')})</p>
 <p>Ist das Ergebnis keine Quadratzahl: Taschenrechner benutzen und sinnvoll runden. Die Hypotenuse ist immer die längste Seite (Probe!).</p>
 <div class="ex"><b>Beispiel 1 (Hypotenuse):</b> a = 6 cm; b = 8 cm<br>
 c² = 6² + 8² = 36 + 64 = 100<br>
@@ -154,14 +166,24 @@ a² + b² = 16 + 25 = 41; c² = 49<br>
 <div class="mh">Satz des Pythagoras in ebenen Figuren</div>
 <p>Vorgehen: <b>Skizze</b> zeichnen · <b>rechtwinkliges Teildreieck</b> suchen (Höhe, Diagonale) · bekannte und gesuchte Seite bestimmen · Satz des Pythagoras anwenden · Antwortsatz.</p>
 <p><b>Gleichschenkliges Dreieck:</b> Die Höhe auf die Basis halbiert die Basis.<br>
-<b>Raute:</b> Die Diagonalen halbieren sich und stehen senkrecht aufeinander. Es gilt a² = (e/2)² + (f/2)².</p>
+<b>Raute:</b> Die Diagonalen halbieren sich und stehen senkrecht aufeinander. Es gilt <span class="nw">a² = (${fr('e','2')})² + (${fr('f','2')})²</span>.</p>
 <div class="ex"><b>Beispiel 1:</b> Gleichschenkliges Dreieck, Schenkel 10 cm, Basis 12 cm<br>
 h² = 10² − 6² = 100 − 36 = 64 ⇒ h = 8 cm<br>
-A = ½ · 12 cm · 8 cm = 48 cm²</div>
+A = ${HALF} · 12 cm · 8 cm = 48 cm²</div>
 <div class="ex"><b>Beispiel 2:</b> Raute mit e = 48 mm und f = 64 mm<br>
 a² = 24² + 32² = 576 + 1024 = 1600 ⇒ a = 40 mm<br>
 Umfang u = 4 · 40 mm = 160 mm</div>`}
 };
+
+/* ====== Zeichnen: Winkelbogen (Zeichenkatalog: rechter Winkel = Bogen mit Punkt) ====== */
+// V Scheitel, u1/u2 Einheitsvektoren der Schenkel (SVG-Koordinaten), r Radius, dot: Punkt für rechten Winkel
+function angMark(V,u1,u2,r,dot,sw,col='#111'){
+  const P1=[V[0]+u1[0]*r,V[1]+u1[1]*r],P2=[V[0]+u2[0]*r,V[1]+u2[1]*r];
+  const sweep=(u1[0]*u2[1]-u1[1]*u2[0])>0?1:0;
+  let g=`<path d="M${P1[0]},${P1[1]} A${r},${r} 0 0 ${sweep} ${P2[0]},${P2[1]}" fill="none" stroke="${col}" stroke-width="${sw}"/>`;
+  if(dot){const bx=u1[0]+u2[0],by=u1[1]+u2[1],bl=Math.hypot(bx,by)||1;g+=`<circle cx="${V[0]+bx/bl*r*.5}" cy="${V[1]+by/bl*r*.5}" r="${r*.11}" fill="${col}"/>`;}
+  return g;
+}
 
 /* ====== Zeichnen: Dreieck mit Beschriftung ====== */
 function triSvg(o){
@@ -178,9 +200,8 @@ function triSvg(o){
   if(maxx-minx<11){const d=(11-(maxx-minx))/2;minx-=d;maxx+=d;}
   if(maxy-miny<7){const d=(7-(maxy-miny))/2;miny-=d;maxy+=d;}
   const u=(a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy);return[dx/l,dy/l];};
-  const u1=u(P[0],P[1]),u2=u(P[0],P[2]),k=.5;
-  const ra=`M${P[0][0]+u1[0]*k},${P[0][1]+u1[1]*k} L${P[0][0]+(u1[0]+u2[0])*k},${P[0][1]+(u1[1]+u2[1])*k} L${P[0][0]+u2[0]*k},${P[0][1]+u2[1]*k}`;
-  let g=`<polygon points="${P.map(p=>p.join(',')).join(' ')}" fill="#eef4ff" stroke="#1f2937" stroke-width=".08"/><path d="${ra}" fill="none" stroke="#1f2937" stroke-width=".07"/>`;
+  const u1=u(P[0],P[1]),u2=u(P[0],P[2]);
+  let g=`<polygon points="${P.map(p=>p.join(',')).join(' ')}" fill="#eef4ff" stroke="#1f2937" stroke-width=".08"/>`+angMark(P[0],u1,u2,.62,true,.06,'#1f2937');
   if(o.labels)S.forEach((sd,i)=>{if(o.labels[i]==null)return;const m=[(P[sd[0]][0]+P[sd[1]][0])/2,(P[sd[0]][1]+P[sd[1]][1])/2];const q=away(m,.7);g+=`<text x="${q[0]}" y="${q[1]}" font-size=".52" text-anchor="middle" dominant-baseline="middle" fill="#111">${o.labels[i]}</text>`;});
   if(o.vertex)P.forEach((p,i)=>{const q=away(p,.75);g+=`<text x="${q[0]}" y="${q[1]}" font-size=".66" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1e3a8a">${o.vertex[i]}</text>`;});
   if(o.clickable)S.forEach((sd,i)=>{g+=`<line class="hit" data-side="${i}" x1="${P[sd[0]][0]}" y1="${P[sd[0]][1]}" x2="${P[sd[1]][0]}" y2="${P[sd[1]][1]}"/>`;});
@@ -207,7 +228,7 @@ function squaresSvg(a,b,gdeg){
   let svg=poly(sa,'#2563eb')+poly(sb,'#16a34a')+poly(sc,'#ea580c');
   svg+=`<polygon points="${tri.map(p=>p.join(',')).join(' ')}" fill="#fff" stroke="#111" stroke-width="${fs/9}"/>`;
   svg+=lab(sa,'a² = '+f(a*a))+lab(sb,'b² = '+f(b*b))+lab(sc,'c² = '+f(c2));
-  if(Math.abs(gdeg-90)<.01){const k=Math.min(a,b)*.18,u1=[1,0],u2=[Math.cos(g),-Math.sin(g)];svg+=`<path d="M${k},0 L${k*(1+u2[0])},${k*u2[1]} L${k*u2[0]},${k*u2[1]}" fill="none" stroke="#111" stroke-width="${fs/10}"/>`;}
+  svg+=angMark([0,0],[1,0],[Math.cos(g),-Math.sin(g)],Math.min(a,b)*.25,Math.abs(gdeg-90)<.01,fs/10);
   return {svg:`<svg class="fig" style="width:100%;max-width:520px" viewBox="${minx} ${miny} ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`,c2};
 }
 
@@ -359,19 +380,20 @@ function s1leicht(){
   const ok=Math.random()<.5?`${l1}² + ${l2}² = ${hy}²`:`${l2}² + ${l1}² = ${hy}²`;
   return {kind:'mc',prompt,question:'Welche Gleichung stellt den Satz des Pythagoras für dieses Dreieck dar?',
     options:[ok,`${l1}² + ${hy}² = ${l2}²`,`${hy}² + ${l2}² = ${l1}²`,`${l1} + ${l2} = ${hy}`],correct:0,
-    badHint:'Welche Seite liegt dem rechten Winkel (Quadrat-Symbol) gegenüber? Sie steht allein auf einer Seite der Gleichung.',
+    badHint:'Welche Seite liegt dem rechten Winkel (Winkelbogen mit Punkt) gegenüber? Sie steht allein auf einer Seite der Gleichung.',
     hints:['Suche den rechten Winkel. Die Seite gegenüber ist die Hypotenuse.','Die Hypotenuse steht im Satz des Pythagoras allein auf einer Seite des Gleichheitszeichens.'],
     solution:`<div>Hypotenuse: <b>${hy}</b> (liegt gegenüber dem rechten Winkel)</div><div>Satz des Pythagoras: <b>${ok}</b></div>`};
 }
 function s1standard(){
   const [v0,v1,v2]=shuffle(pick([['A','B','C'],['P','Q','R'],['K','L','M'],['D','E','F'],['R','S','T']]));
-  const prompt=triSvg({vertex:[v0,v1,v2],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5)})+`<p class="muted">${v0}${v1} bedeutet die Länge der Strecke [${v0}${v1}].</p>`;
-  const ok=`${v0}${v1}² + ${v0}${v2}² = ${v1}${v2}²`;
+  const prompt=triSvg({vertex:[v0,v1,v2],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5)})+`<p class="muted">${ov(v0+v1)} ist die Strecke mit den Endpunkten ${v0} und ${v1}, ${len(v0+v1)} ist ihre Länge.</p>`;
+  const L=(x,y)=>len(x+y);
+  const ok=`${L(v0,v1)}² + ${L(v0,v2)}² = ${L(v1,v2)}²`;
   return {kind:'mc',prompt,question:`Stelle die Gleichung des Satzes des Pythagoras für das Dreieck ${v0}${v1}${v2} auf.`,
-    options:[ok,`${v0}${v1}² + ${v1}${v2}² = ${v0}${v2}²`,`${v0}${v2}² + ${v1}${v2}² = ${v0}${v1}²`,`${v0}${v1} + ${v0}${v2} = ${v1}${v2}`],correct:0,
+    options:[ok,`${L(v0,v1)}² + ${L(v1,v2)}² = ${L(v0,v2)}²`,`${L(v0,v2)}² + ${L(v1,v2)}² = ${L(v0,v1)}²`,`${L(v0,v1)} + ${L(v0,v2)} = ${L(v1,v2)}`],correct:0,
     badHint:`Wo ist der rechte Winkel? Die Hypotenuse liegt gegenüber – sie ist die Strecke zwischen den beiden anderen Eckpunkten.`,
-    hints:[`Der rechte Winkel liegt bei ${v0}.`,`Die Hypotenuse ist die Strecke ${v1}${v2}; die Katheten sind ${v0}${v1} und ${v0}${v2}.`],
-    solution:`<div>Rechter Winkel bei ${v0} ⇒ Hypotenuse <b>${v1}${v2}</b></div><div>Katheten: ${v0}${v1} und ${v0}${v2}</div><div>Satz: <b>${ok}</b></div>`};
+    hints:[`Der rechte Winkel liegt bei ${v0}.`,`Die Hypotenuse ist die Strecke ${ov(v1+v2)}; die Katheten sind ${ov(v0+v1)} und ${ov(v0+v2)}.`],
+    solution:`<div>Rechter Winkel bei ${v0} ⇒ Hypotenuse <b>${ov(v1+v2)}</b></div><div>Katheten: ${ov(v0+v1)} und ${ov(v0+v2)}</div><div>Satz: <b>${ok}</b></div>`};
 }
 const TRIPLES=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[7,24,25],[9,12,15],[20,21,29],[9,40,41]];
 function s1plus(){
@@ -539,7 +561,8 @@ function trianglePlot(c){
   svg+=`<text x="${la[0]}" y="${la[1]}" font-size=".5" text-anchor="middle">a = 3</text><text x="${lb[0]}" y="${lb[1]}" font-size=".5" text-anchor="middle">b = 4</text><text x="${lc[0]}" y="${lc[1]}" font-size=".5" text-anchor="middle" fill="#ea580c" font-weight="700">c = ${fmt(c,1)}</text>`;
   const vt=(x,y,s)=>`<text x="${x}" y="${y}" font-size=".5" font-weight="700" fill="#1e3a8a" text-anchor="middle">${s}</text>`;
   svg+=vt(-.35,.45,'C')+vt(B[0]+.35,.45,'B')+vt(A[0],A[1]-.3,'A');
-  if(Math.abs(g-Math.PI/2)<.001){const k=.5,u=[Math.cos(g),-Math.sin(g)];svg+=`<path d="M${k},0 L${k+k*u[0]},${k*u[1]} L${k*u[0]},${k*u[1]}" fill="none" stroke="#111" stroke-width=".07"/>`;}
+  svg+=angMark([0,0],[1,0],[Math.cos(g),-Math.sin(g)],.55,Math.abs(g-Math.PI/2)<.001,.05);
+  {const bx=1+Math.cos(g),by=-Math.sin(g),bl=Math.hypot(bx,by)||1;svg+=`<text x="${bx/bl*1}" y="${by/bl*1}" font-size=".4" text-anchor="middle" dominant-baseline="middle">γ</text>`;}
   return {svg:`<svg class="fig" style="width:100%;max-width:440px" viewBox="-5 -5 10.5 6.2" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`,deg:g*180/Math.PI};
 }
 function umkehrExperiment(body,done){
@@ -562,16 +585,16 @@ function umkehrExperiment(body,done){
 /* ====== Station 4: Figuren ====== */
 function isoSvg(l){
   const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`;
-  const g=`<polygon points="0,4.4 6,4.4 3,0" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="3" y1="0" x2="3" y2="4.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><path d="M3.4,4.4 L3.4,4.0 L3,4.0" fill="none" stroke="#111" stroke-width=".06"/><line x1="1.4" y1="2.0" x2="1.7" y2="2.3" stroke="#111" stroke-width=".05"/><line x1="4.6" y1="2.0" x2="4.3" y2="2.3" stroke="#111" stroke-width=".05"/>`
+  const g=`<polygon points="0,4.4 6,4.4 3,0" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="3" y1="0" x2="3" y2="4.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/>`+angMark([3,4.4],[1,0],[0,-1],.45,true,.05)+`<line x1="1.4" y1="2.0" x2="1.7" y2="2.3" stroke="#111" stroke-width=".05"/><line x1="4.6" y1="2.0" x2="4.3" y2="2.3" stroke="#111" stroke-width=".05"/>`
    +t(0,4.9,'A','middle','font-weight="700" fill="#1e3a8a"')+t(6,4.9,'B','middle','font-weight="700" fill="#1e3a8a"')+t(3,-.2,'C','middle','font-weight="700" fill="#1e3a8a"')+t(3.2,4.95,'M','start','font-weight="700" fill="#1e3a8a"')
    +t(.7,1.8,l.leg,'end')+t(3.15,3.2,l.h,'start')+t(1.6,5.5,l.base,'start');
   return `<svg class="fig" style="width:340px" viewBox="-2.8 -1 12 7.5" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
 function rhoSvg(l){
   const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`;
-  const g=`<polygon points="0,2.4 3,0 6,2.4 3,4.8" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="0" y1="2.4" x2="6" y2="2.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><line x1="3" y1="0" x2="3" y2="4.8" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><path d="M3.4,2.4 L3.4,2.0 L3,2.0" fill="none" stroke="#111" stroke-width=".06"/>`
+  const g=`<polygon points="0,2.4 3,0 6,2.4 3,4.8" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="0" y1="2.4" x2="6" y2="2.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><line x1="3" y1="0" x2="3" y2="4.8" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/>`+angMark([3,2.4],[1,0],[0,-1],.45,true,.05)
    +t(-.3,2.5,'A','end','font-weight="700" fill="#1e3a8a"')+t(3,-.25,'B','middle','font-weight="700" fill="#1e3a8a"')+t(6.3,2.5,'C','start','font-weight="700" fill="#1e3a8a"')+t(3,5.35,'D','middle','font-weight="700" fill="#1e3a8a"')+t(3.2,2.95,'M','start','font-weight="700" fill="#1e3a8a"')
-   +t(1.0,.9,l.a,'end')+t(4.8,2.2,l.e)+t(3.15,3.8,l.f,'start');
+   +t(1.0,.9,l.a,'end')+t(4.6,2.2,'e')+t(3.2,3.9,'f','start')+t(3,5.95,`${l.e}; ${l.f}`);
   return `<svg class="fig" style="width:340px" viewBox="-3 -1 12.4 7.2" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
 function s4leicht(){
@@ -590,8 +613,8 @@ function s4standard(){
     const s=rint(70,150)/10,g=rint(30,Math.floor((2*s-1)*10))/10,hh=Math.sqrt(s*s-g*g/4),ar=Math.round(.5*g*hh*100)/100;
     return {kind:'num',unit:'cm²',tol:.08,answer:ar,prompt:isoSvg({leg:fmt(s,1)+' cm',base:fmt(g,1)+' cm',h:'h = ?'}),
       question:`Ein gleichschenkliges Dreieck hat die Schenkellänge ${fmt(s,1)} cm und die Basis ${fmt(g,1)} cm. Berechne den Flächeninhalt (zwei Nachkommastellen; rechne mit dem ungerundeten Zwischenergebnis weiter).`,
-      badHint:'Zuerst die Höhe mit dem Satz des Pythagoras, dann A = ½ · Basis · Höhe.',hints:['Die Höhe halbiert die Basis.',`h² = ${fmt(s,1)}² − ${fmt(g/2,2)}²`,'Flächeninhalt: A = ½ · g · h'],
-      solution:`<div>h² = ${fmt(s,1)}² − ${fmt(g/2,2)}² = ${fmt(s*s-g*g/4,2)} ⇒ h ≈ ${fmt(hh,2)} cm</div><div>A = ½ · ${fmt(g,1)} cm · ${fmt(hh,2)} cm ≈ <b>${fmt(ar,2)} cm²</b></div>`};
+      badHint:'Zuerst die Höhe mit dem Satz des Pythagoras, dann A = '+HALF+' · Basis · Höhe.',hints:['Die Höhe halbiert die Basis.',`h² = ${fmt(s,1)}² − ${fmt(g/2,2)}²`,'Flächeninhalt: A = '+HALF+' · g · h'],
+      solution:`<div>h² = ${fmt(s,1)}² − ${fmt(g/2,2)}² = ${fmt(s*s-g*g/4,2)} ⇒ h ≈ ${fmt(hh,2)} cm</div><div>A = ${HALF} · ${fmt(g,1)} cm · ${fmt(hh,2)} cm ≈ <b>${fmt(ar,2)} cm²</b></div>`};
   }
   const e=rint(40,200),f=rint(40,200),a=Math.sqrt(e*e/4+f*f/4),u=Math.round(4*a*100)/100;
   return {kind:'num',unit:'mm',tol:.03,answer:u,prompt:rhoSvg({e:`e = ${e} mm`,f:`f = ${f} mm`,a:'a = ?'}),
@@ -615,8 +638,8 @@ function s4plus(){
       solution:`<div>Waagrechte Kathete: (${g1} − ${g2}) : 2 = ${fmt(d,1)} cm</div><div>s² = ${hh}² + ${fmt(d,1)}² = ${fmt(hh*hh+d*d,2)}</div><div>s ≈ <b>${fmt(s,2)} cm</b></div>`};}
   const a=rint(6,15),e=2*rint(2,a-1),f=2*Math.sqrt(a*a-e*e/4);
   return {kind:'num',prompt:'',unit:'cm',tol:.0051,answer:Math.round(f*100)/100,question:`Eine Raute hat die Seitenlänge ${a} cm und die Diagonale e = ${e} cm. Wie lang ist die andere Diagonale f?`,
-    badHint:'Die Diagonalen halbieren sich senkrecht: a ist die Hypotenuse, e/2 eine Kathete. Am Ende f = 2 · (halbe Diagonale).',hints:['Zeichne die Raute mit beiden Diagonalen.',`Halbe Diagonale e/2 = ${e/2} cm.`],
-    solution:`<div>(f/2)² = ${a}² − ${e/2}² = ${a*a-e*e/4}</div><div>f/2 ≈ ${fmt(f/2,2)} cm ⇒ f ≈ <b>${fmt(f,2)} cm</b></div>`};
+    badHint:'Die Diagonalen halbieren sich senkrecht: a ist die Hypotenuse, die halbe Diagonale '+fr('e','2')+' eine Kathete. Am Ende f = 2 · '+fr('f','2')+'.',hints:['Zeichne die Raute mit beiden Diagonalen.',`Halbe Diagonale ${fr('e','2')} = ${e/2} cm.`],
+    solution:`<div class="nw">(${fr('f','2')})² = ${a}² − ${e/2}² = ${a*a-e*e/4}</div><div>${fr('f','2')} ≈ ${fmt(f/2,2)} cm ⇒ f ≈ <b>${fmt(f,2)} cm</b></div>`};
 }
 
 /* ====== Stationen ====== */
@@ -625,7 +648,7 @@ const STATIONS={
  steps:[
  {title:'Einstieg: Katheten und Hypotenuse',render(body,done){
    videoBlock(body,'s1','<b>Optional:</b> Schau dir ein Erklärvideo zum Satz des Pythagoras an. Die Begriffe Katheten und Hypotenuse kommen dort vor.');
-   body.append(h('div',{class:'info',html:'<b>Merke zum Einstieg:</b> Die Seite, die dem rechten Winkel <b>gegenüberliegt</b>, heißt <b>Hypotenuse</b>. Die beiden Seiten, die den rechten Winkel <b>bilden</b>, heißen <b>Katheten</b>. Das kleine Quadrat markiert den rechten Winkel.'}));
+   body.append(h('div',{class:'info',html:'<b>Merke zum Einstieg:</b> Die Seite, die dem rechten Winkel <b>gegenüberliegt</b>, heißt <b>Hypotenuse</b>. Die beiden Seiten, die den rechten Winkel <b>bilden</b>, heißen <b>Katheten</b>. Ein kleiner Winkelbogen mit einem Punkt in der Mitte markiert den rechten Winkel.'}));
    const rounds=[{ask:'hyp',txt:'Klicke die Hypotenuse an.'},{ask:'leg',txt:'Klicke eine Kathete an.'},{ask:'hyp',txt:'Klicke die Hypotenuse an.'}];
    let ri=0;const area=h('div'),fb=h('div',{class:'fb','aria-live':'polite'});body.append(area,fb);
    function round(){
@@ -635,7 +658,7 @@ const STATIONS={
      area.querySelectorAll('[data-side]').forEach(el=>el.addEventListener('click',()=>{
        const s=+el.dataset.side,good=r.ask==='hyp'?s===2:s!==2;
        if(good){fb.className='fb ok';fb.textContent='✓ Richtig!';ri++;setTimeout(()=>{fb.textContent='';round();},650);}
-       else{fb.className='fb bad';fb.textContent='Nicht ganz. Suche zuerst den rechten Winkel (kleines Quadrat). Die Hypotenuse liegt ihm gegenüber.';}
+       else{fb.className='fb bad';fb.textContent='Nicht ganz. Suche zuerst den rechten Winkel (Winkelbogen mit Punkt). Die Hypotenuse liegt ihm gegenüber.';}
      }));
    }
    round();
@@ -658,8 +681,8 @@ const STATIONS={
  merkStep(1),
  {title:'Üben',render(body,done){practice(body,1,{leicht:s1leicht,standard:s1standard,plus:s1plus},3,done);}},
  {title:'Exit-Ticket',render(body,done){exitTicket(body,1,[
-   [{q:'Im Dreieck ABC liegt der rechte Winkel bei A. Welche Seite ist die Hypotenuse?',options:['BC','AB','AC','Alle drei Seiten sind gleich wichtig'],explain:'Die Hypotenuse liegt gegenüber dem rechten Winkel (bei A) – das ist die Strecke BC.'},
-    {q:'Im Dreieck PQR liegt der rechte Winkel bei Q. Welche Seite ist die Hypotenuse?',options:['PR','PQ','QR','Alle drei Seiten sind gleich wichtig'],explain:'Die Hypotenuse liegt gegenüber dem rechten Winkel (bei Q) – das ist die Strecke PR.'}],
+   [{q:'Im Dreieck ABC liegt der rechte Winkel bei A. Welche Seite ist die Hypotenuse?',options:[ov('BC'),ov('AB'),ov('AC'),'Alle drei Seiten sind gleich wichtig'],explain:'Die Hypotenuse liegt gegenüber dem rechten Winkel (bei A) – das ist die Strecke '+ov('BC')+'.'},
+    {q:'Im Dreieck PQR liegt der rechte Winkel bei Q. Welche Seite ist die Hypotenuse?',options:[ov('PR'),ov('PQ'),ov('QR'),'Alle drei Seiten sind gleich wichtig'],explain:'Die Hypotenuse liegt gegenüber dem rechten Winkel (bei Q) – das ist die Strecke '+ov('PR')+'.'}],
    [{q:'Die Quadrate über den beiden Katheten haben die Flächeninhalte 9 cm² und 16 cm². Wie groß ist der Flächeninhalt des Quadrats über der Hypotenuse?',options:['25 cm²','7 cm²','12 cm²','144 cm²'],explain:'Die Flächeninhalte der Kathetenquadrate werden addiert: 9 cm² + 16 cm² = 25 cm².'},
     {q:'Die Quadrate über den beiden Katheten haben die Flächeninhalte 36 cm² und 64 cm². Wie groß ist der Flächeninhalt des Quadrats über der Hypotenuse?',options:['100 cm²','28 cm²','48 cm²','10 cm²'],explain:'Die Flächeninhalte der Kathetenquadrate werden addiert: 36 cm² + 64 cm² = 100 cm².'}],
    [{q:'Wann gilt a² + b² = c² (c ist die längste Seite)?',options:['Nur in Dreiecken mit einem rechten Winkel','In jedem Dreieck','Nur in gleichschenkligen Dreiecken','Nur wenn alle Seitenlängen ganze Zahlen sind'],explain:'In deinem Experiment waren die Flächen nur bei γ = 90° gleich groß.'},
@@ -707,7 +730,7 @@ const STATIONS={
     {q:'Ein rechtwinkliges Dreieck hat die Katheten 8 cm und 15 cm. Wie lang ist die Hypotenuse?',options:['17 cm','23 cm','289 cm','7 cm'],explain:'c² = 8² + 15² = 64 + 225 = 289, also c = 17 cm.'}],
    [{q:'Die Hypotenuse ist 17 cm lang, eine Kathete 8 cm. Wie lang ist die andere Kathete?',options:['15 cm','9 cm','25 cm','225 cm'],explain:'b² = 17² − 8² = 289 − 64 = 225, also b = 15 cm.'},
     {q:'Die Hypotenuse ist 25 cm lang, eine Kathete 7 cm. Wie lang ist die andere Kathete?',options:['24 cm','18 cm','32 cm','576 cm'],explain:'b² = 25² − 7² = 625 − 49 = 576, also b = 24 cm.'}],
-   [{q:'Bei c = 13 cm (Hypotenuse) und a = 5 cm wird gerechnet: b = √(13² + 5²). Was ist falsch?',options:['Bei einer Kathete muss subtrahiert werden: b = √(13² − 5²)','Nichts, die Rechnung stimmt','Man muss b = 13 − 5 rechnen','Man darf die Wurzel nicht ziehen'],explain:'Die Hypotenuse ist die längste Seite; bei gesuchter Kathete gilt b² = c² − a².'},
+   [{q:'Bei c = 13 cm (Hypotenuse) und a = 5 cm wird gerechnet: b = '+sq('13² + 5²')+'. Was ist falsch?',options:['Bei einer Kathete muss subtrahiert werden: b = '+sq('13² − 5²'),'Nichts, die Rechnung stimmt','Man muss b = 13 − 5 rechnen','Man darf die Wurzel nicht ziehen'],explain:'Die Hypotenuse ist die längste Seite; bei gesuchter Kathete gilt b² = c² − a².'},
     {q:'Im Dreieck ABC ist α = 90°. Welche Gleichung gilt?',options:['b² + c² = a²','a² + b² = c²','a² + c² = b²','a + b = c'],explain:'Bei α = 90° liegt die Seite a dem rechten Winkel gegenüber – sie ist die Hypotenuse.'}]
  ],done);}}
  ]},
@@ -745,10 +768,10 @@ const STATIONS={
    body.append(h('div',{html:isoSvg({leg:'10 cm',base:'12 cm',h:'h = ?'})}));
    guided(body,[
     {type:'mc',q:'Die Höhe h auf die Basis eines gleichschenkligen Dreiecks …',options:['teilt es in zwei rechtwinklige Dreiecke und halbiert die Basis.','teilt es in zwei Quadrate.','halbiert die Basis nicht.'],correct:0,explain:'Es entstehen die rechtwinkligen Dreiecke AMC und MBC.',hint:'Schau auf die Skizze: Bei M ist ein rechter Winkel.'},
-    {type:'num',q:'Wie lang ist die Strecke AM (halbe Basis)?',unit:'cm',answer:6,tol:.001,hint:'12 cm : 2'},
+    {type:'num',q:'Wie lang ist die Strecke '+ov('AM')+' (halbe Basis)? Berechne '+len('AM')+'.',unit:'cm',answer:6,tol:.001,hint:'12 cm : 2'},
     {type:'num',q:'Im Dreieck AMC ist der Schenkel die Hypotenuse. Berechne h² = 10² − 6².',answer:64,tol:.001,hint:'100 − 36'},
     {type:'num',q:'h = √64 = ?',unit:'cm',answer:8,tol:.001,hint:'8 · 8 = 64'},
-    {type:'num',q:'Flächeninhalt des Dreiecks ABC: A = ½ · g · h = ?',unit:'cm²',answer:48,tol:.001,hint:'½ · 12 cm · 8 cm'}
+    {type:'num',q:'Flächeninhalt des Dreiecks ABC: A = '+HALF+' · g · h = ?',unit:'cm²',answer:48,tol:.001,hint:HALF+' · 12 cm · 8 cm'}
    ],done);
  }},
  {title:'Die Raute',render(body,done){
