@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lernpfad: Rechtwinklige Dreiecke (M9, WPF I)</title>
+<style>
+:root{--ink:#1f2937;--mut:#6b7280;--bg:#f4f6fb;--card:#fff;--line:#e5e7eb;--blue:#2563eb;--green:#16a34a;--orange:#ea580c;--red:#dc2626;--merk:#fff7d6;--merkline:#e0b400}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;font-size:17px}
+header.top{background:#1e3a8a;color:#fff;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header.top h1{font-size:18px;margin:0;flex:1;min-width:200px}
+header.top button{background:#fff;color:#1e3a8a;border:0;border-radius:8px;padding:8px 12px;font-size:15px;font-weight:600;cursor:pointer}
+main{max-width:860px;margin:0 auto;padding:16px}
+h2{margin:8px 0 4px}h3{margin:0 0 8px;font-size:18px}
+.card,.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.step.done{border-left:6px solid var(--green)}
+.step h3::before{content:"";}
+.step.done h3::after{content:" ✓";color:var(--green)}
+.muted{color:var(--mut);font-size:15px}
+.stations{display:grid;gap:12px}
+.stn{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;text-align:left;font-size:17px;width:100%}
+.stn:hover:not(:disabled){border-color:var(--blue)}
+.stn:disabled{opacity:.5;cursor:not-allowed}
+.stn .nr{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.stn.ok .nr{background:var(--green)}
+.stn .t{font-weight:600}.stn .s{font-size:14px;color:var(--mut)}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-size:16px;font-weight:600;cursor:pointer;margin:6px 6px 6px 0}
+.btn.sec{background:#e5e7eb;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.info{background:#eef4ff;border-left:5px solid var(--blue);padding:10px 14px;border-radius:8px;margin:10px 0}
+.q{margin:12px 0;padding:10px 0;border-top:1px dashed var(--line)}
+.q:first-child{border-top:0}
+.qt{font-weight:600;margin:0 0 8px}
+.opts{display:grid;gap:8px}
+button.opt{text-align:left;background:#f9fafb;border:2px solid var(--line);border-radius:10px;padding:10px 14px;font-size:17px;cursor:pointer;color:var(--ink)}
+button.opt:hover:not(:disabled){border-color:var(--blue)}
+button.opt.ok{border-color:var(--green);background:#e8f8ee}
+button.opt.bad{border-color:var(--red);background:#fdecec;opacity:.8}
+.fb{margin-top:8px;min-height:1px}.fb.ok{color:#166534}.fb.bad{color:#991b1b}
+input.num{font-size:18px;padding:9px 12px;border:2px solid var(--line);border-radius:10px;width:150px}
+input[type=range]{width:100%}
+select.gap{font-size:17px;padding:6px 8px;border:2px solid var(--blue);border-radius:8px;background:#fff;margin:0 3px}
+.merk{background:var(--merk);border:2px solid var(--merkline);border-radius:12px;padding:14px 16px;margin:12px 0}
+.merk .tag{display:inline-block;background:var(--merkline);color:#3b2f00;font-weight:700;font-size:13px;border-radius:6px;padding:2px 8px;margin-bottom:6px}
+.merk .mh{font-size:19px;font-weight:700;margin:2px 0 8px}
+.merk .ex{background:#fffdf0;border:1px dashed var(--merkline);border-radius:8px;padding:8px 12px;margin:8px 0}
+.merk .formel{font-size:21px;text-align:center;margin:8px 0;font-weight:600}
+.sol{background:#f0fdf4;border-left:5px solid var(--green);padding:8px 12px;border-radius:8px;margin-top:8px}
+.sol div{margin:2px 0}
+.hint{background:#fff8e1;border-left:5px solid #f59e0b;padding:6px 12px;border-radius:8px;margin-top:6px}
+table.t{border-collapse:collapse;width:100%;font-size:15px;margin-top:8px}
+table.t th,table.t td{border:1px solid var(--line);padding:5px 7px;text-align:center}
+table.t th{background:#f3f4f6}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.tab{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:15px;cursor:pointer}
+.tab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+svg.fig{max-width:100%;height:auto;display:block;margin:6px auto;background:#fff;border:1px solid var(--line);border-radius:10px}
+svg .hit{stroke:transparent;stroke-width:.7;cursor:pointer}
+svg .hit:hover{stroke:rgba(37,99,235,.35)}
+.pb{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.pb i{display:block;height:100%;background:var(--green)}
+.checkin{border:3px dashed var(--green);border-radius:14px;padding:14px;background:#f0fdf4;margin:12px 0}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:22px;font-weight:700;letter-spacing:2px}
+#printArea{display:none}
+@media print{
+ body.printing header.top,body.printing main{display:none}
+ body.printing #printArea{display:block}
+ body.printing{background:#fff;font-size:14px}
+ #printArea h2{margin:14px 0 6px}
+ .merk{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Lernpfad · Rechtwinklige Dreiecke</h1>
+  <button id="bHome" type="button">Übersicht</button>
+  <button id="bMerk" type="button">📒 Merkheft-Einträge</button>
+</header>
+<main id="app"></main>
+<div id="printArea"></div>
+
+<script>
+'use strict';
+/* ====== Konfiguration ====== */
+// Erklärvideos: videoId (YouTube) eintragen -> wird datenschutzfreundlich (youtube-nocookie) eingebettet.
+// Ohne videoId erscheint ein Button mit YouTube-Suche zum Suchbegriff.
+const VIDEOS={
+  s1:{videoId:null,query:'Satz des Pythagoras Herleitung Erklärung Katheten Hypotenuse'},
+  s2:{videoId:null,query:'Satz des Pythagoras Hypotenuse und Kathete berechnen'},
+  s3:{videoId:null,query:'Umkehrung Satz des Pythagoras rechtwinklig nachweisen'},
+  s4:{videoId:null,query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'}
+};
+const KEY='lernpfad-rechtwinklige-dreiecke-v1';
+const TEACHER=new URLSearchParams(location.search).has('lehrer');
+
+/* ====== Helfer ====== */
+const app=document.getElementById('app');
+function h(tag,attrs,...kids){const e=document.createElement(tag);for(const [k,v] of Object.entries(attrs||{})){if(k==='class')e.className=v;else if(k==='html')e.innerHTML=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}for(const c of kids.flat()){if(c==null)continue;e.append(c.nodeType?c:document.createTextNode(c));}return e;}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const rint=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const fmt=(x,d=2)=>Number(x.toFixed(d)).toString().replace('.',',');
+const parseNum=s=>{const t=String(s).trim().replace(',','.');return /^-?\d+(\.\d+)?$/.test(t)?parseFloat(t):NaN;};
+const once=fn=>{let d=false;return(...a)=>{if(d)return;d=true;return fn(...a);};};
+
+let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+/* ====== Merkkästen (Hefteinträge) ====== */
+const MERK={
+1:{title:'Der Satz des Pythagoras',html:`
+<div class="mh">Der Satz des Pythagoras</div>
+<p><b>Bezeichnungen im rechtwinkligen Dreieck:</b><br>
+Die beiden Seiten am rechten Winkel heißen <b>Katheten</b> (a, b).<br>
+Die Seite gegenüber dem rechten Winkel heißt <b>Hypotenuse</b> (c) – sie ist die längste Seite.</p>
+<p><b>Satz des Pythagoras:</b> In jedem rechtwinkligen Dreieck ist die Summe der Flächeninhalte der Quadrate über den Katheten so groß wie der Flächeninhalt des Quadrats über der Hypotenuse.</p>
+<div class="formel">a² + b² = c²</div>
+<div class="ex"><b>Beispiel 1:</b> Dreieck PQR mit rechtem Winkel bei Q.<br>
+Hypotenuse: PR (liegt gegenüber von Q)<br>
+Satz des Pythagoras: PQ² + QR² = PR²</div>
+<div class="ex"><b>Beispiel 2:</b> Die Kathetenquadrate haben 9 cm² und 16 cm².<br>
+Hypotenusenquadrat: 9 cm² + 16 cm² = 25 cm²</div>`},
+2:{title:'Seitenlängen berechnen',html:`
+<div class="mh">Seitenlängen im rechtwinkligen Dreieck berechnen</div>
+<p>Immer zuerst: <b>Skizze</b> anfertigen, rechten Winkel markieren, Hypotenuse bestimmen. Die Hypotenuse liegt dem rechten Winkel gegenüber (bei α = 90° ist a die Hypotenuse). Vor dem Rechnen alle Längen in <b>dieselbe Einheit</b> umrechnen.</p>
+<p><b>Hypotenuse gesucht:</b> &nbsp; c² = a² + b² &nbsp;⇒&nbsp; <b>c = √(a² + b²)</b></p>
+<p><b>Kathete gesucht:</b> &nbsp; a² = c² − b² &nbsp;⇒&nbsp; <b>a = √(c² − b²)</b> &nbsp; (entsprechend b = √(c² − a²))</p>
+<p>Ist das Ergebnis keine Quadratzahl: Taschenrechner benutzen und sinnvoll runden. Die Hypotenuse ist immer die längste Seite (Probe!).</p>
+<div class="ex"><b>Beispiel 1 (Hypotenuse):</b> a = 6 cm; b = 8 cm<br>
+c² = 6² + 8² = 36 + 64 = 100<br>
+c = √100 = 10 cm</div>
+<div class="ex"><b>Beispiel 2 (Kathete):</b> c = 13 cm; a = 5 cm<br>
+b² = 13² − 5² = 169 − 25 = 144<br>
+b = √144 = 12 cm</div>`},
+3:{title:'Umkehrung des Satzes des Pythagoras',html:`
+<div class="mh">Umkehrung des Satzes des Pythagoras</div>
+<p><b>Umkehrung:</b> Gilt in einem Dreieck für die Seitenlängen a, b und c (c ist die längste Seite) die Gleichung</p>
+<div class="formel">a² + b² = c²</div>
+<p>so ist das Dreieck <b>rechtwinklig</b>. Der rechte Winkel liegt der längsten Seite c gegenüber.<br>
+Gilt die Gleichung nicht, ist das Dreieck <b>nicht rechtwinklig</b>.</p>
+<p><b>Nachweis in 4 Schritten:</b> 1. längste Seite c bestimmen · 2. a² + b² berechnen · 3. c² berechnen · 4. vergleichen und Antwortsatz schreiben.</p>
+<div class="ex"><b>Beispiel 1:</b> a = 4,5 cm; b = 6 cm; c = 7,5 cm<br>
+a² + b² = 20,25 + 36 = 56,25<br>
+c² = 56,25 ⇒ a² + b² = c²<br>
+Das Dreieck ist rechtwinklig.</div>
+<div class="ex"><b>Beispiel 2:</b> a = 4 cm; b = 5 cm; c = 7 cm<br>
+a² + b² = 16 + 25 = 41; c² = 49<br>
+41 ≠ 49 ⇒ Das Dreieck ist nicht rechtwinklig.</div>`},
+4:{title:'Satz des Pythagoras in ebenen Figuren',html:`
+<div class="mh">Satz des Pythagoras in ebenen Figuren</div>
+<p>Vorgehen: <b>Skizze</b> zeichnen · <b>rechtwinkliges Teildreieck</b> suchen (Höhe, Diagonale) · bekannte und gesuchte Seite bestimmen · Satz des Pythagoras anwenden · Antwortsatz.</p>
+<p><b>Gleichschenkliges Dreieck:</b> Die Höhe auf die Basis halbiert die Basis.<br>
+<b>Raute:</b> Die Diagonalen halbieren sich und stehen senkrecht aufeinander. Es gilt a² = (e/2)² + (f/2)².</p>
+<div class="ex"><b>Beispiel 1:</b> Gleichschenkliges Dreieck, Schenkel 10 cm, Basis 12 cm<br>
+h² = 10² − 6² = 100 − 36 = 64 ⇒ h = 8 cm<br>
+A = ½ · 12 cm · 8 cm = 48 cm²</div>
+<div class="ex"><b>Beispiel 2:</b> Raute mit e = 48 mm und f = 64 mm<br>
+a² = 24² + 32² = 576 + 1024 = 1600 ⇒ a = 40 mm<br>
+Umfang u = 4 · 40 mm = 160 mm</div>`}
+};
+
+/* ====== Zeichnen: Dreieck mit Beschriftung ====== */
+function triSvg(o){
+  const L1=o.L1||4,L2=o.L2||3;
+  let P=[[0,0],[L1,0],[0,L2]];
+  if(o.mirror)P=P.map(([x,y])=>[-x,y]);
+  const r=(o.rot||0)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+  P=P.map(([x,y])=>[x*c-y*s,-(x*s+y*c)]);
+  const cen=[(P[0][0]+P[1][0]+P[2][0])/3,(P[0][1]+P[1][1]+P[2][1])/3];
+  const away=(pt,d)=>{const dx=pt[0]-cen[0],dy=pt[1]-cen[1],l=Math.hypot(dx,dy)||1;return[pt[0]+dx/l*d,pt[1]+dy/l*d];};
+  const S=[[0,1],[0,2],[1,2]];
+  const xs=P.map(p=>p[0]),ys=P.map(p=>p[1]);
+  let minx=Math.min(...xs)-2.8,maxx=Math.max(...xs)+2.8,miny=Math.min(...ys)-1.8,maxy=Math.max(...ys)+1.8;
+  if(maxx-minx<11){const d=(11-(maxx-minx))/2;minx-=d;maxx+=d;}
+  if(maxy-miny<7){const d=(7-(maxy-miny))/2;miny-=d;maxy+=d;}
+  const u=(a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy);return[dx/l,dy/l];};
+  const u1=u(P[0],P[1]),u2=u(P[0],P[2]),k=.5;
+  const ra=`M${P[0][0]+u1[0]*k},${P[0][1]+u1[1]*k} L${P[0][0]+(u1[0]+u2[0])*k},${P[0][1]+(u1[1]+u2[1])*k} L${P[0][0]+u2[0]*k},${P[0][1]+u2[1]*k}`;
+  let g=`<polygon points="${P.map(p=>p.join(',')).join(' ')}" fill="#eef4ff" stroke="#1f2937" stroke-width=".08"/><path d="${ra}" fill="none" stroke="#1f2937" stroke-width=".07"/>`;
+  if(o.labels)S.forEach((sd,i)=>{if(o.labels[i]==null)return;const m=[(P[sd[0]][0]+P[sd[1]][0])/2,(P[sd[0]][1]+P[sd[1]][1])/2];const q=away(m,.7);g+=`<text x="${q[0]}" y="${q[1]}" font-size=".52" text-anchor="middle" dominant-baseline="middle" fill="#111">${o.labels[i]}</text>`;});
+  if(o.vertex)P.forEach((p,i)=>{const q=away(p,.75);g+=`<text x="${q[0]}" y="${q[1]}" font-size=".66" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1e3a8a">${o.vertex[i]}</text>`;});
+  if(o.clickable)S.forEach((sd,i)=>{g+=`<line class="hit" data-side="${i}" x1="${P[sd[0]][0]}" y1="${P[sd[0]][1]}" x2="${P[sd[1]][0]}" y2="${P[sd[1]][1]}"/>`;});
+  return `<svg class="fig" style="width:${o.w||360}px" viewBox="${minx} ${miny} ${maxx-minx} ${maxy-miny}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+
+/* ====== Zeichnen: Dreieck mit Quadraten (Experiment) ====== */
+function squaresSvg(a,b,gdeg){
+  const g=gdeg*Math.PI/180;
+  const C=[0,0],B=[a,0],A=[b*Math.cos(g),b*Math.sin(g)];
+  const sq=(Pp,Q,R)=>{const dx=Q[0]-Pp[0],dy=Q[1]-Pp[1];let nx=-dy,ny=dx;const mx=(Pp[0]+Q[0])/2,my=(Pp[1]+Q[1])/2;if((R[0]-mx)*nx+(R[1]-my)*ny>0){nx=-nx;ny=-ny;}return[Pp,Q,[Q[0]+nx,Q[1]+ny],[Pp[0]+nx,Pp[1]+ny]];};
+  const fl=p=>[p[0],-p[1]];
+  const sa=sq(C,B,A).map(fl),sb=sq(C,A,B).map(fl),sc=sq(B,A,C).map(fl);
+  const tri=[C,B,A].map(fl);
+  const all=[...sa,...sb,...sc,...tri];
+  const xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);
+  const pad=1,minx=Math.min(...xs)-pad,maxx=Math.max(...xs)+pad,miny=Math.min(...ys)-pad,maxy=Math.max(...ys)+pad;
+  const W=maxx-minx,H=maxy-miny,fs=Math.max(W,H)/26;
+  const poly=(q,col)=>`<polygon points="${q.map(p=>p.join(',')).join(' ')}" fill="${col}" fill-opacity=".35" stroke="${col}" stroke-width="${fs/10}"/>`;
+  const ctr=q=>[(q[0][0]+q[2][0])/2,(q[0][1]+q[2][1])/2];
+  const lab=(q,t)=>{const c=ctr(q);return `<text x="${c[0]}" y="${c[1]}" font-size="${fs}" text-anchor="middle" dominant-baseline="middle" fill="#111" font-weight="600">${t}</text>`;};
+  const c2=a*a+b*b-2*a*b*Math.cos(g);
+  const f=x=>fmt(x,1);
+  let svg=poly(sa,'#2563eb')+poly(sb,'#16a34a')+poly(sc,'#ea580c');
+  svg+=`<polygon points="${tri.map(p=>p.join(',')).join(' ')}" fill="#fff" stroke="#111" stroke-width="${fs/9}"/>`;
+  svg+=lab(sa,'a² = '+f(a*a))+lab(sb,'b² = '+f(b*b))+lab(sc,'c² = '+f(c2));
+  if(Math.abs(gdeg-90)<.01){const k=Math.min(a,b)*.18,u1=[1,0],u2=[Math.cos(g),-Math.sin(g)];svg+=`<path d="M${k},0 L${k*(1+u2[0])},${k*u2[1]} L${k*u2[0]},${k*u2[1]}" fill="none" stroke="#111" stroke-width="${fs/10}"/>`;}
+  return {svg:`<svg class="fig" style="width:100%;max-width:520px" viewBox="${minx} ${miny} ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`,c2};
+}
+
+/* ====== Bausteine ====== */
+function mc(body,o,onOk,onBad){
+  const box=h('div',{class:'q'},h('p',{class:'qt',html:o.q}));
+  const fb=h('div',{class:'fb'}),list=h('div',{class:'opts'});
+  const order=shuffle(o.options.map((_,i)=>i));
+  order.forEach(i=>{
+    const b=h('button',{class:'opt',type:'button',html:o.options[i]});
+    b.addEventListener('click',()=>{
+      if(b.disabled)return;
+      if(i===o.correct){b.classList.add('ok');[...list.children].forEach(x=>x.disabled=true);fb.className='fb ok';fb.innerHTML='✓ Richtig. '+(o.explain||'');onOk&&onOk();}
+      else{b.classList.add('bad');b.disabled=true;fb.className='fb bad';fb.innerHTML='Noch nicht. '+(o.hint||'Überlege noch einmal.');onBad&&onBad();}
+    });
+    list.append(b);
+  });
+  box.append(list,fb);body.append(box);return box;
+}
+function numQ(body,o,onOk,onBad){
+  const tol=o.tol==null?0.0051:o.tol;
+  const inp=h('input',{class:'num',type:'text',inputmode:'decimal',autocomplete:'off',placeholder:'Ergebnis'});
+  const fb=h('div',{class:'fb'});
+  const btn=h('button',{class:'btn',type:'button'},'Prüfen');
+  const check=()=>{
+    if(inp.disabled)return;
+    const v=parseNum(inp.value);
+    if(isNaN(v)){fb.className='fb bad';fb.textContent='Bitte eine Zahl eingeben (z. B. 12,5).';return;}
+    if(Math.abs(v-o.answer)<=tol){inp.disabled=true;btn.disabled=true;fb.className='fb ok';fb.innerHTML='✓ Richtig. '+(o.explain||'');onOk&&onOk();}
+    else{fb.className='fb bad';let m=o.hint||'Noch nicht. Rechne noch einmal nach.';if(tol<0.01&&Math.abs(v-o.answer)<0.06)m='Fast! Runde auf zwei Nachkommastellen.';fb.innerHTML=m;onBad&&onBad();}
+  };
+  btn.addEventListener('click',check);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')check();});
+  const box=h('div',{class:'q'},h('p',{class:'qt',html:o.q}),h('div',{},inp,' ',o.unit||'',' ',btn),fb);
+  body.append(box);return box;
+}
+function nextBtn(body,label,fn){const b=h('button',{class:'btn',type:'button'},label);b.addEventListener('click',()=>{b.disabled=true;fn();});body.append(b);return b;}
+function videoBlock(body,key,text){
+  const v=VIDEOS[key];
+  const box=h('div',{class:'info'},h('div',{html:text}));
+  if(v.videoId){box.append(h('div',{html:`<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px" src="https://www.youtube-nocookie.com/embed/${v.videoId}" allowfullscreen loading="lazy"></iframe>`}));}
+  else box.append(h('a',{class:'btn',style:'display:inline-block;text-decoration:none;margin-top:8px',target:'_blank',rel:'noopener',href:'https://www.youtube.com/results?search_query='+encodeURIComponent(v.query)},'▶ Erklärvideo auf YouTube suchen'));
+  body.append(box);
+}
+function merkStep(n){
+  return {title:'✏️ Merkheft-Eintrag',render(body,done){
+    body.append(h('p',{},'Schreibe den folgenden Kasten vollständig in dein Merkheft (Überschrift, Text, Formel und Beispiele).'));
+    body.append(h('div',{class:'merk'},h('span',{class:'tag'},'✏️ MERKHEFT · abschreiben'),h('div',{html:MERK[n].html})));
+    const cb=h('input',{type:'checkbox',id:'cb'+n,style:'width:22px;height:22px;vertical-align:middle'});
+    cb.addEventListener('change',()=>{if(cb.checked){cb.disabled=true;done();}});
+    body.append(h('label',{for:'cb'+n,style:'cursor:pointer'},cb,' Ich habe den Eintrag in mein Merkheft abgeschrieben.'));
+  }};
+}
+
+/* ====== Übungs-Baustein mit 3 Niveaus ====== */
+function practice(body,gens,need,done){
+  let niv='leicht',solved=0,fin=false;
+  const tabs=h('div',{class:'tabs'}),area=h('div'),cnt=h('div',{class:'muted'});
+  const names={leicht:'🟢 leicht',standard:'🟡 standard',plus:'🔴 plus'};
+  Object.keys(names).forEach(k=>{const t=h('button',{class:'tab'+(k===niv?' on':''),type:'button'},names[k]);t.addEventListener('click',()=>{niv=k;[...tabs.children].forEach(x=>x.classList.remove('on'));t.classList.add('on');newTask();});tabs.append(t);});
+  body.append(h('p',{class:'muted'},`Löse mindestens ${need} Aufgaben richtig. Wähle dein Niveau – du kannst jederzeit wechseln.`),tabs,area,cnt);
+  const upd=()=>{cnt.textContent=`✓ ${solved} von ${need} richtig gelöst`;};
+  function newTask(){
+    const t=gens[niv]();let tries=0,hintN=0,ok=false;
+    area.innerHTML='';
+    const q=h('div'),hints=h('div'),sol=h('div'),act=h('div');
+    area.append(q,act,hints,sol);
+    const solveBtn=h('button',{class:'btn sec',type:'button',style:'display:none'},'Lösungsweg anzeigen');
+    const hintBtn=h('button',{class:'btn sec',type:'button'},'💡 Tipp');
+    const nxt=h('button',{class:'btn',type:'button',style:'display:none'},'Nächste Aufgabe →');
+    const showSol=()=>{sol.innerHTML='';sol.append(h('div',{class:'sol',html:t.solution}));};
+    hintBtn.addEventListener('click',()=>{if(hintN<t.hints.length){hints.append(h('div',{class:'hint',html:'💡 '+t.hints[hintN++]}));}if(hintN>=t.hints.length)hintBtn.disabled=true;});
+    solveBtn.addEventListener('click',()=>{showSol();nxt.style.display='';solveBtn.disabled=true;});
+    nxt.addEventListener('click',newTask);
+    const onOk=()=>{if(ok)return;ok=true;solved++;upd();showSol();nxt.style.display='';hintBtn.disabled=true;solveBtn.style.display='none';if(solved>=need&&!fin){fin=true;area.append(h('div',{class:'fb ok'},'🎉 Geschafft! Du kannst unten mit dem Exit-Ticket weitermachen oder weiter üben.'));done();}};
+    const onBad=()=>{tries++;if(tries>=2)solveBtn.style.display='';};
+    q.append(h('div',{html:t.prompt}));
+    if(t.kind==='mc')mc(q,{q:t.question,options:t.options,correct:t.correct,hint:t.badHint},onOk,onBad);
+    else numQ(q,{q:t.question,answer:t.answer,tol:t.tol,unit:t.unit,hint:t.badHint},onOk,onBad);
+    act.append(hintBtn,solveBtn,nxt);
+  }
+  upd();newTask();
+}
+
+/* ====== Exit-Ticket ====== */
+function exitTicket(body,n,qs,done){
+  let idx=0,score=0;
+  const box=h('div');body.append(box);
+  function show(){
+    box.innerHTML='';
+    if(idx>=qs.length)return finish();
+    const q=qs[idx];
+    box.append(h('p',{class:'muted'},`Frage ${idx+1} von ${qs.length}`));
+    let answered=false;
+    const qb=mc(box,{q:q.q,options:q.options,correct:0,explain:q.explain,hint:q.explain},()=>{if(answered)return;answered=true;score++;after();},()=>{if(answered)return;answered=true;/* falsch: Lösung zeigen */const ok=[...qb.querySelectorAll('button.opt')];ok.forEach(b=>b.disabled=true);const right=ok.find(b=>b.innerHTML===q.options[0]);if(right)right.classList.add('ok');after();});
+    function after(){nextBtn(box,idx<qs.length-1?'Weiter →':'Auswerten',()=>{idx++;show();});}
+  }
+  function finish(){
+    const pass=score>=2;
+    box.append(h('h3',{},`Ergebnis: ${score} von ${qs.length}`));
+    if(pass){
+      const d=new Date(),code=String(((n*7919)+(score*104729)+((d.getMonth()+1)*31+d.getDate())*131)%9000+1000);
+      state[n]={score,date:d.toLocaleDateString('de-DE'),code};save();
+      box.append(h('div',{class:'checkin'},h('div',{html:`<b>Station ${n} geschafft!</b> – ${STATIONS[n].title}`}),h('div',{},`Exit-Ticket: ${score} von ${qs.length} · Datum: ${state[n].date}`),h('div',{html:`Kontrollcode: <span class="code">${code}</span>`}),h('div',{class:'muted'},'Zeige diese Karte deiner Lehrkraft (oder mache einen Screenshot).')));
+      done();
+    }else{
+      box.append(h('p',{},'Noch nicht ganz. Schau dir die Erklärungen oben noch einmal an, übe weiter und versuche das Exit-Ticket dann erneut.'));
+      nextBtn(box,'Exit-Ticket wiederholen',()=>{idx=0;score=0;show();});
+    }
+  }
+  show();
+}
+
+/* ====== Generatoren Station 1 ====== */
+const SETS=[['a','b','c'],['p','q','r'],['x','y','z'],['d','e','f'],['k','l','m']];
+const ROTS=[0,25,60,100,145,190,230,290,330];
+function s1leicht(){
+  const [l1,l2,hy]=shuffle(pick(SETS));
+  const prompt=triSvg({labels:[l1,l2,hy],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5)});
+  const ok=Math.random()<.5?`${l1}² + ${l2}² = ${hy}²`:`${l2}² + ${l1}² = ${hy}²`;
+  return {kind:'mc',prompt,question:'Welche Gleichung stellt den Satz des Pythagoras für dieses Dreieck dar?',
+    options:[ok,`${l1}² + ${hy}² = ${l2}²`,`${hy}² + ${l2}² = ${l1}²`,`${l1} + ${l2} = ${hy}`],correct:0,
+    badHint:'Welche Seite liegt dem rechten Winkel (Quadrat-Symbol) gegenüber? Sie steht allein auf einer Seite der Gleichung.',
+    hints:['Suche den rechten Winkel. Die Seite gegenüber ist die Hypotenuse.','Die Hypotenuse steht im Satz des Pythagoras allein auf einer Seite des Gleichheitszeichens.'],
+    solution:`<div>Hypotenuse: <b>${hy}</b> (liegt gegenüber dem rechten Winkel)</div><div>Satz des Pythagoras: <b>${ok}</b></div>`};
+}
+function s1standard(){
+  const [v0,v1,v2]=shuffle(pick([['A','B','C'],['P','Q','R'],['K','L','M'],['D','E','F'],['R','S','T']]));
+  const prompt=triSvg({vertex:[v0,v1,v2],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5)})+`<p class="muted">${v0}${v1} bedeutet die Länge der Strecke [${v0}${v1}].</p>`;
+  const ok=`${v0}${v1}² + ${v0}${v2}² = ${v1}${v2}²`;
+  return {kind:'mc',prompt,question:`Stelle die Gleichung des Satzes des Pythagoras für das Dreieck ${v0}${v1}${v2} auf.`,
+    options:[ok,`${v0}${v1}² + ${v1}${v2}² = ${v0}${v2}²`,`${v0}${v2}² + ${v1}${v2}² = ${v0}${v1}²`,`${v0}${v1} + ${v0}${v2} = ${v1}${v2}`],correct:0,
+    badHint:`Wo ist der rechte Winkel? Die Hypotenuse liegt gegenüber – sie ist die Strecke zwischen den beiden anderen Eckpunkten.`,
+    hints:[`Der rechte Winkel liegt bei ${v0}.`,`Die Hypotenuse ist die Strecke ${v1}${v2}; die Katheten sind ${v0}${v1} und ${v0}${v2}.`],
+    solution:`<div>Rechter Winkel bei ${v0} ⇒ Hypotenuse <b>${v1}${v2}</b></div><div>Katheten: ${v0}${v1} und ${v0}${v2}</div><div>Satz: <b>${ok}</b></div>`};
+}
+const TRIPLES=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[7,24,25],[9,12,15],[20,21,29],[9,40,41]];
+function s1plus(){
+  const [a,b,c]=pick(TRIPLES);const a2=a*a,b2=b*b,c2=c*c;
+  if(Math.random()<.5)return {kind:'num',unit:'cm²',tol:.001,answer:c2,
+    prompt:'',question:`Über den Katheten eines rechtwinkligen Dreiecks liegen Quadrate mit den Flächeninhalten ${a2} cm² und ${b2} cm². Wie groß ist der Flächeninhalt des Quadrats über der Hypotenuse?`,
+    hints:['Die beiden Kathetenquadrate zusammen sind so groß wie das Hypotenusenquadrat.'],badHint:'Addiere die beiden Flächeninhalte der Kathetenquadrate.',
+    solution:`<div>${a2} cm² + ${b2} cm² = <b>${c2} cm²</b></div>`};
+  return {kind:'num',unit:'cm²',tol:.001,answer:b2,
+    prompt:'',question:`Das Quadrat über der Hypotenuse hat einen Flächeninhalt von ${c2} cm², das Quadrat über einer Kathete ${a2} cm². Wie groß ist der Flächeninhalt des Quadrats über der anderen Kathete?`,
+    hints:['Kathetenquadrat + Kathetenquadrat = Hypotenusenquadrat. Eines der Kathetenquadrate fehlt.','Stelle um: Hypotenusenquadrat − bekanntes Kathetenquadrat.'],badHint:'Subtrahiere das bekannte Kathetenquadrat vom Hypotenusenquadrat.',
+    solution:`<div>${a2} + ? = ${c2}</div><div>? = ${c2} − ${a2} = <b>${b2} cm²</b></div>`};
+}
+
+/* ====== Generatoren Station 2 ====== */
+function s2solution(isHyp,a,b,c,u){
+  const r=x=>fmt(x,2);
+  if(isHyp){const c2=a*a+b*b;return `<div>Hypotenuse gesucht: c² = a² + b²</div><div>c² = ${fmt(a)}² + ${fmt(b)}² = ${r(a*a)} + ${r(b*b)} = ${r(c2)}</div><div>c = √${r(c2)} ≈ <b>${r(Math.sqrt(c2))} ${u}</b></div>`;}
+  const b2=c*c-a*a;return `<div>Kathete gesucht: b² = c² − a²</div><div>b² = ${fmt(c)}² − ${fmt(a)}² = ${r(c*c)} − ${r(a*a)} = ${r(b2)}</div><div>b = √${r(b2)} ≈ <b>${r(Math.sqrt(b2))} ${u}</b></div>`;
+}
+function s2task(vals,u){
+  const [a,b,c,isHyp]=vals;
+  const fig=triSvg({labels:isHyp?[`a = ${fmt(a)} ${u}`,`b = ${fmt(b)} ${u}`,'c = ?']:[`a = ${fmt(a)} ${u}`,'b = ?',`c = ${fmt(c)} ${u}`],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3.2,4.6),L2:rnd(2.6,3.8)});
+  const ans=isHyp?Math.sqrt(a*a+b*b):Math.sqrt(c*c-a*a);
+  return {kind:'num',unit:u,prompt:fig,question:isHyp?'Berechne die Länge der Hypotenuse c.':'Berechne die Länge der Kathete b.',answer:Math.round(ans*100)/100,tol:.0051,
+    badHint:isHyp?'Hypotenuse: c² = a² + b² – danach die Wurzel ziehen.':'Kathete: b² = c² − a² – danach die Wurzel ziehen.',
+    hints:['Wo ist der rechte Winkel? Welche Seite ist die Hypotenuse?',isHyp?'Rechne c² = a² + b².':'Rechne b² = c² − a² (die Hypotenuse steht beim Quadrieren immer vorne).','Am Ende die Wurzel ziehen (Taschenrechner).'],
+    solution:s2solution(isHyp,a,b,c,u)};
+}
+function s2leicht(){
+  const [a,b,c]=pick(TRIPLES.filter(t=>t[2]<=29));const u=pick(['cm','m','dm']);
+  const swap=Math.random()<.5,isHyp=Math.random()<.5;
+  const t=s2task(swap?[b,a,c,isHyp]:[a,b,c,isHyp],u);t.tol=.001;return t;
+}
+function s2standard(){
+  if(Math.random()<.35)return s2winkel();
+  const isHyp=Math.random()<.5,u=pick(['cm','m','mm']);
+  if(isHyp){const a=Math.round(rnd(20,150))/10,b=Math.round(rnd(20,150))/10;return s2task([a,b,0,true],u);}
+  const c=Math.round(rnd(60,200))/10,a=Math.round(rnd(.3*c*10,.9*c*10))/10;return s2task([a,0,c,false],u);
+}
+function s2plus(){
+  const w=rint(0,4);
+  if(w===4)return s2winkel();
+  if(w===0){const L=Math.round(rnd(35,65))/10,x=Math.round(rnd(8,22))/10,ans=Math.sqrt(L*L-x*x);
+    return {kind:'num',prompt:'',unit:'m',question:`Eine ${fmt(L)} m lange Leiter lehnt an einer senkrechten Wand. Der Fuß der Leiter ist ${fmt(x)} m von der Wand entfernt. Wie hoch reicht die Leiter an der Wand?`,answer:Math.round(ans*100)/100,tol:.0051,
+      badHint:'Die Leiter ist die Hypotenuse. Gesucht ist eine Kathete: Höhe² = Leiter² − Abstand².',hints:['Skizziere Wand, Boden und Leiter. Wo ist der rechte Winkel?','Die Leiter liegt dem rechten Winkel gegenüber ⇒ Hypotenuse.'],
+      solution:`<div>Höhe h: h² = ${fmt(L)}² − ${fmt(x)}² = ${fmt(L*L)} − ${fmt(x*x)} = ${fmt(L*L-x*x)}</div><div>h = √${fmt(L*L-x*x)} ≈ <b>${fmt(ans)} m</b></div>`};}
+  if(w===1){const l=rint(8,40),b=rint(5,l-1),ans=Math.sqrt(l*l+b*b);
+    return {kind:'num',prompt:'',unit:'cm',question:`Ein Rechteck ist ${l} cm lang und ${b} cm breit. Wie lang ist seine Diagonale?`,answer:Math.round(ans*100)/100,tol:.0051,
+      badHint:'Die Diagonale teilt das Rechteck in zwei rechtwinklige Dreiecke – sie ist die Hypotenuse.',hints:['Zeichne das Rechteck mit einer Diagonale.','Länge und Breite sind die Katheten.'],
+      solution:`<div>d² = ${l}² + ${b}² = ${l*l} + ${b*b} = ${l*l+b*b}</div><div>d = √${l*l+b*b} ≈ <b>${fmt(ans)} cm</b></div>`};}
+  if(w===2){const s=rint(4,14),g=rint(1,s-1)*2,ans=Math.sqrt(s*s-(g/2)*(g/2));
+    return {kind:'num',prompt:'',unit:'cm',question:`Ein gleichschenkliges Dreieck hat die Schenkellänge ${s} cm und die Basis ${g} cm. Wie lang ist die Höhe auf die Basis?`,answer:Math.round(ans*100)/100,tol:.0051,
+      badHint:'Die Höhe halbiert die Basis. So entsteht ein rechtwinkliges Teildreieck mit dem Schenkel als Hypotenuse.',hints:['Zeichne die Höhe ein und markiere den rechten Winkel.',`Die halbe Basis beträgt ${g/2} cm.`],
+      solution:`<div>h² = ${s}² − ${g/2}² = ${s*s} − ${g*g/4} = ${s*s-g*g/4}</div><div>h = √${s*s-g*g/4} ≈ <b>${fmt(ans)} cm</b></div>`};}
+  const s=rint(3,20),ans=Math.sqrt(2)*s;
+  return {kind:'num',prompt:'',unit:'cm',question:`Ein Quadrat hat die Seitenlänge ${s} cm. Wie lang ist seine Diagonale?`,answer:Math.round(ans*100)/100,tol:.0051,
+    badHint:'Die Diagonale ist die Hypotenuse eines rechtwinkligen Dreiecks mit zwei gleich langen Katheten.',hints:['Zeichne das Quadrat mit einer Diagonale.'],
+    solution:`<div>d² = ${s}² + ${s}² = ${2*s*s}</div><div>d = √${2*s*s} ≈ <b>${fmt(ans)} cm</b></div>`};
+}
+
+/* ====== Experiment (Station 1) ====== */
+function experiment(body,done){
+  let a=3,b=4,g=90,rows=[];
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb'});
+  const mk=(id,label,min,max,step,val,cb)=>{const o=h('output',{},'');const r=h('input',{type:'range',min,max,step,value:val});const upd=()=>{o.textContent=r.value.replace('.',',');};r.addEventListener('input',()=>{upd();cb(parseFloat(r.value));});upd();return h('div',{},h('label',{},label+' = ',o),r);};
+  const angBox=h('div',{style:'display:none'});
+  const controls=h('div',{},
+    mk('a','Kathete a (cm)',1,8,.5,a,v=>{a=v;draw();}),
+    mk('b','Kathete b (cm)',1,8,.5,b,v=>{b=v;draw();}));
+  angBox.append(mk('g','Winkel γ am Punkt C (°)',40,140,5,g,v=>{g=v;draw();}));
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen');
+  const go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  function draw(){const r=squaresSvg(a,b,g);fig.innerHTML=r.svg;info.innerHTML=`a² + b² = ${fmt(a*a+b*b,1)} &nbsp;|&nbsp; c² = ${fmt(r.c2,1)}`;}
+  function status(){
+    const r90=new Set(rows.filter(x=>x.g===90).map(x=>x.a+'/'+x.b)).size,rO=rows.filter(x=>x.g!==90).length;
+    if(r90>=3&&!showA){showA=true;angBox.style.display='';fb.className='fb';fb.innerHTML='Neu: Jetzt kannst du den Winkel γ verändern. Trage mindestens 2 Messungen mit einem Winkel ungleich 90° ein.';}
+    go.disabled=!(r90>=3&&rO>=2);
+    if(!go.disabled)fb.innerHTML='Gut! Vergleiche in der Tabelle die Spalten „a² + b²“ und „c²“. Was fällt dir auf? Klicke dann auf „Fertig – weiter“.';
+  }
+  let showA=false;
+  function table(){
+    tbl.innerHTML='';if(!rows.length)return;
+    const t=h('table',{class:'t'},h('tr',{},...['a','b','γ','a²','b²','a² + b²','c²','gleich?'].map(x=>h('th',{},x))));
+    rows.forEach(x=>t.append(h('tr',{},...[fmt(x.a,1),fmt(x.b,1),x.g+'°',fmt(x.a*x.a,1),fmt(x.b*x.b,1),fmt(x.a*x.a+x.b*x.b,1),fmt(x.c2,1),Math.abs(x.a*x.a+x.b*x.b-x.c2)<.05?'✓':'✗'].map(v=>h('td',{},v)))));
+    tbl.append(t);
+  }
+  add.addEventListener('click',()=>{const r=squaresSvg(a,b,g);rows.push({a,b,g,c2:r.c2});if(rows.length>10)rows.shift();table();status();});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;done();});
+  body.append(h('p',{html:'<b>Auftrag:</b> Das Dreieck hat bei C einen rechten Winkel. Über jeder Seite siehst du ein Quadrat mit seinem Flächeninhalt (in cm²). Verändere a und b und trage <b>mindestens 3 verschiedene Messungen</b> in die Tabelle ein.'}),controls,angBox,fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+
+/* ====== Geführte Folge (Station 2) ====== */
+function guided(body,items,done){
+  let i=0;const box=h('div');body.append(box);
+  function nxt(){
+    if(i>=items.length){done();return;}
+    const it=items[i++];
+    if(it.html)box.append(h('div',{html:it.html}));
+    const ok=()=>setTimeout(nxt,250);
+    if(it.type==='mc')mc(box,it,ok);else if(it.type==='num')numQ(box,it,ok);else nxt();
+  }
+  nxt();
+}
+
+
+/* ====== Station 2: rechter Winkel bei α/β/γ, Einheiten ====== */
+function s2winkel(){
+  const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([5,10]);
+  const v=t.map(x=>x*k);
+  const [X,Y,Z]=shuffle(['A','B','C']);
+  const gr={A:'α',B:'β',C:'γ'};
+  const nm=[Y.toLowerCase(),Z.toLowerCase(),X.toLowerCase()];
+  const unk=rint(0,2),given=[0,1,2].filter(i=>i!==unk);
+  const fu=(cm,u)=>u==='cm'?fmt(cm,0):u==='dm'?fmt(cm/10,1):fmt(cm/100,2);
+  const units=shuffle(['cm',pick(['dm','m'])]);
+  const txt=given.map((i,j)=>`${nm[i]} = ${fu(v[i],units[j])} ${units[j]}`);
+  const conv=given.map((i,j)=>units[j]==='cm'?null:`${fu(v[i],units[j])} ${units[j]} = ${v[i]} cm`).filter(Boolean);
+  const prompt=triSvg({vertex:[X,Y,Z],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5)})+`<p class="muted">Die Seite a liegt dem Eckpunkt A gegenüber, b liegt B gegenüber, c liegt C gegenüber.</p>`;
+  let calc;
+  if(unk===2){const g1=v[given[0]],g2=v[given[1]];calc=`${nm[2]}² = ${g1}² + ${g2}² = ${g1*g1} + ${g2*g2} = ${g1*g1+g2*g2}`;}
+  else{const hy=v[2],kn=v[given.find(i=>i!==2)];calc=`${nm[unk]}² = ${hy}² − ${kn}² = ${hy*hy} − ${kn*kn} = ${hy*hy-kn*kn}`;}
+  return {kind:'num',unit:'cm',prompt,tol:.001,answer:v[unk],
+    question:`Im Dreieck ABC ist ${gr[X]} = 90°. Es gilt ${txt.join(' und ')}. Berechne ${nm[unk]} in cm.`,
+    badHint:'Welche Seite liegt dem rechten Winkel gegenüber? Sind alle Längen in derselben Einheit?',
+    hints:[`Der rechte Winkel liegt bei ${X}. Die Hypotenuse liegt gegenüber: ${nm[2]}.`,'Rechne zuerst alle Längen in cm um.'],
+    solution:`<div>Rechter Winkel bei ${X} (${gr[X]} = 90°) ⇒ Hypotenuse <b>${nm[2]}</b></div>${conv.map(c=>`<div>${c}</div>`).join('')}<div>${calc}</div><div>${nm[unk]} = √${unk===2?v[unk]*v[unk]:v[unk]*v[unk]} = <b>${v[unk]} cm</b></div>`};
+}
+
+/* ====== Station 3: Umkehrung ====== */
+function s3text(dec,so,f){
+  const [a,b,c]=so,u=x=>fmt(x/f,dec?2:0),l=x=>fmt(x/f,dec?1:0);
+  const isR=a*a+b*b===c*c,lt=a*a+b*b<c*c;
+  return {isR,sol:`<div>Längste Seite: ${l(c)} cm</div><div>${l(a)}² + ${l(b)}² = ${u(a*a/f)} + ${u(b*b/f)} = <b>${u((a*a+b*b)/f)}</b></div><div>${l(c)}² = <b>${u(c*c/f)}</b></div><div>${isR?'Beide Werte sind gleich ⇒ rechtwinklig.':'Die Werte sind verschieden ⇒ nicht rechtwinklig.'}</div>`,
+    idx:isR?0:(lt?1:2)};
+}
+function s3len(dec){
+  const t=pick(TRIPLES.filter(x=>x[2]<=25)),sc=dec?pick([0.1,0.2,0.5,1.5,2]):pick([1,2]),f=dec?10:1;
+  let s,so,right,ok;
+  do{s=t.map(x=>Math.round(x*sc*f));right=Math.random()<.5;if(!right){const i=rint(0,2);s[i]+=pick([-2,-1,1,2]);}
+     so=[...s].sort((x,y)=>x-y);ok=so[0]>0&&so[0]+so[1]>so[2]&&((so[0]*so[0]+so[1]*so[1]===so[2]*so[2])===right);}while(!ok);
+  const r=s3text(dec,so,f),show=shuffle(s).map(x=>fmt(x/f,dec?1:0)+' cm').join('; ');
+  return {kind:'mc',prompt:'',question:`Ein Dreieck hat die Seitenlängen ${show}. Ist es rechtwinklig?`,
+    options:['Ja, denn die Summe der Quadrate der beiden kürzeren Seiten ist gleich dem Quadrat der längsten Seite.','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist kleiner als das Quadrat der längsten Seite.','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist größer als das Quadrat der längsten Seite.'],correct:r.idx,
+    badHint:'Bestimme die längste Seite und vergleiche ihr Quadrat mit der Summe der Quadrate der beiden anderen.',
+    hints:['Die längste Seite spielt die Rolle der Hypotenuse (c).','Berechne a² + b² und c² getrennt.'],solution:r.sol};
+}
+function s3area(){
+  const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([1,2,3,.5]);
+  let ar,so,right,ok;
+  do{ar=t.map(x=>Math.round(x*x*k*10));right=Math.random()<.5;if(!right){const i=rint(0,2);ar[i]+=pick([-3,-2,-1,1,2,3]);}
+     so=[...ar].sort((x,y)=>x-y);const sd=so.map(Math.sqrt);ok=so[0]>0&&sd[0]+sd[1]>sd[2]&&((so[0]+so[1]===so[2])===right);}while(!ok);
+  const q=x=>fmt(x/10,1),isR=so[0]+so[1]===so[2],lt=so[0]+so[1]<so[2];
+  return {kind:'mc',prompt:'',question:`Über den drei Seiten eines Dreiecks liegen Quadrate mit den Flächeninhalten ${shuffle(ar).map(x=>q(x)+' m²').join('; ')}. Ist das Dreieck rechtwinklig?`,
+    options:['Ja, denn die Summe der beiden kleineren Flächeninhalte ist gleich dem größten.','Nein, denn die Summe der beiden kleineren Flächeninhalte ist kleiner als der größte.','Nein, denn die Summe der beiden kleineren Flächeninhalte ist größer als der größte.'],correct:isR?0:(lt?1:2),
+    badHint:'Das größte Quadrat gehört zur längsten Seite. Addiere die beiden kleineren Flächeninhalte.',hints:['Welches Quadrat ist am größten? Es liegt an der längsten Seite.','Prüfe: kleinere Fläche + kleinere Fläche = größte Fläche?'],
+    solution:`<div>${q(so[0])} + ${q(so[1])} = <b>${q(so[0]+so[1])}</b></div><div>Größter Flächeninhalt: <b>${q(so[2])}</b></div><div>${isR?'Gleich ⇒ rechtwinklig.':'Ungleich ⇒ nicht rechtwinklig.'}</div>`};
+}
+function trianglePlot(c){
+  const a=3,b=4,g=Math.acos((a*a+b*b-c*c)/(2*a*b)),A=[b*Math.cos(g),-b*Math.sin(g)],B=[a,0],C=[0,0];
+  const m=(P,Q,o)=>{const x=(P[0]+Q[0])/2,y=(P[1]+Q[1])/2;return [x+o[0],y+o[1]];};
+  const la=m(C,B,[0,.6]),lb=m(C,A,[-.5,0]),lc=m(B,A,[.5,-.2]);
+  let svg=`<polygon points="${C} ${B} ${A}" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/>`;
+  svg+=`<text x="${la[0]}" y="${la[1]}" font-size=".5" text-anchor="middle">a = 3</text><text x="${lb[0]}" y="${lb[1]}" font-size=".5" text-anchor="middle">b = 4</text><text x="${lc[0]}" y="${lc[1]}" font-size=".5" text-anchor="middle" fill="#ea580c" font-weight="700">c = ${fmt(c,1)}</text>`;
+  svg+=`<text x="-.5" y=".5" font-size=".5" font-weight="700" fill="#1e3a8a">C</text>`;
+  if(Math.abs(g-Math.PI/2)<.001){const k=.5,u=[Math.cos(g),-Math.sin(g)];svg+=`<path d="M${k},0 L${k+k*u[0]},${k*u[1]} L${k*u[0]},${k*u[1]}" fill="none" stroke="#111" stroke-width=".07"/>`;}
+  return {svg:`<svg class="fig" style="width:100%;max-width:440px" viewBox="-5 -5 10.5 6.2" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`,deg:g*180/Math.PI};
+}
+function umkehrExperiment(body,done){
+  let c=4.5,rows=[];
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb'});
+  const out=h('output',{},'4,5'),r=h('input',{type:'range',min:1.2,max:6.8,step:.1,value:4.5});
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  function draw(){const t=trianglePlot(c);fig.innerHTML=t.svg;info.innerHTML=`a² + b² = 25 &nbsp;|&nbsp; c² = ${fmt(c*c,2)} &nbsp;|&nbsp; γ ≈ ${fmt(t.deg,1)}°`;}
+  r.addEventListener('input',()=>{c=parseFloat(r.value);out.textContent=r.value.replace('.',',');draw();});
+  function table(){tbl.innerHTML='';if(!rows.length)return;const t=h('table',{class:'t'},h('tr',{},...['c','a² + b²','c²','Vergleich','γ'].map(x=>h('th',{},x))));
+    rows.forEach(x=>t.append(h('tr',{},...[fmt(x.c,1),'25',fmt(x.c*x.c,2),x.cmp,fmt(x.g,1)+'°'].map(v=>h('td',{},v)))));tbl.append(t);}
+  add.addEventListener('click',()=>{const t=trianglePlot(c),q=c*c,cmp=Math.abs(q-25)<.001?'c² = a² + b²':(q<25?'c² < a² + b²':'c² > a² + b²');rows.push({c,g:t.deg,cmp});if(rows.length>12)rows.shift();table();
+    const has=k=>rows.some(x=>x.cmp===k);go.disabled=!(has('c² = a² + b²')&&has('c² < a² + b²')&&has('c² > a² + b²'));
+    fb.className='fb';fb.textContent=go.disabled?'Trage Messungen mit c kleiner als 5, mit c größer als 5 und mit c = 5,0 ein.':'Gut! Vergleiche die Spalten „Vergleich“ und „γ“. Was fällt dir auf?';});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;r.disabled=true;done();});
+  body.append(h('p',{html:'<b>Auftrag:</b> Ein Dreieck hat die Seiten a = 3 und b = 4. Die dritte Seite c kannst du verändern. Der Winkel γ liegt zwischen a und b. Beobachte, wie sich γ verändert, und trage Messungen in die Tabelle ein.'}),h('div',{},h('label',{},'Seite c = ',out),r),fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+
+/* ====== Station 4: Figuren ====== */
+function isoSvg(l){
+  const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`;
+  const g=`<polygon points="0,4.4 6,4.4 3,0" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="3" y1="0" x2="3" y2="4.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><path d="M3.4,4.4 L3.4,4.0 L3,4.0" fill="none" stroke="#111" stroke-width=".06"/><line x1="1.4" y1="2.0" x2="1.7" y2="2.3" stroke="#111" stroke-width=".05"/><line x1="4.6" y1="2.0" x2="4.3" y2="2.3" stroke="#111" stroke-width=".05"/>`
+   +t(0,4.9,'A','middle','font-weight="700" fill="#1e3a8a"')+t(6,4.9,'B','middle','font-weight="700" fill="#1e3a8a"')+t(3,-.2,'C','middle','font-weight="700" fill="#1e3a8a"')+t(3.2,4.95,'M','start','font-weight="700" fill="#1e3a8a"')
+   +t(.7,1.8,l.leg,'end')+t(3.15,3.2,l.h,'start')+t(1.6,5.5,l.base,'start');
+  return `<svg class="fig" style="width:340px" viewBox="-2.8 -1 12 7.5" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+function rhoSvg(l){
+  const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`;
+  const g=`<polygon points="0,2.4 3,0 6,2.4 3,4.8" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="0" y1="2.4" x2="6" y2="2.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><line x1="3" y1="0" x2="3" y2="4.8" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><path d="M3.4,2.4 L3.4,2.0 L3,2.0" fill="none" stroke="#111" stroke-width=".06"/>`
+   +t(-.3,2.5,'A','end','font-weight="700" fill="#1e3a8a"')+t(3,-.25,'B','middle','font-weight="700" fill="#1e3a8a"')+t(6.3,2.5,'C','start','font-weight="700" fill="#1e3a8a"')+t(3,5.35,'D','middle','font-weight="700" fill="#1e3a8a"')+t(3.2,2.95,'M','start','font-weight="700" fill="#1e3a8a"')
+   +t(1.0,.9,l.a,'end')+t(4.8,2.2,l.e)+t(3.15,3.8,l.f,'start');
+  return `<svg class="fig" style="width:340px" viewBox="-3 -1 12.4 7.2" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+function s4leicht(){
+  const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([1,2]),[a,b,c]=t.map(x=>x*k);
+  if(Math.random()<.5)return {kind:'num',unit:'cm',tol:.001,answer:b,prompt:isoSvg({leg:c+' cm',base:2*a+' cm',h:'h = ?'}),
+    question:`Das gleichschenklige Dreieck hat die Schenkellänge ${c} cm und die Basis ${2*a} cm. Berechne die Höhe h auf die Basis.`,
+    badHint:'Die Höhe halbiert die Basis. Rechtwinkliges Teildreieck: Schenkel = Hypotenuse.',hints:['Zeichne die Höhe ein: Sie teilt das Dreieck in zwei rechtwinklige Dreiecke.',`Die halbe Basis beträgt ${a} cm.`],
+    solution:`<div>Die Höhe halbiert die Basis: ${a} cm</div><div>h² = ${c}² − ${a}² = ${c*c} − ${a*a} = ${b*b}</div><div>h = <b>${b} cm</b></div>`};
+  return {kind:'num',unit:'cm',tol:.001,answer:c,prompt:rhoSvg({e:`e = ${2*a} cm`,f:`f = ${2*b} cm`,a:'a = ?'}),
+    question:`Eine Raute hat die Diagonalen e = ${2*a} cm und f = ${2*b} cm. Berechne die Seitenlänge a.`,
+    badHint:'Die Diagonalen halbieren sich senkrecht. Betrachte das Dreieck ABM mit den halben Diagonalen als Katheten.',hints:['Die Diagonalen einer Raute stehen senkrecht aufeinander und halbieren sich.',`Die halben Diagonalen sind ${a} cm und ${b} cm.`],
+    solution:`<div>Halbe Diagonalen: ${a} cm und ${b} cm</div><div>a² = ${a}² + ${b}² = ${a*a} + ${b*b} = ${c*c}</div><div>a = <b>${c} cm</b></div>`};
+}
+function s4standard(){
+  if(Math.random()<.5){
+    const s=rint(70,150)/10,g=rint(30,Math.floor((2*s-1)*10))/10,hh=Math.sqrt(s*s-g*g/4),ar=Math.round(.5*g*hh*100)/100;
+    return {kind:'num',unit:'cm²',tol:.08,answer:ar,prompt:isoSvg({leg:fmt(s,1)+' cm',base:fmt(g,1)+' cm',h:'h = ?'}),
+      question:`Ein gleichschenkliges Dreieck hat die Schenkellänge ${fmt(s,1)} cm und die Basis ${fmt(g,1)} cm. Berechne den Flächeninhalt (zwei Nachkommastellen; rechne mit dem ungerundeten Zwischenergebnis weiter).`,
+      badHint:'Zuerst die Höhe mit dem Satz des Pythagoras, dann A = ½ · Basis · Höhe.',hints:['Die Höhe halbiert die Basis.',`h² = ${fmt(s,1)}² − ${fmt(g/2,2)}²`,'Flächeninhalt: A = ½ · g · h'],
+      solution:`<div>h² = ${fmt(s,1)}² − ${fmt(g/2,2)}² = ${fmt(s*s-g*g/4,2)} ⇒ h ≈ ${fmt(hh,2)} cm</div><div>A = ½ · ${fmt(g,1)} cm · ${fmt(hh,2)} cm ≈ <b>${fmt(ar,2)} cm²</b></div>`};
+  }
+  const e=rint(40,200),f=rint(40,200),a=Math.sqrt(e*e/4+f*f/4),u=Math.round(4*a*100)/100;
+  return {kind:'num',unit:'mm',tol:.03,answer:u,prompt:rhoSvg({e:`e = ${e} mm`,f:`f = ${f} mm`,a:'a = ?'}),
+    question:`Eine Raute hat die Diagonalen e = ${e} mm und f = ${f} mm. Berechne ihren Umfang (zwei Nachkommastellen; mit dem ungerundeten Zwischenergebnis weiterrechnen).`,
+    badHint:'Zuerst die Seitenlänge a aus den halben Diagonalen, dann u = 4 · a.',hints:['Die Diagonalen halbieren sich senkrecht.',`a² = ${fmt(e/2,1)}² + ${fmt(f/2,1)}²`],
+    solution:`<div>a² = ${fmt(e/2,1)}² + ${fmt(f/2,1)}² = ${fmt(e*e/4+f*f/4,2)} ⇒ a ≈ ${fmt(a,2)} mm</div><div>u = 4 · a ≈ <b>${fmt(u,2)} mm</b></div>`};
+}
+function s4plus(){
+  const w=rint(0,3);
+  if(w===0){const L=rint(250,400)/10,H=Math.round((L-rint(5,15)/10)*10)/10,x=Math.sqrt(L*L-H*H);
+    return {kind:'num',prompt:'',unit:'m',tol:.0051,answer:Math.round(x*100)/100,question:`Ein schiefer Turm ist an der Schräge ${fmt(L,1)} m lang. Seine Spitze liegt ${fmt(H,1)} m senkrecht über dem Boden. Wie groß ist der Überhang (waagrechter Abstand der Spitze vom Fußpunkt)?`,
+      badHint:'Skizze: schräge Turmkante = Hypotenuse, Höhe = eine Kathete, Überhang = die andere Kathete.',hints:['Zeichne ein rechtwinkliges Dreieck: senkrechte Höhe, waagrechter Überhang, schräge Turmkante.'],
+      solution:`<div>Überhang x: x² = ${fmt(L,1)}² − ${fmt(H,1)}² = ${fmt(L*L-H*H,2)}</div><div>x ≈ <b>${fmt(x,2)} m</b></div>`};}
+  if(w===1){const B=rint(12,24)/2,s=Math.round((B/2+rint(8,30)/10)*10)/10,hh=Math.sqrt(s*s-B*B/4);
+    return {kind:'num',prompt:'',unit:'m',tol:.0051,answer:Math.round(hh*100)/100,question:`Ein Haus ist ${fmt(B,1)} m breit. Das symmetrische Satteldach hat Sparren der Länge ${fmt(s,1)} m (vom First bis zur Traufe). Wie hoch ist der Giebel (Höhe des Firsts über der Traufe)?`,
+      badHint:'Der Sparren ist die Hypotenuse. Die halbe Hausbreite ist eine Kathete.',hints:['Zeichne den Giebel als gleichschenkliges Dreieck mit Höhe.',`Halbe Hausbreite: ${fmt(B/2,2)} m.`],
+      solution:`<div>h² = ${fmt(s,1)}² − ${fmt(B/2,2)}² = ${fmt(s*s-B*B/4,2)}</div><div>h ≈ <b>${fmt(hh,2)} m</b></div>`};}
+  if(w===2){const g1=rint(10,20),g2=rint(4,g1-3),hh=rint(3,8),d=(g1-g2)/2,s=Math.sqrt(hh*hh+d*d);
+    return {kind:'num',prompt:'',unit:'cm',tol:.0051,answer:Math.round(s*100)/100,question:`Ein gleichschenkliges Trapez hat die Grundseiten ${g1} cm und ${g2} cm und die Höhe ${hh} cm. Wie lang ist ein Schenkel?`,
+      badHint:'Zeichne die Höhe von einer oberen Ecke nach unten. Es entsteht ein rechtwinkliges Dreieck am Rand.',hints:['Die beiden Dreiecke am Rand sind gleich groß.',`Ihre waagrechte Kathete ist (${g1} − ${g2}) : 2 = ${fmt(d,1)} cm.`],
+      solution:`<div>Waagrechte Kathete: (${g1} − ${g2}) : 2 = ${fmt(d,1)} cm</div><div>s² = ${hh}² + ${fmt(d,1)}² = ${fmt(hh*hh+d*d,2)}</div><div>s ≈ <b>${fmt(s,2)} cm</b></div>`};}
+  const a=rint(6,15),e=2*rint(2,a-1),f=2*Math.sqrt(a*a-e*e/4);
+  return {kind:'num',prompt:'',unit:'cm',tol:.0051,answer:Math.round(f*100)/100,question:`Eine Raute hat die Seitenlänge ${a} cm und die Diagonale e = ${e} cm. Wie lang ist die andere Diagonale f?`,
+    badHint:'Die Diagonalen halbieren sich senkrecht: a ist die Hypotenuse, e/2 eine Kathete. Am Ende f = 2 · (halbe Diagonale).',hints:['Zeichne die Raute mit beiden Diagonalen.',`Halbe Diagonale e/2 = ${e/2} cm.`],
+    solution:`<div>(f/2)² = ${a}² − ${e/2}² = ${a*a-e*e/4}</div><div>f/2 ≈ ${fmt(f/2,2)} cm ⇒ f ≈ <b>${fmt(f,2)} cm</b></div>`};
+}
+
+/* ====== Stationen ====== */
+const STATIONS={
+1:{title:'Den Satz des Pythagoras entdecken',komp:'Seiten im rechtwinkligen Dreieck benennen; den Zusammenhang der Quadratflächen selbst entdecken und formulieren.',
+ steps:[
+ {title:'Einstieg: Katheten und Hypotenuse',render(body,done){
+   videoBlock(body,'s1','<b>Optional:</b> Schau dir ein Erklärvideo zum Satz des Pythagoras an. Die Begriffe Katheten und Hypotenuse kommen dort vor.');
+   body.append(h('div',{class:'info',html:'<b>Merke zum Einstieg:</b> Die Seite, die dem rechten Winkel <b>gegenüberliegt</b>, heißt <b>Hypotenuse</b>. Die beiden Seiten, die den rechten Winkel <b>bilden</b>, heißen <b>Katheten</b>. Das kleine Quadrat markiert den rechten Winkel.'}));
+   const rounds=[{ask:'hyp',txt:'Klicke die Hypotenuse an.'},{ask:'leg',txt:'Klicke eine Kathete an.'},{ask:'hyp',txt:'Klicke die Hypotenuse an.'}];
+   let ri=0;const area=h('div'),fb=h('div',{class:'fb'});body.append(area,fb);
+   function round(){
+     if(ri>=rounds.length){fb.className='fb ok';fb.textContent='✓ Alle drei richtig!';done();return;}
+     const r=rounds[ri],[l1,l2,l3]=shuffle(pick(SETS));
+     area.innerHTML=`<p class="qt">Aufgabe ${ri+1} von 3: ${r.txt}</p>`+triSvg({labels:[l1,l2,l3],rot:pick(ROTS),mirror:Math.random()<.5,L1:rnd(3,5),L2:rnd(2.5,4.5),clickable:true});
+     area.querySelectorAll('[data-side]').forEach(el=>el.addEventListener('click',()=>{
+       const s=+el.dataset.side,good=r.ask==='hyp'?s===2:s!==2;
+       if(good){fb.className='fb ok';fb.textContent='✓ Richtig!';ri++;setTimeout(()=>{fb.textContent='';round();},650);}
+       else{fb.className='fb bad';fb.textContent='Nicht ganz. Suche zuerst den rechten Winkel (kleines Quadrat). Die Hypotenuse liegt ihm gegenüber.';}
+     }));
+   }
+   round();
+ }},
+ {title:'Experiment: Quadrate über den Seiten',render:experiment},
+ {title:'Deine Vermutung',render(body,done){
+   body.append(h('p',{html:'Vervollständige den Satz mit deinen Beobachtungen aus der Tabelle:'}));
+   const mkSel=opts=>{const s=h('select',{class:'gap'},h('option',{value:''},'– wählen –'),...opts.map(o=>h('option',{value:o},o)));return s;};
+   const s1=mkSel(['spitzwinkligen','rechtwinkligen','beliebigen']),s2=mkSel(['Winkeln','Katheten','Höhen']),s3=mkSel(['Kathete','Höhe','Hypotenuse']);
+   const sent=h('p',{style:'line-height:2.3'},'In einem ',s1,' Dreieck ist die Summe der Flächeninhalte der Quadrate über den ',s2,' genauso groß wie der Flächeninhalt des Quadrats über der ',s3,'.');
+   const fb=h('div',{class:'fb'}),btn=h('button',{class:'btn',type:'button'},'Prüfen');
+   body.append(sent,btn,fb);
+   btn.addEventListener('click',()=>{
+     if(s1.value==='rechtwinkligen'&&s2.value==='Katheten'&&s3.value==='Hypotenuse'){
+       btn.disabled=true;[s1,s2,s3].forEach(s=>s.disabled=true);fb.className='fb ok';fb.textContent='✓ Genau das ist der Satz des Pythagoras!';
+       mc(body,{q:'Wie lautet der Satz als Gleichung, wenn a und b die Längen der Katheten und c die Länge der Hypotenuse sind?',options:['a² + b² = c²','a + b = c','a² + b² = c','a · b = c²'],correct:0,explain:'Der Satz heißt: a² + b² = c².',hint:'Es geht um die Flächeninhalte der Quadrate, also um a², b² und c².'},done);
+     }else{fb.className='fb bad';fb.textContent='Noch nicht ganz. Schau in deine Tabelle: Bei welchem Winkel waren die Spalten „a² + b²“ und „c²“ gleich? Welche Seiten gehören zu den Quadraten, die zusammen so groß sind wie das dritte?';}
+   });
+ }},
+ merkStep(1),
+ {title:'Üben',render(body,done){practice(body,{leicht:s1leicht,standard:s1standard,plus:s1plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,1,[
+   {q:'Im Dreieck ABC liegt der rechte Winkel bei A. Welche Seite ist die Hypotenuse?',options:['BC','AB','AC','Alle drei Seiten sind gleich wichtig'],explain:'Die Hypotenuse liegt gegenüber dem rechten Winkel (bei A) – das ist die Strecke BC.'},
+   {q:'Die Quadrate über den beiden Katheten haben die Flächeninhalte 9 cm² und 16 cm². Wie groß ist der Flächeninhalt des Quadrats über der Hypotenuse?',options:['25 cm²','7 cm²','12 cm²','144 cm²'],explain:'Die Flächeninhalte der Kathetenquadrate werden addiert: 9 + 16 = 25.'},
+   {q:'Wann gilt a² + b² = c² (c ist die längste Seite)?',options:['Nur in Dreiecken mit einem rechten Winkel','In jedem Dreieck','Nur in gleichschenkligen Dreiecken','Nur wenn alle Seitenlängen ganze Zahlen sind'],explain:'In deinem Experiment waren die Flächen nur bei γ = 90° gleich groß.'}
+ ],done);}}
+ ]},
+2:{title:'Seitenlängen berechnen',komp:'Mit dem Satz des Pythagoras fehlende Seitenlängen (Hypotenuse und Kathete) im rechtwinkligen Dreieck berechnen.',
+ steps:[
+ {title:'Einstieg',render(body,done){
+   videoBlock(body,'s2','<b>Optional:</b> Schau dir ein Erklärvideo an, in dem mit dem Satz des Pythagoras eine Hypotenuse und eine Kathete berechnet werden.');
+   nextBtn(body,'Weiter →',done);
+ }},
+ {title:'Die Hypotenuse berechnen',render(body,done){
+   body.append(h('div',{html:triSvg({labels:['a = 3 cm','b = 4 cm','c = ?'],rot:20,L1:3,L2:4})}));
+   guided(body,[
+    {type:'mc',q:'Das Dreieck hat die Katheten a = 3 cm und b = 4 cm. Welche Gleichung stellst du für die gesuchte Hypotenuse c auf?',options:['c² = a² + b²','c² = a² − b²','c = a + b'],correct:0,explain:'Die Hypotenuse steht allein auf einer Seite.',hint:'Die Quadrate der Katheten werden addiert.'},
+    {type:'num',q:'Setze ein: c² = 3² + 4² = ?',answer:25,tol:.001,hint:'3² = 9 und 4² = 16.'},
+    {type:'num',q:'Ziehe die Wurzel: c = √25 = ?',unit:'cm',answer:5,tol:.001,hint:'Welche Zahl mit sich selbst multipliziert ergibt 25?',html:''},
+    {type:'num',html:'<div class="info">Und wenn das Ergebnis keine „schöne“ Zahl ist? Dann hilft der Taschenrechner.</div>',q:'Transfer: a = 5 cm und b = 7 cm. Berechne c und runde auf zwei Nachkommastellen.',unit:'cm',answer:8.6,tol:.0051,hint:'c² = 5² + 7² = 74, dann c = √74 (Taschenrechner).'}
+   ],done);
+ }},
+ {title:'Eine Kathete berechnen – entdecke selbst',render(body,done){
+   body.append(h('div',{html:triSvg({labels:['a = 5 cm','b = ?','c = 13 cm'],rot:20,L1:3,L2:4})}));
+   guided(body,[
+    {type:'num',html:'<p>Hier ist die <b>Hypotenuse</b> c = 13 cm bekannt, außerdem die Kathete a = 5 cm. Der Satz gilt weiterhin: a² + b² = c².</p>',q:'Setze ein: 5² + b² = 13². Berechne zuerst b² (Tipp: 13² − 5²).',answer:144,tol:.001,hint:'13² = 169 und 5² = 25. Dann 169 − 25.'},
+    {type:'num',q:'Ziehe die Wurzel: b = √144 = ?',unit:'cm',answer:12,tol:.001,hint:'12 · 12 = ?'},
+    {type:'mc',q:'Welche Gleichung beschreibt allgemein, wie man eine fehlende Kathete b berechnet?',options:['b² = c² − a²','b² = c² + a²','b = c − a'],correct:0,explain:'Bei einer gesuchten Kathete wird subtrahiert: das Quadrat der Hypotenuse minus das Quadrat der bekannten Kathete.',hint:'Du hast eben 13² − 5² gerechnet.'},
+    {type:'num',q:'Transfer: c = 10 cm und a = 7 cm. Berechne b (zwei Nachkommastellen).',unit:'cm',answer:7.14,tol:.0051,hint:'b² = 10² − 7² = 51, dann b = √51.'}
+   ],done);
+ }},
+ {title:'Rechter Winkel bei α, β oder γ – und Einheiten',render(body,done){
+   body.append(h('div',{class:'info',html:'In Aufgaben liegt der rechte Winkel nicht immer bei C. Die Seite <b>a</b> liegt dem Eckpunkt <b>A</b> (Winkel α) gegenüber, <b>b</b> liegt B (β) gegenüber, <b>c</b> liegt C (γ) gegenüber. Außerdem sind Längen oft in <b>verschiedenen Einheiten</b> gegeben.'}));
+   body.append(h('div',{html:triSvg({vertex:['A','B','C'],rot:20,L1:3.2,L2:3.6})}));
+   guided(body,[
+    {type:'mc',q:'Im Dreieck ABC ist α = 90° (rechter Winkel bei A). Welche Seite ist die Hypotenuse?',options:['a','b','c'],correct:0,explain:'Die Hypotenuse liegt dem rechten Winkel gegenüber, und a liegt gegenüber von A.',hint:'Die Hypotenuse liegt dem rechten Winkel gegenüber.'},
+    {type:'num',html:'<p>Gegeben: a = 1,3 m und b = 50 cm. Gesucht: c.</p>',q:'Vereinheitliche die Einheiten: 50 cm = ? m',unit:'m',answer:0.5,tol:.001,hint:'1 m = 100 cm.'},
+    {type:'num',q:'Rechne: c² = a² − b² = 1,3² − 0,5² = ? (in m²)',answer:1.44,tol:.001,hint:'1,69 − 0,25.'},
+    {type:'num',q:'c = √1,44 = ?',unit:'m',answer:1.2,tol:.001,hint:'1,2 · 1,2 = 1,44.'}
+   ],done);
+ }},
+ merkStep(2),
+ {title:'Üben',render(body,done){practice(body,{leicht:s2leicht,standard:s2standard,plus:s2plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,2,[
+   {q:'Ein rechtwinkliges Dreieck hat die Katheten 9 cm und 12 cm. Wie lang ist die Hypotenuse?',options:['15 cm','21 cm','225 cm','108 cm'],explain:'c² = 9² + 12² = 81 + 144 = 225, also c = 15 cm.'},
+   {q:'Die Hypotenuse ist 17 cm lang, eine Kathete 8 cm. Wie lang ist die andere Kathete?',options:['15 cm','9 cm','25 cm','225 cm'],explain:'b² = 17² − 8² = 289 − 64 = 225, also b = 15 cm.'},
+   {q:'Jan rechnet bei c = 13 cm und a = 5 cm: b = √(13² + 5²). Was ist falsch?',options:['Bei einer Kathete muss subtrahiert werden: b = √(13² − 5²)','Nichts, die Rechnung stimmt','Man muss b = 13 − 5 rechnen','Man darf die Wurzel nicht ziehen'],explain:'Die Hypotenuse ist die längste Seite; bei gesuchter Kathete gilt b² = c² − a².'}
+ ],done);}}
+ ]},
+3:{title:'Umkehrung: Rechtwinkligkeit prüfen',komp:'Mit der Umkehrung des Satzes des Pythagoras rechnerisch nachweisen, ob ein Dreieck rechtwinklig ist (Seitenlängen und Quadratflächen).',
+ steps:[
+ {title:'Experiment: Wann ist γ ein rechter Winkel?',render:umkehrExperiment},
+ {title:'Deine Beobachtung',render(body,done){
+   videoBlock(body,'s3','<b>Optional:</b> Schau dir ein Erklärvideo zur Umkehrung des Satzes des Pythagoras an.');
+   guided(body,[
+    {type:'mc',q:'Für welche Seitenlänge c war der Winkel γ genau 90° (a = 3, b = 4)?',options:['c = 5','c = 7','c = 3,5','c = 6'],correct:0,explain:'Bei c = 5 gilt 3² + 4² = 25 = 5².',hint:'Schau in deine Tabelle: Wo stand γ = 90,0°?'},
+    {type:'mc',q:'Was gilt für den Winkel γ, wenn c² kleiner ist als a² + b²?',options:['γ ist kleiner als 90° (spitzer Winkel)','γ ist genau 90°','γ ist größer als 90° (stumpfer Winkel)'],correct:0,explain:'Ist die dritte Seite kurz, schließen a und b einen kleinen Winkel ein.',hint:'Schau in der Tabelle die Zeilen mit „c² < a² + b²“ an.'},
+    {type:'mc',q:'Was gilt, wenn c² größer ist als a² + b²?',options:['γ ist größer als 90° (stumpfer Winkel)','γ ist genau 90°','γ ist kleiner als 90°'],correct:0,explain:'Ist c lang, öffnet sich der Winkel γ über 90°.',hint:'Schau in der Tabelle die Zeilen mit „c² > a² + b²“ an.'},
+    {type:'mc',q:'Welche Aussage ist die Umkehrung des Satzes des Pythagoras?',options:['Gilt für die Seitenlängen eines Dreiecks a² + b² = c² (c längste Seite), dann ist es rechtwinklig; der rechte Winkel liegt gegenüber von c.','Jedes Dreieck mit a + b = c ist rechtwinklig.','Ein rechtwinkliges Dreieck hat immer ganzzahlige Seitenlängen.','Gilt a² + b² < c², dann ist das Dreieck rechtwinklig.'],correct:0,explain:'Genau: Aus der Gleichung der Quadrate folgt der rechte Winkel.',hint:'Es geht um die Gleichung a² + b² = c² und was sie über das Dreieck aussagt.'}
+   ],done);
+ }},
+ merkStep(3),
+ {title:'Üben',render(body,done){practice(body,{leicht:()=>s3len(false),standard:()=>s3len(true),plus:()=>(Math.random()<.5?s3area():s3len(true))},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,3,[
+   {q:'Ein Dreieck hat die Seitenlängen 5 cm, 12 cm und 13 cm. Ist es rechtwinklig?',options:['Ja, denn 5² + 12² = 13²','Nein, denn 5 + 12 ≠ 13','Nein, denn 5² + 13² ≠ 12²','Ja, denn 5 + 12 > 13'],explain:'25 + 144 = 169 = 13². Die längste Seite ist 13 cm.'},
+   {q:'Ein Dreieck hat die Seitenlängen 6 cm, 7 cm und 9 cm. Ist es rechtwinklig?',options:['Nein, denn 6² + 7² = 85 und 9² = 81','Ja, denn 6² + 7² = 9²','Ja, denn 6 + 7 > 9','Ja, denn alle Seiten sind verschieden lang'],explain:'Die längste Seite ist 9 cm: 36 + 49 = 85 ≠ 81.'},
+   {q:'Über den Seiten eines Dreiecks liegen Quadrate mit 8 m², 12 m² und 20 m². Ist das Dreieck rechtwinklig?',options:['Ja, denn 8 + 12 = 20','Nein, denn 8 + 12 ≠ 20','Ja, denn 8 · 12 ≠ 20','Nein, denn Flächen kann man nicht vergleichen'],explain:'Die beiden kleineren Flächeninhalte ergeben zusammen den größten.'}
+ ],done);}}
+ ]},
+4:{title:'Satz des Pythagoras in ebenen Figuren',komp:'Rechtwinklige Teildreiecke in ebenen Figuren erkennen (gleichschenkliges Dreieck, Raute, Trapez, Sachaufgaben) und damit Längen und Flächeninhalte berechnen.',
+ steps:[
+ {title:'Einstieg: Rechtwinklige Teildreiecke finden',render(body,done){
+   videoBlock(body,'s4','<b>Optional:</b> Schau dir ein Erklärvideo an, in dem der Satz des Pythagoras im gleichschenkligen Dreieck oder in der Raute angewendet wird.');
+   body.append(h('div',{class:'info',html:'<b>Strategie:</b> Viele Figuren enthalten keinen rechten Winkel auf den ersten Blick. Du erzeugst ihn selbst: Zeichne eine <b>Höhe</b> oder eine <b>Diagonale</b> ein und suche das rechtwinklige Teildreieck.'}));
+   nextBtn(body,'Weiter →',done);
+ }},
+ {title:'Das gleichschenklige Dreieck',render(body,done){
+   body.append(h('div',{html:isoSvg({leg:'10 cm',base:'12 cm',h:'h = ?'})}));
+   guided(body,[
+    {type:'mc',q:'Die Höhe h auf die Basis eines gleichschenkligen Dreiecks …',options:['teilt es in zwei rechtwinklige Dreiecke und halbiert die Basis.','teilt es in zwei Quadrate.','halbiert die Basis nicht.'],correct:0,explain:'Es entstehen die rechtwinkligen Dreiecke AMC und MBC.',hint:'Schau auf die Skizze: Bei M ist ein rechter Winkel.'},
+    {type:'num',q:'Wie lang ist die Strecke AM (halbe Basis)?',unit:'cm',answer:6,tol:.001,hint:'12 cm : 2'},
+    {type:'num',q:'Im Dreieck AMC ist der Schenkel die Hypotenuse. Berechne h² = 10² − 6².',answer:64,tol:.001,hint:'100 − 36'},
+    {type:'num',q:'h = √64 = ?',unit:'cm',answer:8,tol:.001,hint:'8 · 8 = 64'},
+    {type:'num',q:'Flächeninhalt des Dreiecks ABC: A = ½ · g · h = ?',unit:'cm²',answer:48,tol:.001,hint:'½ · 12 cm · 8 cm'}
+   ],done);
+ }},
+ {title:'Die Raute',render(body,done){
+   body.append(h('div',{html:rhoSvg({a:'a = ?',e:'e = 48 mm',f:'f = 64 mm'})}));
+   guided(body,[
+    {type:'mc',q:'Wie verlaufen die Diagonalen einer Raute?',options:['Sie halbieren sich gegenseitig und stehen senkrecht aufeinander.','Sie sind gleich lang und halbieren sich nicht.','Sie sind parallel zueinander.'],correct:0,explain:'Dadurch entstehen vier gleich große rechtwinklige Dreiecke.',hint:'Schau auf die Skizze: Bei M ist ein rechter Winkel.'},
+    {type:'num',q:'Im Dreieck ABM sind die Katheten 24 mm und 32 mm lang. Berechne a² = 24² + 32².',answer:1600,tol:.001,hint:'576 + 1024'},
+    {type:'num',q:'a = √1600 = ?',unit:'mm',answer:40,tol:.001,hint:'40 · 40 = 1600'},
+    {type:'num',q:'Umfang der Raute: u = 4 · a = ?',unit:'mm',answer:160,tol:.001,hint:'Alle vier Seiten sind gleich lang.'}
+   ],done);
+ }},
+ merkStep(4),
+ {title:'Üben',render(body,done){practice(body,{leicht:s4leicht,standard:s4standard,plus:s4plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,4,[
+   {q:'Eine Raute hat die Diagonalen 6 cm und 8 cm. Wie lang ist eine Seite?',options:['5 cm','7 cm','10 cm','14 cm'],explain:'a² = 3² + 4² = 25, also a = 5 cm (halbe Diagonalen sind die Katheten).'},
+   {q:'Ein gleichschenkliges Dreieck hat die Basis 10 cm und die Schenkel 13 cm. Wie hoch ist es?',options:['12 cm','3 cm','8 cm','√269 cm'],explain:'Halbe Basis 5 cm: h² = 13² − 5² = 144, also h = 12 cm.'},
+   {q:'Was ist der erste sinnvolle Schritt bei einer Aufgabe zu einem Trapez oder gleichschenkligen Dreieck ohne rechten Winkel?',options:['Höhe einzeichnen und das rechtwinklige Teildreieck suchen','Alle Seitenlängen addieren','Sofort a² + b² = c² mit den gegebenen Zahlen rechnen','Den Flächeninhalt schätzen'],explain:'Erst ein rechtwinkliges Teildreieck erzeugen, dann den Satz des Pythagoras anwenden.'}
+ ],done);}}
+ ]}
+};
+const PLANNED=['Funktionale Abhängigkeiten und Extremwerte','Pythagoras in Körpern','Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit','Streckenlänge in Abhängigkeit von x','Abschluss-Check'];
+
+/* ====== Ansichten ====== */
+function unlocked(n){return TEACHER||n===1||!!state[n-1];}
+function home(){
+  app.innerHTML='';
+  const doneN=Object.keys(state).filter(k=>STATIONS[k]).length;
+  app.append(h('div',{class:'card'},h('h2',{},'Rechtwinklige Dreiecke'),
+    h('p',{html:'Du erarbeitest dieses Kapitel selbstständig. Du entdeckst Regeln, schreibst Merkkästen (<span style="background:#fff7d6;padding:0 6px;border:1px solid #e0b400;border-radius:4px">✏️ Merkheft</span>) in dein Merkheft ab, übst auf deinem Niveau und schließt jede Station mit einem Exit-Ticket ab.'}),
+    h('p',{class:'muted'},'Du brauchst: Merkheft, Stift, Taschenrechner, Geodreieck.'),
+    h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft (Prototyp: Stationen 1–4)`)));
+  const list=h('div',{class:'stations'});
+  Object.keys(STATIONS).forEach(k=>{const n=+k,st=STATIONS[n];const b=h('button',{class:'stn'+(state[n]?' ok':''),type:'button'},h('div',{class:'nr'},state[n]?'✓':String(n)),h('div',{},h('div',{class:'t'},st.title),h('div',{class:'s'},st.komp)));if(!unlocked(n))b.disabled=true;b.addEventListener('click',()=>station(n));list.append(b);});
+  PLANNED.forEach((t,i)=>list.append(h('button',{class:'stn',type:'button',disabled:'disabled'},h('div',{class:'nr',style:'background:#9ca3af'},String(i+5)),h('div',{},h('div',{class:'t'},t),h('div',{class:'s'},'in Vorbereitung')))));
+  app.append(list);
+  if(TEACHER)app.append(h('p',{class:'muted'},'Lehrkraft-Ansicht: alle Stationen freigeschaltet.'));
+  window.scrollTo(0,0);
+}
+function station(n){
+  const st=STATIONS[n];app.innerHTML='';
+  app.append(h('div',{class:'card'},h('h2',{},`Station ${n}: ${st.title}`),h('p',{class:'muted',html:'<b>Ziel:</b> '+st.komp})));
+  const list=h('div');app.append(list);let i=0;
+  function next(){
+    if(i>=st.steps.length){list.append(h('div',{class:'card'},h('button',{class:'btn',type:'button',onclick:home},'Zur Übersicht')));return;}
+    const step=st.steps[i++];const body=h('div');const card=h('section',{class:'step'},h('h3',{},`${i}. ${step.title}`),body);list.append(card);
+    const fin=once(()=>{card.classList.add('done');setTimeout(next,200);});
+    step.render(body,fin);
+    if(i>1)card.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  next();window.scrollTo(0,0);
+}
+function merkheft(){
+  app.innerHTML='';
+  app.append(h('div',{class:'card'},h('h2',{},'📒 Merkheft-Einträge'),h('p',{class:'muted'},'Hier findest du alle Merkkästen der geschafften Stationen zum Nachlesen oder Ausdrucken.')));
+  const ns=Object.keys(MERK).filter(k=>state[k]||TEACHER);
+  if(!ns.length)app.append(h('div',{class:'card'},'Noch keine Einträge – schließe zuerst eine Station ab.'));
+  ns.forEach(k=>app.append(h('div',{class:'merk'},h('span',{class:'tag'},`Station ${k}`),h('div',{html:MERK[k].html}))));
+  if(ns.length)app.append(h('button',{class:'btn',type:'button',onclick:()=>{
+    const pa=document.getElementById('printArea');pa.innerHTML='<h2>Merkheft-Einträge · Rechtwinklige Dreiecke</h2>'+ns.map(k=>`<div class="merk"><div class="tag">Station ${k}: ${MERK[k].title}</div>${MERK[k].html}</div>`).join('');
+    document.body.classList.add('printing');const end=()=>document.body.classList.remove('printing');window.addEventListener('afterprint',end,{once:true});window.print();setTimeout(end,4000);
+  }},'🖨 Drucken / Als PDF sichern'));
+  window.scrollTo(0,0);
+}
+document.getElementById('bHome').addEventListener('click',home);
+document.getElementById('bMerk').addEventListener('click',merkheft);
+home();
+</script>
+</body>
+</html>
