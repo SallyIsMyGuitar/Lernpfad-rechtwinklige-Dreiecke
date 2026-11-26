@@ -2,6 +2,8 @@
 
 Interaktiver Lernpfad für die **9. Jahrgangsstufe, Wahlpflichtfächergruppe I (Mathematik, Realschule Bayern)**, Kapitel 5 „Rechtwinklige Dreiecke“ (LehrplanPLUS M9, Lernbereich 3). Die Schülerinnen und Schüler erarbeiten das Kapitel selbstständig, entdecken Regeln selbst und üben auf ihrem Niveau.
 
+> **Status: Beta-Phase – in Prüfung.** Alle Stationen werden derzeit von der Lehrkraft fachlich und didaktisch geprüft (u. a. Abgleich mit dem LehrplanPLUS) und sind noch **nicht für den Unterricht freigegeben**. Die Erklärvideos fehlen noch vollständig (siehe „Noch offen“).
+
 Die Seite besteht aus **einer einzigen Datei** (`index.html`) ohne Abhängigkeiten, Build-Schritte oder Server. Sie läuft im Browser, auch auf dem iPad.
 
 ## Aufbau jeder Station
@@ -18,19 +20,25 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 
 | Nr. | Station | Stand |
 |---|---|---|
-| 1 | Den Satz des Pythagoras entdecken | fertig |
-| 2 | Seitenlängen berechnen (Hypotenuse, Kathete, Einheiten, Lage des rechten Winkels) | fertig |
-| 3 | Umkehrung: Rechtwinkligkeit prüfen | fertig |
-| 4 | Satz des Pythagoras in ebenen Figuren | fertig |
-| 5 | Funktionale Abhängigkeiten und Extremwerte (Strecken und Flächen mit wandernden Punkten, Auffrischung quadratische Ergänzung) | fertig |
-| 6 | Pythagoras in Körpern (Quader, Würfel, gerade quadratische Pyramide) | fertig |
-| 7 | Koordinatensystem: Strecken als Betrag eines Vektors, Rechtwinkligkeit von Dreiecken prüfen | fertig |
-| 8 | Streckenlänge in Abhängigkeit von x (Punkte P<sub>n</sub> auf einer Geraden, fester Punkt Q, kürzeste Strecke per quadratischer Ergänzung) | fertig |
-| 9 | Abschluss-Check | fertig |
+| 1 | Den Satz des Pythagoras entdecken | Beta – in Prüfung |
+| 2 | Seitenlängen berechnen (Hypotenuse, Kathete, Einheiten, Lage des rechten Winkels) | Beta – in Prüfung |
+| 3 | Umkehrung: Rechtwinkligkeit prüfen | Beta – in Prüfung |
+| 4 | Satz des Pythagoras in ebenen Figuren | Beta – in Prüfung |
+| 5 | Funktionale Abhängigkeiten und Extremwerte (Strecken und Flächen mit wandernden Punkten, Auffrischung quadratische Ergänzung) | Beta – in Prüfung |
+| 6 | Pythagoras in Körpern (Quader, Würfel, gerade quadratische Pyramide) | Beta – in Prüfung |
+| 7 | Koordinatensystem: Strecken als Betrag eines Vektors, Rechtwinkligkeit von Dreiecken prüfen | Beta – in Prüfung |
+| 8 | Streckenlänge in Abhängigkeit von x (Punkte P<sub>n</sub> auf einer Geraden, fester Punkt Q, kürzeste Strecke per quadratischer Ergänzung) | Beta – in Prüfung |
+| 9 | Abschluss-Check | Beta – in Prüfung |
 
 **Abschluss-Check (Station 9):** 12 zufällig erzeugte Aufgaben aus den Stationen 1–8 mit insgesamt 18 Punkten (je 1 oder 2 Punkte), ein Versuch pro Aufgabe, die Rückmeldung kommt erst in der Auswertung. Bestanden ab 9 Punkten (50 %). Die Auswertung zeigt die Punkte je Station mit Wiederholungsempfehlung und alle Aufgaben mit Lösungsweg. Ab 9 Punkten erscheint die Check-in-Karte mit Kontrollcode, sonst kann der Check mit neuen Aufgaben wiederholt werden. Keine Note.
 
-Noch offen: Sinus, Kosinus und Tangens (Lehrplan).
+**Legende Stand:** *Beta – in Prüfung* = inhaltlich umgesetzt, aber noch nicht von der Lehrkraft geprüft und freigegeben. Nach der Prüfung wird der Stand auf *freigegeben* gesetzt.
+
+### Noch offen
+
+- [ ] **Prüfung und Freigabe** aller Stationen 1–9 (fachliche Richtigkeit, Lehrplanbezug LehrplanPLUS M9, Niveau der Aufgaben)
+- [ ] **Erklärvideos:** Für die Stationen 1–8 sind noch keine passenden Erklärvideos eingetragen (in `VIDEOS` steht überall `videoId:null`). Aktuell erscheint nur ein Button mit einer YouTube-Suche. Passende Videos müssen ausgewählt, geprüft und eingetragen werden (siehe „Erklärvideos einbinden“).
+- [ ] Sinus, Kosinus und Tangens (Lehrplan)
 
 ## Nutzung
 
