@@ -66,6 +66,10 @@ svg .hit:hover{stroke:rgba(37,99,235,.35)}
 .rad{border-top:1.5px solid currentColor;padding:0 1px;margin-left:1px}
 .nw{white-space:nowrap}
 .fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.15;margin:0 2px}.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
+.vec{display:inline-block;position:relative;line-height:1.1;padding-top:.34em}.vec::before{content:"";position:absolute;left:1px;right:3px;top:.14em;border-top:1.3px solid currentColor}.vec::after{content:"";position:absolute;right:0;top:-.03em;border-left:.4em solid currentColor;border-top:.17em solid transparent;border-bottom:.17em solid transparent}
+.cv{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap}.cvp{font-size:2.1em;font-weight:200;line-height:1;transform:scaleX(.65)}.cvi{display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;font-size:.9em;padding:0 1px}
+button.opt.sel{border-color:var(--blue);background:#eef4ff;opacity:1}
+details summary{cursor:pointer}
 #printArea{display:none}
 @media print{
  body.printing header.top,body.printing main{display:none}
@@ -96,7 +100,9 @@ const VIDEOS={
   s3:{videoId:null,query:'Umkehrung Satz des Pythagoras rechtwinklig nachweisen'},
   s4:{videoId:null,query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'},
   s5:{videoId:null,query:'Extremwert quadratische Ergänzung Streckenlänge Satz des Pythagoras'},
-  s6:{videoId:null,query:'Raumdiagonale Quader Pyramide Satz des Pythagoras'}
+  s6:{videoId:null,query:'Raumdiagonale Quader Pyramide Satz des Pythagoras'},
+  s7:{videoId:null,query:'Länge einer Strecke Koordinatensystem Betrag Vektor Pythagoras'},
+  s8:{videoId:null,query:'Streckenlänge in Abhängigkeit von x Gerade minimale Länge quadratische Ergänzung'}
 };
 const KEY='lernpfad-rechtwinklige-dreiecke-v1';
 const TEACHER=new URLSearchParams(location.search).has('lehrer');
@@ -119,6 +125,17 @@ const len=s=>`|${ov(s)}|`;
 const sq=s=>`√<span class="rad">${s}</span>`;
 const fr=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
 const HALF=fr(1,2);
+/* ====== Notation: Vektoren, Punkte, Terme ====== */
+const vec=s=>`<span class="vec">${s}</span>`;
+const cvec=(a,b)=>`<span class="cv"><span class="cvp">(</span><span class="cvi"><span>${a}</span><span>${b}</span></span><span class="cvp">)</span></span>`;
+const nf=(v,d=2)=>fmt(v,d).replace('-','−');
+const ptS=(n,x,y)=>`${n}(${nf(x)} | ${nf(y)})`;
+const sqp=v=>v<0?`(${nf(v)})²`:`${nf(v)}²`;
+// Term aus [Koeffizient, Variable]-Paaren, z. B. poly([1.25,'x²'],[-10,'x'],[40,'']) -> „1,25x² − 10x + 40“
+function poly(...cs){let s='';for(const [k,v] of cs){if(Math.abs(k)<1e-9)continue;const ab=Math.abs(k),b=(Math.abs(ab-1)<1e-9&&v?'':nf(ab))+v;if(!s)s=(k<0?'−':'')+b;else s+=(k<0?' − ':' + ')+b;}return s||'0';}
+const lin=(m,c)=>poly([m,'x'],[c,'']);
+const uniqOpts=(arr,extra=[])=>{const out=[];for(const o of [...arr,...extra]){if(!out.includes(o))out.push(o);if(out.length>=4)break;}return out;};
+
 
 let state={};
 try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
@@ -205,7 +222,34 @@ e² = 4² + 3² = 25 ⇒ e = 5 cm<br>
 d² = 5² + 12² = 169 ⇒ d = 13 cm</div>
 <div class="ex"><b>Beispiel 2:</b> Pyramide mit a = 6 cm; h = 4 cm<br>
 h<sub>s</sub>² = 4² + 3² = 25 ⇒ h<sub>s</sub> = 5 cm<br>
-s² = 5² + 3² = 34 ⇒ s ≈ 5,83 cm</div>`}
+s² = 5² + 3² = 34 ⇒ s ≈ 5,83 cm</div>`},
+7:{title:'Strecken im Koordinatensystem',html:`
+<div class="mh">Strecken im Koordinatensystem</div>
+<p><b>Vektor</b> von P(x<sub>P</sub> | y<sub>P</sub>) nach Q(x<sub>Q</sub> | y<sub>Q</sub>) („Spitze minus Fuß“):</p>
+<div class="formel">${vec('PQ')} = ${cvec('x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>')}</div>
+<p>Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks. Die Länge des Vektors heißt <b>Betrag</b>. Die Strecke ${ov('PQ')} ist so lang wie der Vektor:</p>
+<div class="formel">${len('PQ')} = |${vec('PQ')}| = ${sq('(x<sub>Q</sub> − x<sub>P</sub>)² + (y<sub>Q</sub> − y<sub>P</sub>)²')}</div>
+<p><b>Rechtwinkligkeit prüfen:</b> Die Quadrate aller drei Seitenlängen berechnen. Gilt für die beiden kleineren und das größte Quadrat a² + b² = c², ist das Dreieck rechtwinklig (Umkehrung des Satzes des Pythagoras). Der rechte Winkel liegt der längsten Seite gegenüber.</p>
+<div class="ex"><b>Beispiel 1:</b> P(1 | 2); Q(5 | 5)<br>
+${vec('PQ')} = ${cvec('5 − 1','5 − 2')} = ${cvec(4,3)}<br>
+${len('PQ')} = ${sq('4² + 3²')} = √25 = 5 cm</div>
+<div class="ex"><b>Beispiel 2:</b> A(−2 | 3); B(2 | 1); C(5 | 7)<br>
+${len('AB')}² = 4² + (−2)² = 20; ${len('BC')}² = 3² + 6² = 45; ${len('AC')}² = 7² + 4² = 65<br>
+20 + 45 = 65 ⇒ Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei B.</div>`},
+8:{title:'Streckenlänge in Abhängigkeit von x',html:`
+<div class="mh">Streckenlänge in Abhängigkeit von x</div>
+<p>Liegen Punkte P<sub>n</sub> auf einer Geraden g, z. B. y = 0,5x + 1, so gilt P<sub>n</sub>(x | 0,5x + 1). Die Länge der Strecken zu einem festen Punkt Q hängt von x ab.</p>
+<p><b>Vorgehen:</b><br>
+1. Vektor aufstellen: ${vec('QP<sub>n</sub>')}(x) = Spitze minus Fuß.<br>
+2. Satz des Pythagoras: ${len('QP<sub>n</sub>')}² = (x-Koordinate)² + (y-Koordinate)², mit den binomischen Formeln vereinfachen.<br>
+3. Quadratische Ergänzung: Term in die Form a(x − d)² + e bringen.<br>
+4. Für x = d ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √e. Koordinaten von P<sub>0</sub> mit der Geradengleichung berechnen.<br>
+Die kürzeste Strecke steht <b>senkrecht</b> auf der Geraden g.</p>
+<div class="ex"><b>Beispiel:</b> g: y = 0,5x + 1; Q(6 | −1)<br>
+${vec('QP<sub>n</sub>')}(x) = ${cvec('x − 6','0,5x + 1 − (−1)')} = ${cvec('x − 6','0,5x + 2')}<br>
+${len('QP<sub>n</sub>')}² = (x − 6)² + (0,5x + 2)² = x² − 12x + 36 + 0,25x² + 2x + 4 = 1,25x² − 10x + 40<br>
+= 1,25(x² − 8x + 4² − 4²) + 40 = 1,25(x − 4)² + 20<br>
+Für x = 4 ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √20 cm ≈ 4,47 cm mit P<sub>0</sub>(4 | 3)</div>`}
 };
 
 /* ====== Zeichnen: Winkelbogen (Zeichenkatalog: rechter Winkel = Bogen mit Punkt) ====== */
@@ -329,7 +373,7 @@ function practice(body,n,gens,need,done){
   const upd=()=>{cnt.textContent=`✓ ${solved} von ${need} gezählten Aufgaben gelöst`;};
   function newTask(){
     const t=gens[niv]();let tries=0,hintN=0,ok=false,solShown=false;const tNiv=niv;
-    if(t.prompt&&t.prompt.includes('<svg'))t.prompt+='<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>';
+    if(t.prompt&&t.prompt.includes('<svg')&&!t.exact)t.prompt+='<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>';
     area.innerHTML='';
     const q=h('div'),hints=h('div'),sol=h('div'),act=h('div');
     area.append(q,act,hints,sol);
@@ -937,6 +981,340 @@ function s6plus(){
     solution:`<div>3a² = d² = ${d}² = ${d*d}</div><div>a² = ${d*d} : 3 ≈ ${fmt(d*d/3)}</div><div>a ≈ <b>${fmt(a)} cm</b></div>`};
 }
 
+/* ====== Zeichnen: Koordinatensystem ====== */
+function arrowHead(a,b,col,s=.3){const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;
+  return `<polygon points="${b[0]},${b[1]} ${b[0]-s*ux-s*.45*uy},${b[1]-s*uy+s*.45*ux} ${b[0]-s*ux+s*.45*uy},${b[1]-s*uy-s*.45*ux}" fill="${col}"/>`;}
+// o: x0,x1,y0,y1 (Fenster), lines [{m,t,label}], segs [{a,b,col,w,dash,arrow,label,lo}], rights [{V,p1,p2}], pts [{n,p,col,d}]
+function coordSvg(o){
+  const {x0,x1,y0,y1}=o,S=p=>[p[0],-p[1]],st=o.step||1;let g='';
+  for(let x=Math.ceil(x0);x<=x1;x++)g+=`<line x1="${x}" y1="${-y1}" x2="${x}" y2="${-y0}" stroke="#e5e7eb" stroke-width=".03"/>`;
+  for(let y=Math.ceil(y0);y<=y1;y++)g+=`<line x1="${x0}" y1="${-y}" x2="${x1}" y2="${-y}" stroke="#e5e7eb" stroke-width=".03"/>`;
+  g+=`<line x1="${x0}" y1="0" x2="${x1+.4}" y2="0" stroke="#111" stroke-width=".045"/>`+arrowHead([x0,0],[x1+.5,0],'#111',.28)+`<text x="${x1+.4}" y="-.25" font-size=".42" font-style="italic" text-anchor="end">x</text>`;
+  g+=`<line x1="0" y1="${-y0}" x2="0" y2="${-y1-.4}" stroke="#111" stroke-width=".045"/>`+arrowHead([0,-y0],[0,-y1-.5],'#111',.28)+`<text x=".22" y="${-y1-.25}" font-size=".42" font-style="italic">y</text>`;
+  for(let x=Math.ceil(x0);x<=x1;x++){if(x===0||x%st)continue;g+=`<line x1="${x}" y1="-.09" x2="${x}" y2=".09" stroke="#111" stroke-width=".04"/><text x="${x}" y=".43" font-size=".3" text-anchor="middle" fill="#374151">${nf(x)}</text>`;}
+  for(let y=Math.ceil(y0);y<=y1;y++){if(y===0||y%st)continue;g+=`<line x1="-.09" y1="${-y}" x2=".09" y2="${-y}" stroke="#111" stroke-width=".04"/><text x="-.16" y="${-y+.11}" font-size=".3" text-anchor="end" fill="#374151">${nf(y)}</text>`;}
+  g+=`<text x="-.16" y=".43" font-size=".3" text-anchor="end" fill="#374151">0</text>`;
+  (o.lines||[]).forEach(l=>{const c=[];[x0,x1].forEach(x=>c.push([x,l.m*x+l.t]));if(l.m!==0)[y0,y1].forEach(y=>c.push([(y-l.t)/l.m,y]));
+    const ok=c.filter(p=>p[0]>=x0-1e-9&&p[0]<=x1+1e-9&&p[1]>=y0-1e-9&&p[1]<=y1+1e-9).sort((p,q)=>p[0]-q[0]);if(ok.length<2)return;
+    const A=S(ok[0]),B=S(ok[ok.length-1]);g+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${l.col||'#7c3aed'}" stroke-width=".06"/>`;
+    if(l.label){const L=[B[0]-.5,B[1]+(l.m>0?.55:-.3)];g+=`<text x="${L[0]}" y="${L[1]}" font-size=".46" font-weight="700" fill="${l.col||'#7c3aed'}" text-anchor="end">${l.label}</text>`;}});
+  (o.segs||[]).forEach(s=>{const A=S(s.a),B=S(s.b),col=s.col||'#ea580c';
+    g+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${col}" stroke-width="${s.w||.06}"${s.dash?' stroke-dasharray=".2 .14"':''}/>`;
+    if(s.arrow)g+=arrowHead(A,B,col,.32);
+    if(s.label){const lo=s.lo||[0,0];g+=`<text x="${(A[0]+B[0])/2+lo[0]}" y="${(A[1]+B[1])/2+lo[1]}" font-size=".36" font-weight="700" fill="${col}" text-anchor="middle" dominant-baseline="middle">${s.label}</text>`;}});
+  (o.rights||[]).forEach(r=>{const V=S(r.V),u=p=>{const q=S(p),dx=q[0]-V[0],dy=q[1]-V[1],l=Math.hypot(dx,dy)||1;return [dx/l,dy/l];};g+=angMark(V,u(r.p1),u(r.p2),.42,true,.045);});
+  (o.pts||[]).forEach(p=>{const P=S(p.p),d=p.d||[.18,-.2];g+=`<circle cx="${P[0]}" cy="${P[1]}" r=".1" fill="${p.col||'#1e3a8a'}"/><text x="${P[0]+d[0]}" y="${P[1]+d[1]}" font-size=".44" font-weight="700" fill="${p.col||'#1e3a8a'}"${d[0]<0?' text-anchor="end"':''}>${p.n}</text>`;});
+  return `<svg class="fig" style="width:${o.w||380}px" viewBox="${x0-.7} ${-y1-.8} ${x1-x0+1.5} ${y1-y0+1.5}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+
+/* ====== Station 7: Koordinatensystem ====== */
+const KS7={x0:-5,x1:8,y0:-4,y1:8};
+const d2=(P,Q)=>(Q[0]-P[0])**2+(Q[1]-P[1])**2;
+const inKS=(...ps)=>ps.every(p=>p[0]>=KS7.x0+.5&&p[0]<=KS7.x1-.5&&p[1]>=KS7.y0+.5&&p[1]<=KS7.y1-.5);
+const vecOf=(P,Q)=>[Q[0]-P[0],Q[1]-P[1]];
+// Vektor-Rechnung „Spitze minus Fuß“ als HTML
+function vecCalc2(nP,P,nQ,Q){const v=vecOf(P,Q),neg=z=>z<0?`(${nf(z)})`:nf(z);return `${vec(nP+nQ)} = ${cvec(`${nf(Q[0])} − ${neg(P[0])}`,`${nf(Q[1])} − ${neg(P[1])}`)} = ${cvec(nf(v[0]),nf(v[1]))}`;}
+function lenSol(nP,P,nQ,Q,u='cm'){const v=vecOf(P,Q),s=d2(P,Q),r=Math.sqrt(s);
+  return `<div>${vecCalc2(nP,P,nQ,Q)}</div><div>${len(nP+nQ)} = |${vec(nP+nQ)}| = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} = ${sq(String(s))} ${Number.isInteger(r)?'=':'≈'} <b>${fmt(r)} ${u}</b></div>`;}
+function s7fig(pts,o={}){return coordSvg({...KS7,w:340,pts:pts.map(([n,p])=>({n,p})),...o});}
+function triFig(T){const c=[(T.A[0]+T.B[0]+T.C[0])/3,(T.A[1]+T.B[1]+T.C[1])/3],off=p=>{const dx=p[0]-c[0],dy=p[1]-c[1],l=Math.hypot(dx,dy)||1;return [dx/l*.5-.15,-dy/l*.5+.15];};
+  return coordSvg({...KS7,w:340,segs:[{a:T.A,b:T.B,col:'#1f2937',w:.05},{a:T.B,b:T.C,col:'#1f2937',w:.05},{a:T.A,b:T.C,col:'#1f2937',w:.05}],pts:['A','B','C'].map(n=>({n,p:T[n],d:off(T[n])}))});}
+function rightAt(A,B,C){const dot=(P,Q,R)=>(Q[0]-P[0])*(R[0]-P[0])+(Q[1]-P[1])*(R[1]-P[1]);if(dot(A,B,C)===0)return 'A';if(dot(B,A,C)===0)return 'B';if(dot(C,A,B)===0)return 'C';return null;}
+function triGen(right){
+  for(let k=0;k<400;k++){
+    const V=[rint(-3,5),rint(-2,5)];let p=rint(-4,4),q=rint(-4,4);if(p===0&&q===0)continue;if(p===0||q===0)if(Math.random()<.8)continue;
+    const f=pick([1,1,2]),s=pick([1,-1]);const X=[V[0]+p,V[1]+q];let Y=[V[0]-q*f*s,V[1]+p*f*s];
+    if(!right)Y=[Y[0]+pick([1,-1,0,0]),Y[1]+pick([1,-1])];
+    const pts=shuffle([V,X,Y]),T={A:pts[0],B:pts[1],C:pts[2]};
+    if(!inKS(T.A,T.B,T.C))continue;const area2=Math.abs((T.B[0]-T.A[0])*(T.C[1]-T.A[1])-(T.C[0]-T.A[0])*(T.B[1]-T.A[1]));if(area2<4)continue;
+    const r=rightAt(T.A,T.B,T.C);if(right!==(r!==null))continue;
+    if(d2(T.A,T.B)>130||d2(T.B,T.C)>130||d2(T.A,T.C)>130)continue;
+    T.right=r;return T;}
+  return right?{A:[-2,3],B:[2,1],C:[5,7],right:'B'}:{A:[0,0],B:[5,1],C:[2,5],right:null};
+}
+function triSol(T){
+  const sides=[['AB',T.A,T.B,'C'],['BC',T.B,T.C,'A'],['AC',T.A,T.C,'B']];
+  let s=sides.map(([n,P,Q])=>{const v=vecOf(P,Q);return `<div>${vec(n)} = ${cvec(nf(v[0]),nf(v[1]))} ⇒ ${len(n)}² = ${sqp(v[0])} + ${sqp(v[1])} = ${d2(P,Q)}</div>`;}).join('');
+  const so=sides.map(([n,P,Q,opp])=>({n,v:d2(P,Q),opp})).sort((a,b)=>a.v-b.v),eq=so[0].v+so[1].v===so[2].v;
+  s+=`<div>Längste Seite: ${ov(so[2].n)}. ${so[0].v} + ${so[1].v} = ${so[0].v+so[1].v} ${eq?'=':'≠'} ${so[2].v}</div>`;
+  s+=`<div><b>${eq?`Das Dreieck ist rechtwinklig. Der rechte Winkel liegt bei ${so[2].opp} (gegenüber der längsten Seite).`:'Das Dreieck ist nicht rechtwinklig.'}</b></div>`;
+  return s;
+}
+const TRI_OPTS=['Rechtwinklig, rechter Winkel bei A','Rechtwinklig, rechter Winkel bei B','Rechtwinklig, rechter Winkel bei C','Nicht rechtwinklig'];
+// Einzelne Aufgabentypen (werden im Üben und im Abschluss-Check genutzt)
+function t7vec(){
+  let P,Q,v;do{P=[rint(-3,5),rint(-2,5)];v=[rint(-5,5),rint(-4,4)];Q=[P[0]+v[0],P[1]+v[1]];}while(!inKS(P,Q)||v[0]===0||v[1]===0||Math.abs(v[0])===Math.abs(v[1]));
+  return {kind:'mc',exact:true,prompt:s7fig([['P',P],['Q',Q]],{segs:[{a:P,b:Q,col:'#2563eb',arrow:true}]}),question:`Gegeben sind die Punkte ${ptS('P',P[0],P[1])} und ${ptS('Q',Q[0],Q[1])}. Welche Koordinaten hat der Vektor ${vec('PQ')}?`,
+    options:uniqOpts([cvec(nf(v[0]),nf(v[1])),cvec(nf(-v[0]),nf(-v[1])),cvec(nf(v[1]),nf(v[0])),cvec(nf(P[0]+Q[0]),nf(P[1]+Q[1]))],[cvec(nf(Q[0]),nf(Q[1]))]),correct:0,
+    badHint:'„Spitze minus Fuß“: Der Vektor zeigt von P nach Q. Rechne x<sub>Q</sub> − x<sub>P</sub> und y<sub>Q</sub> − y<sub>P</sub>.',
+    hints:['Fuß des Pfeils: P, Spitze: Q.','Zähle im Gitter: Wie viele Kästchen nach rechts (+) oder links (−), wie viele nach oben (+) oder unten (−)?'],
+    solution:`<div>${vecCalc2('P',P,'Q',Q)}</div>`};
+}
+function t7lenInt(){
+  const tr=pick([[3,4],[4,3],[6,8],[8,6]]);let P,Q,v;
+  do{v=[tr[0]*pick([1,-1]),tr[1]*pick([1,-1])];P=[rint(-4,7),rint(-3,7)];Q=[P[0]+v[0],P[1]+v[1]];}while(!inKS(P,Q));
+  return {kind:'num',exact:true,unit:'cm',tol:.001,answer:Math.sqrt(d2(P,Q)),prompt:s7fig([['A',P],['B',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
+    question:`Berechne die Länge der Strecke ${ov('AB')} mit ${ptS('A',P[0],P[1])} und ${ptS('B',Q[0],Q[1])} (Längeneinheit 1 cm).`,
+    badHint:`Stelle zuerst ${vec('AB')} auf („Spitze minus Fuß“). Dann ${len('AB')} = Wurzel aus (x-Koordinate² + y-Koordinate²).`,
+    hints:[`${vec('AB')} = ${cvec('x<sub>B</sub> − x<sub>A</sub>','y<sub>B</sub> − y<sub>A</sub>')}`,'Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks.'],
+    solution:lenSol('A',P,'B',Q)};
+}
+function t7len(){
+  let P,Q,v;do{P=[rint(-4,7),rint(-3,7)];Q=[rint(-4,7),rint(-3,7)];v=vecOf(P,Q);}while(!inKS(P,Q)||v[0]===0||v[1]===0||Number.isInteger(Math.sqrt(d2(P,Q)))||(P[0]>=0&&P[1]>=0&&Q[0]>=0&&Q[1]>=0));
+  const r=Math.sqrt(d2(P,Q));
+  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s7fig([['P',P],['Q',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
+    question:`Berechne die Länge der Strecke ${ov('PQ')} mit ${ptS('P',P[0],P[1])} und ${ptS('Q',Q[0],Q[1])} (Längeneinheit 1 cm; zwei Nachkommastellen).`,
+    badHint:'Achte auf die Vorzeichen: Minus mal Minus ergibt Plus, z. B. 3 − (−2) = 5.',
+    hints:[`${vec('PQ')} = ${cvec('x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>')}`,'Beim Quadrieren wird jede Zahl positiv: (−4)² = 16.'],
+    solution:lenSol('P',P,'Q',Q)};
+}
+function t7tri(){
+  const T=triGen(Math.random()<.65),c=T.right?['A','B','C'].indexOf(T.right):3;
+  return {kind:'mc',exact:true,prompt:triFig(T),question:`Prüfe, ob das Dreieck ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} rechtwinklig ist.`,
+    options:TRI_OPTS,correct:c,badHint:'Berechne die Quadrate aller drei Seitenlängen und vergleiche mit der Umkehrung des Satzes des Pythagoras. Nach Augenmaß zu entscheiden reicht nicht.',
+    hints:[`Berechne ${len('AB')}², ${len('BC')}² und ${len('AC')}² mit den Vektoren.`,'Der rechte Winkel liegt der längsten Seite gegenüber.'],solution:triSol(T),T};
+}
+function s7leicht(){return Math.random()<.5?t7vec():t7lenInt();}
+function s7standard(){return Math.random()<.5?t7len():t7tri();}
+function s7plus(){
+  const w=rint(0,2);
+  if(w===0){const tr=pick([[3,4,5],[4,3,5],[6,8,10],[8,6,10]]);let P;do{P=[rint(-4,4),rint(-3,3)];}while(P[1]+tr[1]>7||P[0]+tr[0]>7);
+    const xQ=P[0]+tr[0],yQ=P[1]+tr[1];
+    return {kind:'num',unit:'',tol:.001,answer:yQ,prompt:'',question:`Gegeben sind ${ptS('P',P[0],P[1])} und Q(${nf(xQ)} | y) mit y &gt; ${nf(P[1])}. Die Strecke ${ov('PQ')} ist ${tr[2]} cm lang. Berechne y.`,
+      badHint:`Stelle die Gleichung ${len('PQ')}² = ${tr[2]}² auf und löse nach y auf.`,
+      hints:[`${vec('PQ')} = ${cvec(`${nf(xQ)} − ${P[0]<0?'('+nf(P[0])+')':nf(P[0])}`,`y − ${P[1]<0?'('+nf(P[1])+')':nf(P[1])}`)} = ${cvec(nf(tr[0]),lin(1,-P[1]).replace(/^x/,'y'))}`,`${tr[0]}² + (${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]*tr[2]}`],
+      solution:`<div>${vec('PQ')} = ${cvec(nf(tr[0]),lin(1,-P[1]).replace(/^x/,'y'))}</div><div>${tr[0]}² + (${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]}²</div><div>(${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]*tr[2]} − ${tr[0]*tr[0]} = ${tr[1]*tr[1]}</div><div>${lin(1,-P[1]).replace(/^x/,'y')} = ${tr[1]} oder ${lin(1,-P[1]).replace(/^x/,'y')} = −${tr[1]}</div><div>Wegen y &gt; ${nf(P[1])}: <b>y = ${nf(yQ)}</b></div>`};}
+  if(w===1){const T=triGen(Math.random()<.4),ab=Math.sqrt(d2(T.A,T.B)),bc=Math.sqrt(d2(T.B,T.C)),ac=Math.sqrt(d2(T.A,T.C)),u=ab+bc+ac;
+    const r=(n,P,Q)=>{const v=vecOf(P,Q),s=d2(P,Q);return `<div>${len(n)} = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} = ${sq(String(s))} ${Number.isInteger(Math.sqrt(s))?'=':'≈'} ${fmt(Math.sqrt(s))} cm</div>`;};
+    return {kind:'num',exact:true,unit:'cm',tol:.021,answer:Math.round(u*100)/100,prompt:triFig(T),question:`Berechne den Umfang des Dreiecks ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} (Längeneinheit 1 cm; zwei Nachkommastellen).`,
+      badHint:'Berechne alle drei Seitenlängen und addiere sie.',hints:['u = |AB| + |BC| + |AC|',`${vec('AB')} = ${cvec(nf(T.B[0]-T.A[0]),nf(T.B[1]-T.A[1]))}`],
+      solution:r('AB',T.A,T.B)+r('BC',T.B,T.C)+r('AC',T.A,T.C)+`<div>u ≈ ${fmt(ab)} cm + ${fmt(bc)} cm + ${fmt(ac)} cm ≈ <b>${fmt(u)} cm</b></div>`};}
+  const T=triGen(true),R=T.right,o=['A','B','C'].filter(n=>n!==R),l1=d2(T[R],T[o[0]]),l2=d2(T[R],T[o[1]]),A=Math.sqrt(l1*l2)/2;
+  return {kind:'num',exact:true,unit:'cm²',tol:.03,answer:Math.round(A*100)/100,prompt:triFig(T),question:`Das Dreieck ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} ist rechtwinklig. Bestimme, wo der rechte Winkel liegt, und berechne den Flächeninhalt.`,
+    badHint:'Im rechtwinkligen Dreieck gilt A = ½ · Kathete · Kathete. Die Katheten liegen am rechten Winkel.',hints:['Suche mit den Seitenlängen² die längste Seite: Sie ist die Hypotenuse.',`Der rechte Winkel liegt bei ${R}.`],
+    solution:triSol(T)+`<div>Katheten: ${len(R+o[0])} = √${l1} cm; ${len(R+o[1])} = √${l2} cm</div><div>A = ${HALF} · √${l1} cm · √${l2} cm = ${HALF} · √${l1*l2} cm² ${Number.isInteger(A)||Number.isInteger(A*2)?'=':'≈'} <b>${fmt(A)} cm²</b></div>`};
+}
+function koordExperiment(body,done){
+  let P=[1,1],Q=[5,4],rows=[];
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb','aria-live':'polite'});
+  const mk=(label,min,max,val,cb)=>{const o=h('output',{},'');const r=h('input',{type:'range',min,max,step:1,value:val});const upd=()=>{o.textContent=r.value.replace('-','−');};r.addEventListener('input',()=>{upd();cb(parseInt(r.value,10));draw();});upd();return h('div',{style:'flex:1;min-width:140px'},h('label',{html:label+' = '},o),r);};
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  function draw(){const v=vecOf(P,Q),C=[Q[0],P[1]],segs=[];
+    if(v[0])segs.push({a:P,b:C,col:'#16a34a',dash:true,label:nf(v[0]),lo:[0,v[1]>=0?.38:-.32]});
+    if(v[1])segs.push({a:C,b:Q,col:'#ea580c',dash:true,label:nf(v[1]),lo:[v[0]>=0?.4:-.4,0]});
+    if(v[0]||v[1])segs.push({a:P,b:Q,col:'#2563eb',w:.07,arrow:true});
+    fig.innerHTML=coordSvg({x0:-5,x1:7,y0:-4,y1:6,w:420,segs,rights:v[0]&&v[1]?[{V:C,p1:P,p2:Q}]:[],pts:[{n:'P',p:P,d:[-.2,-.2]},{n:'Q',p:Q}]});
+    info.innerHTML=`${ptS('P',P[0],P[1])} &nbsp;|&nbsp; ${ptS('Q',Q[0],Q[1])} &nbsp;|&nbsp; gemessene Länge: ${len('PQ')} ≈ ${fmt(Math.sqrt(d2(P,Q)),2)} cm`;}
+  function table(){tbl.innerHTML='';if(!rows.length)return;
+    const t=h('table',{class:'t'},h('tr',{},...['P','Q','x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>','(x<sub>Q</sub> − x<sub>P</sub>)² + (y<sub>Q</sub> − y<sub>P</sub>)²',len('PQ')+' (gemessen)',len('PQ')+'²'].map(x=>h('th',{html:x}))));
+    rows.forEach(r=>{const v=vecOf(r.P,r.Q),s=d2(r.P,r.Q);t.append(h('tr',{},...[`(${nf(r.P[0])} | ${nf(r.P[1])})`,`(${nf(r.Q[0])} | ${nf(r.Q[1])})`,nf(v[0]),nf(v[1]),String(s),fmt(Math.sqrt(s),2),fmt(Math.sqrt(s)**2,1)].map(z=>h('td',{},z))));});tbl.append(t);}
+  add.addEventListener('click',()=>{if(P[0]===Q[0]&&P[1]===Q[1]){fb.className='fb bad';fb.textContent='P und Q liegen aufeinander. Verschiebe einen Punkt.';return;}
+    const key=P+'/'+Q;if(!rows.some(r=>r.P+'/'+r.Q===key))rows.push({P:[...P],Q:[...Q]});if(rows.length>8)rows.shift();table();
+    const neg=rows.some(r=>r.Q[0]<r.P[0]||r.Q[1]<r.P[1]);go.disabled=!(rows.length>=3&&neg);
+    fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 3 verschiedene Messungen ein. Bei mindestens einer soll Q links von oder unter P liegen (bisher: ${rows.length}).`:'Gut! Vergleiche die Spalte „(xQ − xP)² + (yQ − yP)²“ mit der Spalte „|PQ|²“. Was fällt dir auf? Klicke dann auf „Fertig – weiter“.';});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;body.querySelectorAll('input[type=range]').forEach(r=>r.disabled=true);done();});
+  body.append(h('p',{html:`<b>Auftrag:</b> Verschiebe die Punkte P und Q mit den Reglern (Längeneinheit 1 cm). Der blaue Pfeil ist der Vektor ${vec('PQ')}. Das gestrichelte Dreieck zeigt, wie weit du von P nach rechts bzw. links (grün) und nach oben bzw. unten (orange) gehen musst. Trage Messungen in die Tabelle ein.`}),
+    h('div',{style:'display:flex;gap:12px;flex-wrap:wrap'},mk('x<sub>P</sub>',-4,6,P[0],v=>P[0]=v),mk('y<sub>P</sub>',-3,5,P[1],v=>P[1]=v)),
+    h('div',{style:'display:flex;gap:12px;flex-wrap:wrap'},mk('x<sub>Q</sub>',-4,6,Q[0],v=>Q[0]=v),mk('y<sub>Q</sub>',-3,5,Q[1],v=>Q[1]=v)),
+    fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+
+/* ====== Station 8: Streckenlänge in Abhängigkeit von x ====== */
+const LQP=len('Q'+PN),VQP=vec('Q'+PN);
+// Parameter: g: y = m·x + t, fester Punkt Q(qx | qy); |QPn|² = A·x² + B·x + C = A(x − d)² + e
+function s8gen(ms){
+  for(let k=0;k<800;k++){
+    const m=pick(ms),t=rint(-2,3),d=pick([-2,-1,1,2,3,4,5]),c=pick([-5,-4,-3,-2,-1,1,2,3,4,5]),A=1+m*m,qx=Math.round((A*d+m*c)*1e6)/1e6;
+    if(!Number.isInteger(qx)||qx===0)continue;const qy=t-c,y0=m*d+t;
+    if(qx<-3||qx>9||qy<-4||qy>7||y0<-4||y0>8)continue;
+    const B=-2*qx+2*m*c,C=qx*qx+c*c,e=Math.round((C-A*d*d)*1e6)/1e6;if(e<1)continue;
+    return {m,t,qx,qy,c,d,A,B,C,e,y0};}
+  return {m:.5,t:1,qx:6,qy:-1,c:2,d:4,A:1.25,B:-10,C:40,e:20,y0:3};
+}
+const gTerm=p=>lin(p.m,p.t);
+const s8setup=p=>`Die Punkte ${PN}(x | ${gTerm(p)}) liegen auf der Geraden g mit y = ${gTerm(p)}. Zusammen mit dem Punkt ${ptS('Q',p.qx,p.qy)} bilden sie Strecken ${ov('Q'+PN)} (Längeneinheit 1 cm).`;
+const s8vec=p=>cvec(lin(1,-p.qx),lin(p.m,p.c));
+const s8vecRaw=p=>cvec(lin(1,-p.qx),`${gTerm(p)} − ${p.qy<0?'('+nf(p.qy)+')':nf(p.qy)}`);
+const s8term=p=>poly([p.A,'x²'],[p.B,'x'],[p.C,'']);
+const s8scheitel=p=>`${nf(p.A)}(${lin(1,-p.d)})² + ${nf(p.e)}`;
+function s8fig(p,xs){
+  const P=[xs,p.m*xs+p.t],xa=Math.min(-1,p.qx,p.d,xs)-2,xb=Math.max(1,p.qx,p.d,xs)+2,ya=Math.min(-1,p.qy,p.y0,P[1])-2,yb=Math.max(1,p.qy,p.y0,P[1])+2;
+  return coordSvg({x0:Math.floor(xa),x1:Math.ceil(xb),y0:Math.floor(ya),y1:Math.ceil(yb),w:340,lines:[{m:p.m,t:p.t,label:'g'}],segs:[{a:[p.qx,p.qy],b:P,col:'#ea580c',w:.07}],pts:[{n:'Q',p:[p.qx,p.qy]},{n:svgSub('P'),p:P,d:[-.2,-.25]}]});
+}
+function s8steps(p,upTo=9){
+  const q1=poly([1,'x²'],[-2*p.qx,'x'],[p.qx*p.qx,'']),q2=poly([p.m*p.m,'x²'],[2*p.m*p.c,'x'],[p.c*p.c,'']),D=nf(Math.abs(p.d));
+  let s=`<div>${VQP}(x) = ${s8vecRaw(p)} = ${s8vec(p)}</div>`;
+  s+=`<div>${LQP}² = (${lin(1,-p.qx)})² + (${lin(p.m,p.c)})² = ${q1} + ${q2} = <b>${s8term(p)}</b></div>`;
+  if(upTo<2)return s;
+  s+=`<div>= ${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])}) + ${nf(p.C)}</div>`;
+  s+=`<div>= ${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])} + ${D}² − ${D}²) + ${nf(p.C)}</div>`;
+  s+=`<div>= ${nf(p.A)}(${lin(1,-p.d)})² − ${nf(p.A*p.d*p.d)} + ${nf(p.C)} = <b>${s8scheitel(p)}</b></div>`;
+  s+=`<div>(${lin(1,-p.d)})² ≥ 0 ⇒ kleinster Wert für x = ${nf(p.d)}: ${LQP}² = ${nf(p.e)}</div>`;
+  return s;
+}
+const s8min=p=>`<div>${len('QP<sub>0</sub>')} = √${nf(p.e)} cm ${Number.isInteger(Math.sqrt(p.e))?'=':'≈'} <b>${fmt(Math.sqrt(p.e))} cm</b> mit ${ptS('P<sub>0</sub>',p.d,p.y0)}</div>`;
+const S8HINTS=p=>[`${VQP}(x) = ${cvec('x − x<sub>Q</sub>',`(${gTerm(p)}) − y<sub>Q</sub>`)} („Spitze minus Fuß“)`,`${LQP}² = (${lin(1,-p.qx)})² + (${lin(p.m,p.c)})². Wende die binomischen Formeln an.`,`Quadratische Ergänzung: ${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])}) + ${nf(p.C)}`];
+function t8point(p){const xv=pick([-1,0,1,2,3,4,5].filter(x=>x!==p.d)),yv=p.m*xv+p.t;
+  return {kind:'mc',exact:true,prompt:s8fig(p,xv),question:s8setup(p)+` Welche Koordinaten hat der Punkt ${PN} für x = ${nf(xv)}?`,
+    options:uniqOpts([ptS('P',xv,yv),ptS('P',xv,p.m*xv),ptS('P',yv,xv),ptS('P',xv,p.m*(xv+p.t))],[ptS('P',xv,yv+1),ptS('P',xv,yv-1)]),correct:0,
+    badHint:`Setze x = ${nf(xv)} in die Geradengleichung y = ${gTerm(p)} ein.`,hints:['Die x-Koordinate ist der eingesetzte Wert.',`y = ${nf(p.m)} · ${xv<0?'('+nf(xv)+')':nf(xv)} ${p.t<0?'−':'+'} ${nf(Math.abs(p.t))}`],
+    solution:`<div>y = ${nf(p.m)} · ${xv<0?'('+nf(xv)+')':nf(xv)} ${p.t<0?'−':'+'} ${nf(Math.abs(p.t))} = ${nf(yv)}</div><div><b>${ptS('P',xv,yv)}</b></div>`};}
+function t8vec(p){
+  return {kind:'mc',exact:true,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Welcher Vektor gilt für ${VQP}(x)?`,
+    options:uniqOpts([s8vec(p),cvec(lin(1,-p.qx),gTerm(p)),cvec(lin(1,p.qx),lin(p.m,p.c)),cvec(lin(1,-p.qx),lin(p.m,p.t+p.qy))],[cvec(lin(-1,p.qx),lin(p.m,p.c)),cvec(lin(p.m,p.c),lin(1,-p.qx))]),correct:0,
+    badHint:`„Spitze minus Fuß“: Spitze ${PN}(x | ${gTerm(p)}), Fuß ${ptS('Q',p.qx,p.qy)}.`,hints:[`x-Koordinate: x − ${p.qx<0?'('+nf(p.qx)+')':nf(p.qx)}`,`y-Koordinate: (${gTerm(p)}) − ${p.qy<0?'('+nf(p.qy)+')':nf(p.qy)}`],
+    solution:`<div><b>${VQP}(x) = ${s8vecRaw(p)} = ${s8vec(p)}</b></div>`};}
+function t8lenAt(p){const xv=pick([-1,0,1,2,3,5,6].filter(x=>x!==p.d)),P=[xv,p.m*xv+p.t],v=vecOf([p.qx,p.qy],P),s=v[0]**2+v[1]**2,r=Math.sqrt(s);
+  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,xv),question:s8setup(p)+` Berechne die Länge der Strecke ${ov('Q'+PN)} für x = ${nf(xv)} (zwei Nachkommastellen).`,
+    badHint:`Berechne zuerst den Punkt ${PN} für x = ${nf(xv)} und dann den Vektor von Q zu diesem Punkt.`,hints:[`Für x = ${nf(xv)}: ${ptS('P',P[0],P[1])}`,`${vec('QP')} = ${cvec(nf(v[0]),nf(v[1]))}`],
+    solution:`<div>${ptS('P',P[0],P[1])}</div>${lenSol('Q',[p.qx,p.qy],'P',P)}`};}
+function t8term(p){const wr=[poly([p.A,'x²'],[-p.B,'x'],[p.C,'']),poly([p.A,'x²'],[-2*p.qx,'x'],[p.C,'']),poly([p.A,'x²'],[p.B,'x'],[p.qx*p.qx+p.c,'']),poly([1+Math.abs(p.m),'x²'],[p.B,'x'],[p.C,''])];
+  return {kind:'mc',exact:true,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Welcher vereinfachte Term gilt für ${LQP}²?`,
+    options:uniqOpts([s8term(p),...wr],[poly([p.A,'x²'],[p.B,'x'],[p.C+1,''])]),correct:0,
+    badHint:`${LQP}² = (${lin(1,-p.qx)})² + (${lin(p.m,p.c)})². Beide Klammern mit den binomischen Formeln auflösen.`,hints:S8HINTS(p).slice(0,2),solution:s8steps(p,1)};}
+function t8xmin(p){
+  return {kind:'num',exact:true,unit:'',tol:.001,answer:p.d,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Für welchen Wert von x ist die Strecke ${ov('Q'+PN)} am kürzesten?`,
+    badHint:'Stelle den Term für die Länge² auf und bringe ihn mit der quadratischen Ergänzung in die Form a(x − d)² + e.',hints:S8HINTS(p),
+    solution:s8steps(p)+`<div>Die Strecke ist für <b>x = ${nf(p.d)}</b> am kürzesten.</div>`};}
+function t8minFromTerm(p){const r=Math.sqrt(p.e);
+  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:'',question:`Für die Länge der Strecken ${ov('Q'+PN)} gilt ${LQP}² = (${s8term(p)}) cm². Berechne die minimale Länge (zwei Nachkommastellen).`,
+    badHint:'Quadratische Ergänzung: Klammere den Faktor vor x² aus und ergänze in der Klammer.',hints:[`${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])}) + ${nf(p.C)}`,`Ergänze (${nf(Math.abs(2*p.d))} : 2)² = ${nf(p.d*p.d)}.`],
+    solution:`<div>${LQP}² = ${s8term(p)}</div>`+s8steps(p).split('</div>').slice(2).join('</div>')+s8min(p)};}
+function t8min(p){const r=Math.sqrt(p.e);
+  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Berechne die minimale Länge der Strecken ${ov('Q'+PN)} (zwei Nachkommastellen).`,
+    badHint:'Term aufstellen, vereinfachen, quadratische Ergänzung – dann die Wurzel aus dem kleinsten Wert ziehen.',hints:S8HINTS(p),solution:s8steps(p)+s8min(p)};}
+function t8y0(p){
+  return {kind:'num',exact:true,unit:'',tol:.001,answer:p.y0,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Die Strecke ${ov('QP<sub>0</sub>')} ist die kürzeste. Berechne die y-Koordinate des Punktes P<sub>0</sub>.`,
+    badHint:`Bestimme zuerst x mit der quadratischen Ergänzung. Setze den Wert dann in y = ${gTerm(p)} ein.`,hints:S8HINTS(p),
+    solution:s8steps(p)+`<div>y = ${nf(p.m)} · ${p.d<0?'('+nf(p.d)+')':nf(p.d)} ${p.t<0?'−':'+'} ${nf(Math.abs(p.t))} = ${nf(p.y0)} ⇒ <b>${ptS('P<sub>0</sub>',p.d,p.y0)}</b></div>`};}
+function t8perp(p){const vx=p.qx,vy=p.m*p.qx+p.t;
+  return {kind:'mc',exact:true,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Für welchen Punkt ${PN} steht die Strecke ${ov('Q'+PN)} senkrecht auf g?`,
+    options:uniqOpts([ptS('P',p.d,p.y0),ptS('P',vx,vy),ptS('P',p.d+1,p.m*(p.d+1)+p.t),ptS('P',p.d-1,p.m*(p.d-1)+p.t)],[ptS('P',p.d+2,p.m*(p.d+2)+p.t)]),correct:0,
+    badHint:'Die kürzeste Verbindung von einem Punkt zu einer Geraden steht senkrecht auf der Geraden. Bestimme also den Punkt mit der kürzesten Strecke.',hints:S8HINTS(p),
+    solution:s8steps(p)+`<div>Die kürzeste Strecke steht senkrecht auf g: <b>${ptS('P<sub>0</sub>',p.d,p.y0)}</b></div>`};}
+const M8E=[.5,-.5,1,-1],M8P=[.5,-.5,2,-2,1,-1];
+function s8leicht(){const p=s8gen(M8E);return pick([t8point,t8vec,t8lenAt])(p);}
+function s8standard(){const p=s8gen(M8E);return pick([t8term,t8xmin,t8minFromTerm])(p);}
+function s8plus(){const p=s8gen(M8P);return pick([t8min,t8y0,t8perp])(p);}
+function geradeExperiment(body,done){
+  const p={m:.5,t:1,qx:6,qy:-1};let x=0,rows=[];
+  const Lf=v=>Math.sqrt((v-6)**2+(.5*v+2)**2);
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb','aria-live':'polite'});
+  const out=h('output',{},'0'),r=h('input',{type:'range',min:-2,max:8,step:.5,value:0});
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  function draw(){const P=[x,.5*x+1];
+    fig.innerHTML=coordSvg({x0:-3,x1:9,y0:-3,y1:7,w:420,lines:[{m:p.m,t:p.t,label:'g'}],segs:[{a:[6,-1],b:P,col:'#ea580c',w:.07}],rights:x===4?[{V:P,p1:[6,-1],p2:[8,5]}]:[],pts:[{n:'Q',p:[6,-1]},{n:svgSub('P'),p:P,d:[-.2,-.25]}]});
+    info.innerHTML=`${PN}(${nf(x)} | ${nf(.5*x+1)}) &nbsp;|&nbsp; gemessene Länge: ${LQP} ≈ ${fmt(Lf(x),2)} cm`;}
+  r.addEventListener('input',()=>{x=parseFloat(r.value);out.textContent=nf(x,1);draw();});
+  function table(){tbl.innerHTML='';if(!rows.length)return;
+    const t=h('table',{class:'t'},h('tr',{},...['x',PN,LQP+'²',LQP].map(v=>h('th',{html:v}))));
+    rows.forEach(v=>t.append(h('tr',{},...[nf(v,1),`(${nf(v)} | ${nf(.5*v+1)})`,fmt(Lf(v)**2,2),fmt(Lf(v),2)].map(z=>h('td',{},z)))));tbl.append(t);}
+  add.addEventListener('click',()=>{if(!rows.includes(x)){rows.push(x);rows.sort((a,b)=>a-b);}table();
+    const lo=rows.filter(v=>v<4).length,hi=rows.filter(v=>v>4).length;go.disabled=!(rows.length>=5&&lo>=2&&hi>=2);
+    fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 5 verschiedene Werte für x ein, davon mindestens 2 kleiner als 4 und 2 größer als 4 (bisher: ${rows.length}).`:'Gut! Für welches x ist die Strecke am kürzesten? Welchen Winkel bildet die kürzeste Strecke mit der Geraden g? Klicke dann auf „Fertig – weiter“.';});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;r.disabled=true;done();});
+  body.append(h('p',{html:`<b>Auftrag:</b> Die Punkte ${PN} wandern auf der Geraden g mit y = 0,5x + 1. Der Punkt ${ptS('Q',6,-1)} bleibt fest (Längeneinheit 1 cm). Verändere x und beobachte die Länge der orangen Strecke ${ov('Q'+PN)}. Trage Messungen in die Tabelle ein.`}),h('div',{},h('label',{},'x = ',out),r),fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+
+/* ====== Station 9: Abschluss-Check ====== */
+// Jede Aufgabe: Station st, Punkte pts; Rest wie bei den Übungsaufgaben (kind, prompt, question, options/correct bzw. answer/tol/unit, solution)
+const A9=[
+ {st:1,pts:1,gen(){const L=shuffle(pick([['A','B','C'],['P','Q','R'],['D','E','F'],['K','L','M']])),[R,X,Y]=L;
+   return {kind:'mc',prompt:triSvg({vertex:[R,X,Y],rot:pick(ROTS),L1:4,L2:3,w:300}),question:`Im Dreieck ${L.slice().sort().join('')} liegt der rechte Winkel bei ${R}. Welche Gleichung gilt?`,
+    options:[`${len(X+Y)}² = ${len(R+X)}² + ${len(R+Y)}²`,`${len(R+X)}² = ${len(X+Y)}² + ${len(R+Y)}²`,`${len(R+Y)}² = ${len(R+X)}² + ${len(X+Y)}²`,`${len(X+Y)} = ${len(R+X)} + ${len(R+Y)}`],correct:0,
+    solution:`<div>Die Hypotenuse liegt dem rechten Winkel bei ${R} gegenüber: ${ov(X+Y)}.</div><div><b>${len(X+Y)}² = ${len(R+X)}² + ${len(R+Y)}²</b></div>`};}},
+ {st:2,pts:1,gen(){const a=rint(20,90)/10,b=rint(20,90)/10,c=Math.sqrt(a*a+b*b);
+   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(c*100)/100,prompt:triSvg({labels:[`a = ${fmt(a,1)} cm`,`b = ${fmt(b,1)} cm`,'c = ?'],rot:pick(ROTS),L1:4,L2:3,w:300}),
+    question:`Ein rechtwinkliges Dreieck hat die Katheten a = ${fmt(a,1)} cm und b = ${fmt(b,1)} cm. Berechne die Länge der Hypotenuse c (zwei Nachkommastellen).`,
+    solution:`<div>c² = a² + b² = ${fmt(a,1)}² + ${fmt(b,1)}² = ${fmt(a*a)} + ${fmt(b*b)} = ${fmt(a*a+b*b)}</div><div>c = √${fmt(a*a+b*b)} ≈ <b>${fmt(c)} cm</b></div>`};}},
+ {st:2,pts:2,gen(){const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([2,3,4,5]),[a,b,c]=t.map(x=>x*k);
+   return {kind:'num',unit:'cm',tol:.001,answer:b,prompt:'',question:`In einem rechtwinkligen Dreieck ist die Hypotenuse ${fmt(c/10)} dm lang, eine Kathete ist ${a} cm lang. Berechne die Länge der anderen Kathete in cm.`,
+    solution:`<div>${fmt(c/10)} dm = ${c} cm</div><div>b² = c² − a² = ${c}² − ${a}² = ${c*c} − ${a*a} = ${b*b}</div><div>b = √${b*b} = <b>${b} cm</b></div>`};}},
+ {st:3,pts:1,gen(){const t=pick(TRIPLES),k=pick([.5,1,1.5,2]);let s=t.map(x=>x*k);if(Math.random()<.5)s[2]+=pick([-1,1])*k;const so=s.slice().sort((x,y)=>x-y),right=Math.abs(so[0]**2+so[1]**2-so[2]**2)<1e-9;
+   const names=['a','b','c'],perm=shuffle([0,1,2]),sides={};perm.forEach((pi,i)=>sides[names[i]]=s[pi]);const longest=names.find(n=>sides[n]===Math.max(...s)),other=names.find(n=>n!==longest);
+   const sm=names.filter(n=>n!==longest),q=v=>fmt(v*v);
+   return {kind:'mc',prompt:'',question:`Ein Dreieck hat die Seitenlängen a = ${fmt(sides.a)} cm, b = ${fmt(sides.b)} cm und c = ${fmt(sides.c)} cm. Welche Aussage ist richtig?`,
+    options:[`Das Dreieck ist rechtwinklig. Der rechte Winkel liegt der Seite ${longest} gegenüber.`,`Das Dreieck ist rechtwinklig. Der rechte Winkel liegt der Seite ${other} gegenüber.`,'Das Dreieck ist nicht rechtwinklig.'],correct:right?0:2,
+    solution:`<div>Längste Seite: ${longest} = ${fmt(sides[longest])} cm</div><div>${sm[0]}² + ${sm[1]}² = ${q(sides[sm[0]])} + ${q(sides[sm[1]])} = ${fmt(sides[sm[0]]**2+sides[sm[1]]**2)}; ${longest}² = ${q(sides[longest])}</div><div><b>${right?`Gleich ⇒ rechtwinklig, der rechte Winkel liegt ${longest} gegenüber.`:'Ungleich ⇒ nicht rechtwinklig.'}</b></div>`};}},
+ {st:4,pts:2,gen(){const t=pick(TRIPLES.filter(x=>x[2]<=17)),k=pick([.5,1,1.5,2]),hb=t[0]*k,hh=t[1]*k,s=t[2]*k,A=hb*hh;
+   return {kind:'num',unit:'cm²',tol:.001,answer:A,prompt:isoSvg({leg:`${fmt(s)} cm`,h:'h',base:`${fmt(2*hb)} cm`}),sketch:true,question:`Ein gleichschenkliges Dreieck ABC hat die Basis ${len('AB')} = ${fmt(2*hb)} cm. Die beiden Schenkel sind jeweils ${fmt(s)} cm lang. Berechne den Flächeninhalt.`,
+    solution:`<div>Die Höhe halbiert die Basis: ${len('AM')} = ${fmt(hb)} cm</div><div>h² = ${fmt(s)}² − ${fmt(hb)}² = ${fmt(s*s)} − ${fmt(hb*hb)} = ${fmt(hh*hh)} ⇒ h = ${fmt(hh)} cm</div><div>A = ${HALF} · ${fmt(2*hb)} cm · ${fmt(hh)} cm = <b>${fmt(A)} cm²</b></div>`};}},
+ {st:5,pts:1,gen(){const a=pick([6,8,10,12]);
+   return {kind:'mc',prompt:s5fig(a,a,1),sketch:true,question:s5setup(a,a,1)+` Welcher Term gilt für ${LPQ}²?`,
+    options:[`(${a} − x)² + x²`,`(${a} + x)² + x²`,`${a}² + x²`,`(${a} − x)² − x²`],correct:0,
+    solution:`<div>Rechtwinkliges Dreieck ${PN}B${QN} mit dem rechten Winkel bei B: ${LPB} = (${a} − x) cm; ${LBQ} = x cm</div><div><b>${LPQ}² = (${a} − x)² + x²</b></div>`};}},
+ {st:5,pts:2,gen(){const a=pick([6,8,10,12,14]),{d,e}=s5data(a,a,1),v=Math.sqrt(e);
+   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(v*100)/100,prompt:s5fig(a,a,1),sketch:true,question:s5setup(a,a,1)+` Berechne die minimale Länge ${LPQ}<sub>min</sub> (zwei Nachkommastellen).`,
+    solution:s5steps(a,1)+`<div>${LPQ}<sub>min</sub> = √${fmt(e)} cm ≈ <b>${fmt(v)} cm</b> (für x = ${fmt(d)})</div>`};}},
+ {st:6,pts:2,gen(){const a=rint(2,12),b=rint(2,12),c=rint(2,12),dd=Math.sqrt(a*a+b*b+c*c);
+   return {kind:'num',unit:'cm',tol:.0151,answer:Math.round(dd*100)/100,prompt:QFIG({la:`a = ${a} cm`,lb:`b = ${b} cm`,lc:`c = ${c} cm`,d:true,ld:'d = ?',w:300}),sketch:true,
+    question:`Ein Quader hat die Kantenlängen a = ${a} cm, b = ${b} cm und c = ${c} cm. Berechne die Länge der Raumdiagonale d (zwei Nachkommastellen).`,solution:s6dsol(a,b,c)};}},
+ {st:6,pts:1,gen(){const a=2*rint(2,8),hh=rint(3,15),{hs2,hs}=s6hs(a,hh);
+   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mns',w:300}),sketch:true,
+    question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Höhe ${HS} einer Seitenfläche (zwei Nachkommastellen).`,
+    solution:`<div>${len('MN')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}},
+ {st:7,pts:1,gen:t7len},
+ {st:7,pts:2,gen:t7tri},
+ {st:8,pts:2,gen(){return t8min(s8gen(M8E));}}
+];
+const A9MAX=A9.reduce((s,t)=>s+t.pts,0),A9PASS=Math.ceil(A9MAX/2);
+const ST_SHORT={1:'Satz des Pythagoras',2:'Seitenlängen berechnen',3:'Umkehrung',4:'Ebene Figuren',5:'Extremwerte',6:'Körper',7:'Koordinatensystem',8:'Strecken in Abhängigkeit von x'};
+function abschluss(body,done){
+  const box=h('div');body.append(box);let tasks=[],idx=0;
+  function start(){tasks=A9.map(a=>({...a.gen(),st:a.st,pts:a.pts}));idx=0;show();}
+  function show(){
+    box.innerHTML='';if(idx>=tasks.length)return finish();
+    const t=tasks[idx];
+    box.append(h('div',{class:'pb'},h('i',{style:`width:${idx/tasks.length*100}%`})),
+      h('p',{class:'muted'},`Aufgabe ${idx+1} von ${tasks.length} · ${t.pts} ${t.pts===1?'Punkt':'Punkte'} · Du hast nur einen Versuch. Ob deine Antwort stimmt, siehst du in der Auswertung.`));
+    if(t.prompt)box.append(h('div',{html:t.prompt+(t.prompt.includes('<svg')&&!t.exact?'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>':'')}));
+    const qb=h('div',{class:'q'},h('p',{class:'qt',html:t.question}));box.append(qb);
+    const nxt=()=>nextBtn(box,idx<tasks.length-1?'Weiter →':'Auswerten',()=>{idx++;show();});
+    if(t.kind==='mc'){
+      const list=h('div',{class:'opts'});
+      shuffle(t.options.map((_,i)=>i)).forEach(i=>{const b=h('button',{class:'opt',type:'button',html:t.options[i]});
+        b.addEventListener('click',()=>{if(b.disabled)return;[...list.children].forEach(x=>x.disabled=true);b.classList.add('sel');t.given=t.options[i];t.ok=i===t.correct;nxt();});list.append(b);});
+      qb.append(list);
+    }else{
+      const inp=h('input',{class:'num',type:'text',inputmode:'decimal',autocomplete:'off',placeholder:'Ergebnis'}),fb=h('div',{class:'fb','aria-live':'polite'});
+      const btn=h('button',{class:'btn',type:'button'},'Antwort abgeben');
+      const sub=()=>{if(inp.disabled)return;const v=parseNum(inp.value);if(isNaN(v)){fb.className='fb bad';fb.textContent='Bitte eine Zahl eingeben (z. B. 12,5).';return;}
+        inp.disabled=true;btn.disabled=true;fb.className='fb';fb.textContent='Antwort gespeichert.';t.given=nf(v)+(t.unit?' '+t.unit:'');t.ok=Math.abs(v-t.answer)<=t.tol;nxt();};
+      btn.addEventListener('click',sub);inp.addEventListener('keydown',e=>{if(e.key==='Enter')sub();});
+      qb.append(h('div',{},inp,' ',t.unit||'',' ',btn),fb);setTimeout(()=>inp.focus(),50);
+    }
+    if(idx>0)box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function finish(){
+    const score=tasks.reduce((s,t)=>s+(t.ok?t.pts:0),0),pass=score>=A9PASS;
+    box.append(h('h3',{},`Ergebnis: ${score} von ${A9MAX} Punkten`));
+    const per={};tasks.forEach(t=>{per[t.st]=per[t.st]||{p:0,m:0};per[t.st].m+=t.pts;if(t.ok)per[t.st].p+=t.pts;});
+    const tb=h('table',{class:'t'},h('tr',{},h('th',{},'Station'),h('th',{},'Punkte'),h('th',{},'Empfehlung')));
+    const weak=[];Object.keys(per).forEach(k=>{const v=per[k],full=v.p===v.m;if(!full)weak.push(k);
+      tb.append(h('tr',{},h('td',{style:'text-align:left'},`${k}: ${ST_SHORT[k]}`),h('td',{},`${v.p} / ${v.m}`),h('td',{class:full?'fb ok':'fb bad'},full?'✓ sicher':`Wiederhole Station ${k} (Merkkasten, Üben)`)));});
+    box.append(h('div',{class:'card',style:'margin:8px 0'},h('p',{class:'qt'},'Auswertung nach Stationen'),tb,
+      h('p',{class:'muted',style:'margin-bottom:0'},weak.length?`Tipp: Lies zuerst die Merkkästen der Stationen ${weak.join(', ')} im Merkheft nach und löse dort noch einmal Übungsaufgaben.`:'Hervorragend – alle Stationen sicher!')));
+    const rev=h('div',{class:'card',style:'margin:8px 0'},h('p',{class:'qt'},'Alle Aufgaben mit Lösungsweg'));
+    tasks.forEach((t,k)=>{const det=h('details',{},h('summary',{html:`<b>${k+1}.</b> ${t.ok?'✓':'✗'} Station ${t.st} · ${t.ok?t.pts:0} / ${t.pts} ${t.pts===1?'Punkt':'Punkte'}`}),
+      h('div',{html:t.question}),h('div',{class:t.ok?'fb ok':'fb bad',html:`Deine Antwort: ${t.given}`+(t.ok?'':`<br>Richtig: ${t.kind==='mc'?t.options[t.correct]:nf(t.answer)+(t.unit?' '+t.unit:'')}`)}),h('div',{class:'sol',html:t.solution}));
+      if(!t.ok)det.open=true;rev.append(h('div',{class:'q'},det));});
+    box.append(rev);
+    if(pass){
+      const d=new Date(),code=codeFor(9,score,d);
+      state[9]={score,date:d.toLocaleDateString('de-DE'),code,niv:''};save();
+      box.append(h('div',{class:'checkin'},h('div',{html:`<b>Abschluss-Check geschafft!</b> – Rechtwinklige Dreiecke`}),h('div',{},`Ergebnis: ${score} von ${A9MAX} Punkten · Datum: ${state[9].date}`),h('div',{html:`Kontrollcode: <span class="code">${code}</span>`}),h('div',{class:'muted'},'Zeige diese Karte deiner Lehrkraft (oder mache einen Screenshot).')));
+      done();
+    }else{
+      box.append(h('p',{},`Du brauchst mindestens ${A9PASS} Punkte. Wiederhole die empfohlenen Stationen und starte den Abschluss-Check dann neu. Du bekommst neue Aufgaben.`));
+      nextBtn(box,'Abschluss-Check wiederholen',start);
+    }
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  start();
+}
+
 /* ====== Stationen ====== */
 const STATIONS={
 1:{title:'Den Satz des Pythagoras entdecken',komp:'Seiten im rechtwinkligen Dreieck benennen; den Zusammenhang der Quadratflächen selbst entdecken und formulieren.',
@@ -1173,9 +1551,96 @@ const STATIONS={
    [{q:'Eine gerade quadratische Pyramide hat die Grundkante a = 6 cm und die Höhe h = 4 cm. Wie groß ist die Höhe '+HS+' einer Seitenfläche?',options:['5 cm','√52 cm','7 cm','10 cm'],explain:HS+'² = h² + (a : 2)² = 4² + 3² = 25, also '+HS+' = 5 cm.'},
     {q:'Eine gerade quadratische Pyramide hat die Grundkante a = 10 cm und die Höhe h = 12 cm. Wie groß ist die Höhe '+HS+' einer Seitenfläche?',options:['13 cm','√244 cm','17 cm','22 cm'],explain:HS+'² = h² + (a : 2)² = 12² + 5² = 169, also '+HS+' = 13 cm.'}]
  ],done);}}
+ ]},
+7:{title:'Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit',komp:'Die Länge von Strecken im Koordinatensystem als Betrag eines Vektors berechnen und Dreiecke mit der Umkehrung des Satzes des Pythagoras auf Rechtwinkligkeit prüfen.',
+ steps:[
+ {title:'Experiment: Strecken im Koordinatensystem',render:koordExperiment},
+ {title:'Vom Vektor zur Länge',render(body,done){
+   videoBlock(body,'s7','<b>Optional:</b> Schau dir ein Erklärvideo zur Länge einer Strecke im Koordinatensystem (Betrag eines Vektors) an.');
+   body.append(h('div',{class:'info',html:`Erinnerung an die 8. Klasse: Der Vektor ${vec('PQ')} führt von P nach Q. Seine Koordinaten berechnest du mit „Spitze minus Fuß“: ${vec('PQ')} = ${cvec('x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>')}. Im Experiment waren das die gestrichelten Katheten.`}));
+   body.append(h('div',{html:s7fig([['P',[1,2]],['Q',[5,5]]],{segs:[{a:[1,2],b:[5,2],col:'#16a34a',dash:true},{a:[5,2],b:[5,5],col:'#ea580c',dash:true},{a:[1,2],b:[5,5],col:'#2563eb',arrow:true}],rights:[{V:[5,2],p1:[1,2],p2:[5,5]}]})}));
+   guided(body,[
+    {type:'mc',q:`Gegeben sind ${ptS('P',1,2)} und ${ptS('Q',5,5)}. Welche Koordinaten hat ${vec('PQ')}?`,options:[cvec(4,3),cvec('−4','−3'),cvec(6,7),cvec(3,4)],correct:0,explain:`${vec('PQ')} = ${cvec('5 − 1','5 − 2')} = ${cvec(4,3)}`,hint:'Spitze (Q) minus Fuß (P), getrennt für x und y.'},
+    {type:'num',q:`Die Koordinaten 4 und 3 sind die Katheten eines rechtwinkligen Dreiecks. Berechne ${len('PQ')}² = 4² + 3².`,unit:'cm²',answer:25,tol:.001,hint:'16 + 9'},
+    {type:'num',q:`Wie lang ist die Strecke ${ov('PQ')}?`,unit:'cm',answer:5,tol:.001,hint:'√25'},
+    {type:'mc',html:`<div class="info">Die Länge eines Vektors heißt <b>Betrag</b>: |${vec('PQ')}| = ${sq('4² + 3²')} = 5. Die Strecke ${ov('PQ')} ist genauso lang wie der Vektor: ${len('PQ')} = |${vec('PQ')}|.</div>`,q:`Jetzt mit negativen Koordinaten: ${ptS('A',-2,3)} und ${ptS('B',4,-5)}. Welche Koordinaten hat ${vec('AB')}?`,options:[cvec(6,'−8'),cvec(2,'−2'),cvec('−6',8),cvec(6,8)],correct:0,explain:`${vec('AB')} = ${cvec('4 − (−2)','−5 − 3')} = ${cvec(6,'−8')}`,hint:'4 − (−2) = 4 + 2. Und −5 − 3 = ?'},
+    {type:'num',q:`Berechne ${len('AB')} = ${sq('6² + (−8)²')}.`,unit:'cm',answer:10,tol:.001,hint:'(−8)² = 64, also 36 + 64 = 100.'},
+    {type:'mc',q:`Warum spielt das negative Vorzeichen bei −8 für die Länge keine Rolle?`,options:['Beim Quadrieren wird das Ergebnis nie negativ: (−8)² = 64.','Weil man das Minuszeichen einfach weglassen darf, ohne zu rechnen.','Es spielt eine Rolle: Die Strecke ist dann kürzer.'],correct:0,explain:'Minus mal Minus ergibt Plus. Längen sind nie negativ.',hint:'Rechne (−8) · (−8).'},
+    {type:'mc',q:`Wie lang ist die Strecke, wenn man umgekehrt von B nach A geht, also |${vec('BA')}|?`,options:['Genauso lang: 10 cm',`Länge −10 cm`,'Doppelt so lang: 20 cm'],correct:0,explain:`${vec('BA')} = ${cvec('−6',8)} zeigt in die Gegenrichtung, ist aber genauso lang.`,hint:'Der Vektor zeigt in die andere Richtung. Ändert sich dadurch seine Länge?'}
+   ],done);
+ }},
+ {title:'Rechtwinklige Dreiecke im Koordinatensystem',render(body,done){
+   const T={A:[-2,3],B:[2,1],C:[5,7]};
+   body.append(h('p',{html:`Das Dreieck ABC hat die Eckpunkte ${ptS('A',-2,3)}, ${ptS('B',2,1)} und ${ptS('C',5,7)}. Ist es rechtwinklig? Nach Augenmaß kann man das nicht sicher entscheiden – rechne mit der Umkehrung des Satzes des Pythagoras (Station 3).`}));
+   body.append(h('div',{html:triFig(T)}));
+   guided(body,[
+    {type:'num',q:`${vec('AB')} = ${cvec(4,'−2')}. Berechne ${len('AB')}².`,unit:'cm²',answer:20,tol:.001,hint:'4² + (−2)² = 16 + 4'},
+    {type:'num',q:`${vec('BC')} = ${cvec(3,6)}. Berechne ${len('BC')}².`,unit:'cm²',answer:45,tol:.001,hint:'3² + 6² = 9 + 36'},
+    {type:'num',q:`Stelle ${vec('AC')} selbst auf und berechne ${len('AC')}².`,unit:'cm²',answer:65,tol:.001,hint:`${vec('AC')} = ${cvec('5 − (−2)','7 − 3')} = ${cvec(7,4)}`},
+    {type:'mc',q:'Vergleiche: 20 + 45 = 65. Was folgt daraus?',options:['Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei B.','Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei C.','Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei A.','Das Dreieck ist nicht rechtwinklig.'],correct:0,explain:`${ov('AC')} ist die längste Seite. Der rechte Winkel liegt ihr gegenüber, also bei B.`,hint:'Der rechte Winkel liegt der längsten Seite gegenüber.'},
+    {type:'mc',q:`Ein anderes Dreieck PQR hat ${len('PQ')}² = 10, ${len('QR')}² = 20 und ${len('PR')}² = 40. Ist es rechtwinklig?`,options:['Nein, denn 10 + 20 = 30 ≠ 40.','Ja, denn 10 + 20 + 40 = 70.','Ja, der rechte Winkel liegt bei Q.'],correct:0,explain:'Die beiden kleineren Quadrate ergeben zusammen nicht das größte.',hint:'Addiere die beiden kleineren Werte und vergleiche mit dem größten.'}
+   ],done);
+ }},
+ merkStep(7),
+ {title:'Üben',render(body,done){practice(body,7,{leicht:s7leicht,standard:s7standard,plus:s7plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,7,[
+   [{q:`Welche Koordinaten hat der Vektor ${vec('PQ')} mit ${ptS('P',2,1)} und ${ptS('Q',6,4)}?`,options:[cvec(4,3),cvec(8,5),cvec('−4','−3'),cvec(3,4)],explain:`„Spitze minus Fuß“: ${vec('PQ')} = ${cvec('6 − 2','4 − 1')} = ${cvec(4,3)}`},
+    {q:`Welche Koordinaten hat der Vektor ${vec('AB')} mit ${ptS('A',-1,3)} und ${ptS('B',3,-2)}?`,options:[cvec(4,'−5'),cvec(2,1),cvec('−4',5),cvec(4,5)],explain:`${vec('AB')} = ${cvec('3 − (−1)','−2 − 3')} = ${cvec(4,'−5')}`}],
+   [{q:`Wie lang ist die Strecke ${ov('PQ')} mit ${ptS('P',1,1)} und ${ptS('Q',7,9)} (Längeneinheit 1 cm)?`,options:['10 cm','14 cm','100 cm',`${sq('14')} cm`],explain:`${vec('PQ')} = ${cvec(6,8)}; ${len('PQ')} = ${sq('6² + 8²')} = √100 = 10 cm`},
+    {q:`Wie lang ist die Strecke ${ov('AB')} mit ${ptS('A',-2,-1)} und ${ptS('B',3,11)} (Längeneinheit 1 cm)?`,options:['13 cm','17 cm','169 cm',`${sq('17')} cm`],explain:`${vec('AB')} = ${cvec(5,12)}; ${len('AB')} = ${sq('5² + 12²')} = √169 = 13 cm`}],
+   [{q:`Ist das Dreieck ABC mit ${ptS('A',0,0)}, ${ptS('B',4,2)} und ${ptS('C',2,6)} rechtwinklig?`,options:['Ja, der rechte Winkel liegt bei B.','Ja, der rechte Winkel liegt bei A.','Ja, der rechte Winkel liegt bei C.','Nein, es ist nicht rechtwinklig.'],explain:`${len('AB')}² = 4² + 2² = 20; ${len('BC')}² = (−2)² + 4² = 20; ${len('AC')}² = 2² + 6² = 40. 20 + 20 = 40 ⇒ rechtwinklig, der rechte Winkel liegt der längsten Seite ${ov('AC')} gegenüber, also bei B.`},
+    {q:`Ist das Dreieck ABC mit ${ptS('A',0,0)}, ${ptS('B',5,1)} und ${ptS('C',2,5)} rechtwinklig?`,options:['Nein, es ist nicht rechtwinklig.','Ja, der rechte Winkel liegt bei A.','Ja, der rechte Winkel liegt bei B.','Ja, der rechte Winkel liegt bei C.'],explain:`${len('AB')}² = 26; ${len('BC')}² = (−3)² + 4² = 25; ${len('AC')}² = 2² + 5² = 29. Längste Seite ${ov('AC')}: 26 + 25 = 51 ≠ 29 ⇒ nicht rechtwinklig.`}]
+ ],done);}}
+ ]},
+8:{title:'Streckenlänge in Abhängigkeit von x',komp:'Längen von Strecken zu wandernden Punkten auf einer Geraden als Term in Abhängigkeit von x angeben und mit der quadratischen Ergänzung die kürzeste Strecke bestimmen.',
+ steps:[
+ {title:'Experiment: Ein Punkt wandert auf einer Geraden',render:geradeExperiment},
+ {title:'Den Term aufstellen',render(body,done){
+   videoBlock(body,'s8','<b>Optional:</b> Schau dir ein Erklärvideo zu Streckenlängen in Abhängigkeit von x im Koordinatensystem an.');
+   body.append(h('div',{html:s8fig({m:.5,t:1,qx:6,qy:-1,d:4,y0:3},1)}));
+   guided(body,[
+    {type:'mc',html:`<div class="info">Die Punkte ${PN} liegen auf der Geraden g mit y = 0,5x + 1. Ihre y-Koordinate erhältst du, indem du x in die Geradengleichung einsetzt.</div>`,q:`Welche Koordinaten hat der Punkt ${PN} für x = 2?`,options:[ptS('P',2,2),ptS('P',2,1),ptS('P',2,5),ptS('P',1,2)],correct:0,explain:'y = 0,5 · 2 + 1 = 2',hint:'Setze x = 2 in y = 0,5x + 1 ein.'},
+    {type:'mc',q:`Wie lautet allgemein der Punkt ${PN} in Abhängigkeit von x?`,options:[`${PN}(x | 0,5x + 1)`,`${PN}(0,5x + 1 | x)`,`${PN}(x | 0,5)`,`${PN}(x | x + 1)`],correct:0,explain:'Die x-Koordinate bleibt x, die y-Koordinate ist der Term der Geradengleichung.',hint:'y = 0,5x + 1'},
+    {type:'mc',q:`Stelle den Vektor ${VQP}(x) von ${ptS('Q',6,-1)} zu ${PN}(x | 0,5x + 1) auf.`,options:[cvec('x − 6','0,5x + 2'),cvec('x − 6','0,5x'),cvec('x + 6','0,5x + 2'),cvec('x − 6','0,5x + 1')],correct:0,explain:`„Spitze minus Fuß“: ${cvec('x − 6','0,5x + 1 − (−1)')} = ${cvec('x − 6','0,5x + 2')}`,hint:'Bei der y-Koordinate: 0,5x + 1 − (−1). Minus mal Minus!'},
+    {type:'mc',q:`Berechne ${LQP}² = (x − 6)² + (0,5x + 2)² und vereinfache.`,options:['1,25x² − 10x + 40','0,25x² − 10x + 40','1,25x² − 14x + 40','1,25x² − 10x + 32'],correct:0,explain:'(x − 6)² = x² − 12x + 36 und (0,5x + 2)² = 0,25x² + 2x + 4. Zusammen: 1,25x² − 10x + 40.',hint:'Binomische Formeln: (x − 6)² = x² − 12x + 36; (0,5x + 2)² = 0,25x² + 2x + 4.'},
+    {type:'num',q:`Teste den Term: Berechne ${LQP} für x = 0 (zwei Nachkommastellen).`,unit:'cm',answer:6.32,tol:.0051,hint:`${LQP}² = 1,25 · 0² − 10 · 0 + 40 = 40, dann die Wurzel ziehen.`}
+   ],done);
+ }},
+ {title:'Die kürzeste Strecke',render(body,done){
+   body.append(h('div',{class:'info',html:`Wie in Station 5 findest du den kleinsten Wert mit der <b>quadratischen Ergänzung</b>: ${LQP}² = 1,25x² − 10x + 40.`}));
+   guided(body,[
+    {type:'mc',q:'Schritt 1: Klammere den Faktor 1,25 aus den x-Gliedern aus.',options:['1,25(x² − 8x) + 40','1,25(x² − 10x) + 40','1,25(x² − 8x) + 32','1,25(x² + 8x) + 40'],correct:0,explain:'10 : 1,25 = 8. Die 40 bleibt außerhalb der Klammer.',hint:'Teile −10 durch 1,25.'},
+    {type:'num',q:'Schritt 2: Welche Zahl wird in der Klammer ergänzt? x² − 8x + ?',answer:16,tol:.001,hint:'(8 : 2)² = 4²'},
+    {type:'mc',q:'Schritt 3 und 4: 1,25(x² − 8x + 4² − 4²) + 40 = 1,25[(x − 4)² − 16] + 40. Fasse zusammen.',options:['1,25(x − 4)² + 20','1,25(x − 4)² + 24','1,25(x − 4)² + 40','1,25(x + 4)² + 20'],correct:0,explain:'1,25 · (−16) + 40 = −20 + 40 = 20',hint:'Die −16 wird auch mit 1,25 multipliziert.'},
+    {type:'num',q:'Für welchen Wert von x ist die Strecke am kürzesten?',answer:4,tol:.001,hint:'Wann ist (x − 4)² gleich 0?'},
+    {type:'num',q:`Berechne die minimale Länge ${len('QP<sub>0</sub>')} = √20 cm (zwei Nachkommastellen).`,unit:'cm',answer:4.47,tol:.0051,hint:'Taschenrechner: √20'},
+    {type:'mc',q:'Welche Koordinaten hat der Punkt P<sub>0</sub> mit der kürzesten Strecke?',options:[ptS('P<sub>0</sub>',4,3),ptS('P<sub>0</sub>',4,20),ptS('P<sub>0</sub>',3,4),ptS('P<sub>0</sub>',4,2)],correct:0,explain:'y = 0,5 · 4 + 1 = 3',hint:'Setze x = 4 in y = 0,5x + 1 ein.'},
+    {type:'mc',html:coordSvg({x0:-3,x1:9,y0:-3,y1:7,w:340,lines:[{m:.5,t:1,label:'g'}],segs:[{a:[6,-1],b:[4,3],col:'#ea580c',w:.07}],rights:[{V:[4,3],p1:[6,-1],p2:[8,5]}],pts:[{n:'Q',p:[6,-1]},{n:'P<tspan font-size=".32" dy=".12">0</tspan>',p:[4,3],d:[-.2,-.25]}]}),q:`Denke an das Experiment: Was gilt für die kürzeste Strecke ${ov('QP<sub>0</sub>')}?`,options:['Sie steht senkrecht auf der Geraden g.','Sie verläuft parallel zur y-Achse.','Sie verläuft parallel zur x-Achse.','Sie ist genau halb so lang wie |QP<sub>n</sub>| für x = 0.'],correct:0,explain:'Die kürzeste Verbindung von einem Punkt zu einer Geraden steht immer senkrecht auf der Geraden. Ihre Länge heißt Abstand des Punktes von der Geraden.',hint:'Im Experiment erschien bei x = 4 ein Zeichen für den rechten Winkel.'}
+   ],done);
+ }},
+ merkStep(8),
+ {title:'Üben',render(body,done){practice(body,8,{leicht:s8leicht,standard:s8standard,plus:s8plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,8,[
+   [{q:`Die Punkte ${PN}(x | 0,5x + 1) liegen auf g. Welcher Vektor gilt für ${VQP}(x) mit ${ptS('Q',2,-1)}?`,options:[cvec('x − 2','0,5x + 2'),cvec('x − 2','0,5x'),cvec('x + 2','0,5x + 2'),cvec('2 − x','0,5x + 1')],explain:`${VQP}(x) = ${cvec('x − 2','0,5x + 1 − (−1)')} = ${cvec('x − 2','0,5x + 2')}`},
+    {q:`Die Punkte ${PN}(x | 2x − 1) liegen auf g. Welcher Vektor gilt für ${VQP}(x) mit ${ptS('Q',3,1)}?`,options:[cvec('x − 3','2x − 2'),cvec('x − 3','2x'),cvec('x + 3','2x − 2'),cvec('x − 3','2x − 1')],explain:`${VQP}(x) = ${cvec('x − 3','2x − 1 − 1')} = ${cvec('x − 3','2x − 2')}`}],
+   [{q:`Für die Länge der Strecken gilt ${LQP}² = 2(x − 3)² + 8 (in cm²). Was folgt daraus?`,options:[`Für x = 3 ist die Strecke am kürzesten: √8 cm ≈ 2,83 cm`,`Für x = −3 ist die Strecke am kürzesten: √8 cm ≈ 2,83 cm`,`Für x = 3 ist die Strecke am kürzesten: 8 cm`,'Für x = 3 ist die Strecke am längsten.'],explain:'(x − 3)² ≥ 0 und für x = 3 gleich 0. Der kleinste Wert von |QPn|² ist 8, die kürzeste Strecke also √8 cm ≈ 2,83 cm.'},
+    {q:`Für die Länge der Strecken gilt ${LQP}² = 1,25(x − 2)² + 5 (in cm²). Was folgt daraus?`,options:[`Für x = 2 ist die Strecke am kürzesten: √5 cm ≈ 2,24 cm`,`Für x = −2 ist die Strecke am kürzesten: √5 cm ≈ 2,24 cm`,`Für x = 2 ist die Strecke am kürzesten: 5 cm`,'Für x = 2 ist die Strecke am längsten.'],explain:'(x − 2)² ≥ 0 und für x = 2 gleich 0. Der kleinste Wert von |QPn|² ist 5, die kürzeste Strecke also √5 cm ≈ 2,24 cm.'}],
+   [{q:`Vereinfache ${LQP}² = (x − 4)² + (x + 2)².`,options:['2x² − 4x + 20','2x² − 12x + 20','x² − 4x + 20','2x² + 20'],explain:'(x − 4)² = x² − 8x + 16 und (x + 2)² = x² + 4x + 4. Zusammen: 2x² − 4x + 20.'},
+    {q:`Vereinfache ${LQP}² = (x − 2)² + (0,5x + 1)².`,options:['1,25x² − 3x + 5','1,25x² − 5x + 5','0,25x² − 3x + 5','1,25x² + 5'],explain:'(x − 2)² = x² − 4x + 4 und (0,5x + 1)² = 0,25x² + x + 1. Zusammen: 1,25x² − 3x + 5.'}]
+ ],done);}}
+ ]},
+9:{title:'Abschluss-Check',komp:'Alle Inhalte des Kapitels selbstständig anwenden und erkennen, welche Stationen du noch einmal wiederholen solltest.',
+ steps:[
+ {title:'Vorbereitung',render(body,done){
+   body.append(h('div',{class:'info',html:`<b>So funktioniert der Abschluss-Check:</b><br>• ${A9.length} Aufgaben aus allen Stationen, insgesamt ${A9MAX} Punkte<br>• Für jede Aufgabe hast du <b>einen Versuch</b>. Ob deine Antwort stimmt, siehst du erst in der Auswertung.<br>• Bestanden ab <b>${A9PASS} Punkten</b> (50 %)<br>• Du brauchst: Taschenrechner, Stift und Papier für Nebenrechnungen. Rechne Ergebnisse auf zwei Nachkommastellen.<br>• Arbeite ohne Merkheft – so siehst du, was du wirklich kannst.<br>• Dauer: etwa 30 bis 40 Minuten`}));
+   const tb=h('table',{class:'t'},h('tr',{},h('th',{},'Station'),h('th',{},'Aufgaben'),h('th',{},'Punkte')));
+   Object.keys(ST_SHORT).forEach(k=>{const a=A9.filter(x=>x.st===+k);tb.append(h('tr',{},h('td',{style:'text-align:left'},`${k}: ${ST_SHORT[k]}`),h('td',{},String(a.length)),h('td',{},String(a.reduce((s,x)=>s+x.pts,0)))));});
+   body.append(tb);
+   nextBtn(body,'Abschluss-Check starten →',done);
+ }},
+ {title:'Abschluss-Check',render:abschluss}
  ]}
 };
-const PLANNED=['Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit','Streckenlänge in Abhängigkeit von x','Abschluss-Check'];
 
 /* ====== Ansichten ====== */
 function unlocked(n){return TEACHER||n===1||!!state[n-1];}
@@ -1185,11 +1650,10 @@ function home(){
   app.append(h('div',{class:'card'},h('h2',{},'Rechtwinklige Dreiecke'),
     h('p',{html:'Du erarbeitest dieses Kapitel selbstständig. Du entdeckst Regeln, schreibst Merkkästen (<span style="background:#fff7d6;padding:0 6px;border:1px solid #e0b400;border-radius:4px">✏️ Merkheft</span>) in dein Merkheft ab, übst auf deinem Niveau und schließt jede Station mit einem Exit-Ticket ab.'}),
     h('p',{class:'muted'},'Du brauchst: Merkheft, Stift, Taschenrechner, Geodreieck.'),
-    h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft (Prototyp: Stationen 1–6)`)));
+    h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft`)));
   const hasData=Object.keys(state).length>0;
   const list=h('div',{class:'stations'});
   Object.keys(STATIONS).forEach(k=>{const n=+k,st=STATIONS[n];const b=h('button',{class:'stn'+(state[n]?' ok':''),type:'button'},h('div',{class:'nr'},state[n]?'✓':String(n)),h('div',{},h('div',{class:'t'},st.title),h('div',{class:'s'},st.komp)));if(!unlocked(n))b.disabled=true;b.addEventListener('click',()=>station(n));list.append(b);});
-  PLANNED.forEach((t,i)=>list.append(h('button',{class:'stn',type:'button',disabled:'disabled'},h('div',{class:'nr',style:'background:#9ca3af'},String(i+7)),h('div',{},h('div',{class:'t'},t),h('div',{class:'s'},'in Vorbereitung')))));
   app.append(list);
   if(TEACHER)app.append(teacherCard());
   if(hasData)app.append(h('div',{class:'card'},h('p',{class:'muted',style:'margin-top:0'},'Arbeitest du an einem geteilten iPad? Dann setze am Ende deinen Fortschritt zurück, damit die nächste Person von vorne beginnt.'),
@@ -1202,8 +1666,10 @@ function teacherCard(){
   const d0=new Date();inp.value=`${d0.getFullYear()}-${String(d0.getMonth()+1).padStart(2,'0')}-${String(d0.getDate()).padStart(2,'0')}`;
   const draw=()=>{const [y,m,d]=inp.value.split('-').map(Number);out.innerHTML='';if(!y)return;const dt=new Date(y,m-1,d);
     const t=h('table',{class:'t'},h('tr',{},h('th',{},'Station'),h('th',{},'2 von 3'),h('th',{},'3 von 3')));
-    Object.keys(STATIONS).forEach(k=>t.append(h('tr',{},h('td',{},`${k}: ${STATIONS[k].title}`),h('td',{class:'code',style:'font-size:17px'},codeFor(+k,2,dt)),h('td',{class:'code',style:'font-size:17px'},codeFor(+k,3,dt)))));
-    out.append(t);};
+    Object.keys(STATIONS).filter(k=>k!=='9').forEach(k=>t.append(h('tr',{},h('td',{},`${k}: ${STATIONS[k].title}`),h('td',{class:'code',style:'font-size:17px'},codeFor(+k,2,dt)),h('td',{class:'code',style:'font-size:17px'},codeFor(+k,3,dt)))));
+    const t9=h('table',{class:'t'},h('tr',{},h('th',{},'Abschluss-Check: Punkte'),h('th',{},'Kontrollcode')));
+    for(let sc=A9MAX;sc>=A9PASS;sc--)t9.append(h('tr',{},h('td',{},`${sc} von ${A9MAX}`),h('td',{class:'code',style:'font-size:17px'},codeFor(9,sc,dt))));
+    out.append(t,h('p',{class:'muted',style:'margin:12px 0 0'},`Station 9 (Abschluss-Check, bestanden ab ${A9PASS} Punkten):`),t9);};
   inp.addEventListener('change',draw);draw();
   card.append(h('label',{},'Datum: ',inp),out);
   return card;

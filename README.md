@@ -24,11 +24,13 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 | 4 | Satz des Pythagoras in ebenen Figuren | fertig |
 | 5 | Funktionale Abhängigkeiten und Extremwerte (Strecken und Flächen mit wandernden Punkten, Auffrischung quadratische Ergänzung) | fertig |
 | 6 | Pythagoras in Körpern (Quader, Würfel, gerade quadratische Pyramide) | fertig |
-| 7 | Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit | geplant |
-| 8 | Streckenlänge in Abhängigkeit von x | geplant |
-| 9 | Abschluss-Check | geplant |
+| 7 | Koordinatensystem: Strecken als Betrag eines Vektors, Rechtwinkligkeit von Dreiecken prüfen | fertig |
+| 8 | Streckenlänge in Abhängigkeit von x (Punkte P<sub>n</sub> auf einer Geraden, fester Punkt Q, kürzeste Strecke per quadratischer Ergänzung) | fertig |
+| 9 | Abschluss-Check | fertig |
 
-Noch offen: Sinus, Kosinus und Tangens (Lehrplan) und ein Punkteschema für den Abschluss-Check.
+**Abschluss-Check (Station 9):** 12 zufällig erzeugte Aufgaben aus den Stationen 1–8 mit insgesamt 18 Punkten (je 1 oder 2 Punkte), ein Versuch pro Aufgabe, die Rückmeldung kommt erst in der Auswertung. Bestanden ab 9 Punkten (50 %). Die Auswertung zeigt die Punkte je Station mit Wiederholungsempfehlung und alle Aufgaben mit Lösungsweg. Ab 9 Punkten erscheint die Check-in-Karte mit Kontrollcode, sonst kann der Check mit neuen Aufgaben wiederholt werden. Keine Note.
+
+Noch offen: Sinus, Kosinus und Tangens (Lehrplan).
 
 ## Nutzung
 
@@ -36,7 +38,7 @@ Noch offen: Sinus, Kosinus und Tangens (Lehrplan) und ein Punkteschema für den 
 
 **Über GitHub Pages:** im Repository unter *Settings → Pages* den Branch `main` und den Ordner `/ (root)` auswählen. Die Seite ist danach unter `https://<benutzername>.github.io/<repository>/` erreichbar.
 
-**Lehrkraft-Ansicht:** Mit `?lehrer=1` an der Adresse (`…/index.html?lehrer=1`) sind alle Stationen freigeschaltet. Auf der Übersicht steht dann eine Tabelle mit den gültigen Kontrollcodes je Station und Punktzahl für ein wählbares Datum.
+**Lehrkraft-Ansicht:** Mit `?lehrer=1` an der Adresse (`…/index.html?lehrer=1`) sind alle Stationen freigeschaltet. Auf der Übersicht steht dann eine Tabelle mit den gültigen Kontrollcodes je Station und Punktzahl für ein wählbares Datum (für den Abschluss-Check je Punktzahl von 9 bis 18).
 
 **Geteilte iPads:** Auf der Übersicht gibt es den Button „Fortschritt zurücksetzen“ (mit Sicherheitsabfrage). Er löscht alle gespeicherten Daten auf dem Gerät.
 
@@ -49,7 +51,7 @@ Ganz oben im Skript der Datei steht die Konfiguration `VIDEOS`. Pro Station kann
 ```js
 const VIDEOS={
   s1:{videoId:'XXXXXXXXXXX',query:'Satz des Pythagoras Herleitung'},
-  // s2 bis s6 analog
+  // s2 bis s8 analog
 };
 ```
 
@@ -74,6 +76,7 @@ Die Schreibweisen folgen dem [Zeichenkatalog des ISB für Mathematik an der Real
 - Strecke: AB mit Strich darüber, Länge der Strecke: |AB| mit Strich über AB (AB ohne Strich bezeichnet die Gerade)
 - Quadratwurzel mit Wurzelstrich über dem Radikanden, Brüche mit Bruchstrich
 - Winkelmaße α, β, γ; Umfang u; Flächeninhalt A
+- Vektoren mit Pfeil darüber, Koordinaten als Spaltenvektor; Punkte P(x | y)
 - wandernde Punkte mit Index n (P<sub>n</sub>, Q<sub>n</sub>); Schrägbilder mit Verzerrungswinkel 45° und Verkürzungsfaktor ½, verdeckte Kanten gestrichelt
 
 
