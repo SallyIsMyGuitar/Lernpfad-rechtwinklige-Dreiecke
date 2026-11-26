@@ -22,13 +22,13 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 | 2 | Seitenlängen berechnen (Hypotenuse, Kathete, Einheiten, Lage des rechten Winkels) | fertig |
 | 3 | Umkehrung: Rechtwinkligkeit prüfen | fertig |
 | 4 | Satz des Pythagoras in ebenen Figuren | fertig |
-| 5 | Funktionale Abhängigkeiten und Extremwerte | geplant |
-| 6 | Pythagoras in Körpern | geplant |
+| 5 | Funktionale Abhängigkeiten und Extremwerte (Strecken und Flächen mit wandernden Punkten, Auffrischung quadratische Ergänzung) | fertig |
+| 6 | Pythagoras in Körpern (Quader, Würfel, gerade quadratische Pyramide) | fertig |
 | 7 | Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit | geplant |
 | 8 | Streckenlänge in Abhängigkeit von x | geplant |
 | 9 | Abschluss-Check | geplant |
 
-Noch offen: Sinus, Kosinus und Tangens (Lehrplan), eine Auffrischung der quadratischen Ergänzung vor Station 5 und ein Punkteschema für den Abschluss-Check.
+Noch offen: Sinus, Kosinus und Tangens (Lehrplan) und ein Punkteschema für den Abschluss-Check.
 
 ## Nutzung
 
@@ -49,7 +49,7 @@ Ganz oben im Skript der Datei steht die Konfiguration `VIDEOS`. Pro Station kann
 ```js
 const VIDEOS={
   s1:{videoId:'XXXXXXXXXXX',query:'Satz des Pythagoras Herleitung'},
-  // s2, s3, s4 analog
+  // s2 bis s6 analog
 };
 ```
 
@@ -74,6 +74,7 @@ Die Schreibweisen folgen dem [Zeichenkatalog des ISB für Mathematik an der Real
 - Strecke: AB mit Strich darüber, Länge der Strecke: |AB| mit Strich über AB (AB ohne Strich bezeichnet die Gerade)
 - Quadratwurzel mit Wurzelstrich über dem Radikanden, Brüche mit Bruchstrich
 - Winkelmaße α, β, γ; Umfang u; Flächeninhalt A
+- wandernde Punkte mit Index n (P<sub>n</sub>, Q<sub>n</sub>); Schrägbilder mit Verzerrungswinkel 45° und Verkürzungsfaktor ½, verdeckte Kanten gestrichelt
 
 
 Alle Aufgaben, Merkkästen und Texte sind eigene Formulierungen. Es sind keine Inhalte aus Schulbüchern oder Leistungsnachweisen übernommen.
