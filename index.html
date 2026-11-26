@@ -94,7 +94,9 @@ const VIDEOS={
   s1:{videoId:null,query:'Satz des Pythagoras Herleitung Erklärung Katheten Hypotenuse'},
   s2:{videoId:null,query:'Satz des Pythagoras Hypotenuse und Kathete berechnen'},
   s3:{videoId:null,query:'Umkehrung Satz des Pythagoras rechtwinklig nachweisen'},
-  s4:{videoId:null,query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'}
+  s4:{videoId:null,query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'},
+  s5:{videoId:null,query:'Extremwert quadratische Ergänzung Streckenlänge Satz des Pythagoras'},
+  s6:{videoId:null,query:'Raumdiagonale Quader Pyramide Satz des Pythagoras'}
 };
 const KEY='lernpfad-rechtwinklige-dreiecke-v1';
 const TEACHER=new URLSearchParams(location.search).has('lehrer');
@@ -172,7 +174,38 @@ h² = 10² − 6² = 100 − 36 = 64 ⇒ h = 8 cm<br>
 A = ${HALF} · 12 cm · 8 cm = 48 cm²</div>
 <div class="ex"><b>Beispiel 2:</b> Raute mit e = 48 mm und f = 64 mm<br>
 a² = 24² + 32² = 576 + 1024 = 1600 ⇒ a = 40 mm<br>
-Umfang u = 4 · 40 mm = 160 mm</div>`}
+Umfang u = 4 · 40 mm = 160 mm</div>`},
+5:{title:'Funktionale Abhängigkeiten und Extremwerte',html:`
+<div class="mh">Funktionale Abhängigkeiten und Extremwerte</div>
+<p>Wandern Punkte P<sub>n</sub>, Q<sub>n</sub>, … auf den Seiten einer Figur, hängen Streckenlängen und Flächeninhalte von x ab.</p>
+<p><b>Vorgehen:</b><br>
+1. Skizze: rechtwinkliges Teildreieck suchen, Katheten in Abhängigkeit von x angeben.<br>
+2. Satz des Pythagoras: Term für ${len('P<sub>n</sub>Q<sub>n</sub>')}² aufstellen und vereinfachen.<br>
+3. Werte für x angeben: Alle Strecken müssen länger als 0 cm sein und die Punkte auf ihren Seiten liegen.<br>
+4. Quadratische Ergänzung: Term in die Form a(x − d)² + e bringen.<br>
+5. Ablesen: a &gt; 0 ⇒ <b>kleinster</b> Wert e für x = d; a &lt; 0 ⇒ <b>größter</b> Wert e für x = d.<br>
+6. Bei Streckenlängen die Wurzel ziehen: Ist der Radikand am kleinsten, ist auch die Wurzel am kleinsten. Antwortsatz.</p>
+<div class="ex"><b>Beispiel:</b> Quadrat ABCD mit 8 cm Seitenlänge; ${len('AP<sub>n</sub>')} = ${len('BQ<sub>n</sub>')} = x cm<br>
+${len('P<sub>n</sub>B')} = (8 − x) cm; 0 &lt; x &lt; 8<br>
+${len('P<sub>n</sub>Q<sub>n</sub>')}² = (8 − x)² + x² = 2x² − 16x + 64<br>
+= 2(x² − 8x + 4² − 4²) + 64 = 2(x − 4)² + 32<br>
+Für x = 4 ist die Strecke am kürzesten: ${len('P<sub>n</sub>Q<sub>n</sub>')}<sub>min</sub> = √32 cm ≈ 5,66 cm</div>`},
+6:{title:'Satz des Pythagoras in Körpern',html:`
+<div class="mh">Satz des Pythagoras in Körpern</div>
+<p>Vorgehen: rechtwinkliges Dreieck im Körper suchen (in einer Seitenfläche oder im Inneren) und als ebene Skizze herauszeichnen. Oft braucht man zwei Schritte.</p>
+<p><b>Quader</b> (Länge a, Breite b, Höhe c):<br>
+Flächendiagonale der Grundfläche: e² = a² + b²<br>
+Raumdiagonale: d² = e² + c² &nbsp;⇒&nbsp; <b>d = ${sq('a² + b² + c²')}</b></p>
+<p><b>Würfel</b> (Kantenlänge a): Flächendiagonale e = a · √2; Raumdiagonale <b>d = a · √3</b></p>
+<p><b>Gerade quadratische Pyramide</b> (Grundkante a, Höhe h):<br>
+Höhe der Seitenfläche: h<sub>s</sub>² = h² + (${fr('a','2')})²<br>
+Seitenkante: s² = h<sub>s</sub>² + (${fr('a','2')})²</p>
+<div class="ex"><b>Beispiel 1:</b> Quader mit a = 4 cm; b = 3 cm; c = 12 cm<br>
+e² = 4² + 3² = 25 ⇒ e = 5 cm<br>
+d² = 5² + 12² = 169 ⇒ d = 13 cm</div>
+<div class="ex"><b>Beispiel 2:</b> Pyramide mit a = 6 cm; h = 4 cm<br>
+h<sub>s</sub>² = 4² + 3² = 25 ⇒ h<sub>s</sub> = 5 cm<br>
+s² = 5² + 3² = 34 ⇒ s ≈ 5,83 cm</div>`}
 };
 
 /* ====== Zeichnen: Winkelbogen (Zeichenkatalog: rechter Winkel = Bogen mit Punkt) ====== */
@@ -642,6 +675,268 @@ function s4plus(){
     solution:`<div class="nw">(${fr('f','2')})² = ${a}² − ${e/2}² = ${a*a-e*e/4}</div><div>${fr('f','2')} ≈ ${fmt(f/2,2)} cm ⇒ f ≈ <b>${fmt(f,2)} cm</b></div>`};
 }
 
+/* ====== Station 5: Funktionale Abhängigkeiten und Extremwerte ====== */
+const PN='P<sub>n</sub>',QN='Q<sub>n</sub>';
+const LPQ=len(PN+QN),LPB=len(PN+'B'),LBQ=len('B'+QN),LAP=len('A'+PN);
+const svgSub=s=>`${s}<tspan font-size=".36" dy=".14">n</tspan>`;
+// Rechteck ABCD mit wandernden Punkten Pn auf [AB] (|APn| = x) und Qn auf [BC] (|BQn| = k·x)
+function moveSvg(o){
+  const a=o.a,b=o.b,k=o.k||1,x=o.x,s=8/Math.max(a,b),W=a*s,H=b*s;
+  const A=[0,H],B=[W,H],C=[W,0],D=[0,0],P=[x*s,H],Q=[W,H-k*x*s];
+  const t=(p,str,anc='middle',w='')=>`<text x="${p[0]}" y="${p[1]}" font-size=".5" text-anchor="${anc}" dominant-baseline="middle" ${w}>${str}</text>`;
+  const V='font-weight="700" fill="#1e3a8a"';
+  let g=`<rect x="0" y="0" width="${W}" height="${H}" fill="#fff" stroke="#1f2937" stroke-width=".07"/>`;
+  if(o.square){const R=[W-x*s,0],S=[0,x*s];g+=`<polygon points="${P} ${Q} ${R} ${S}" fill="#fde7d6" fill-opacity=".8" stroke="#ea580c" stroke-width=".06"/>`+t([R[0],-.4],svgSub('R'),'middle',V)+t([-.4,S[1]],svgSub('S'),'end',V);}
+  g+=`<polygon points="${P} ${B} ${Q}" fill="${o.fillTri?'#bfdbfe':'#eef4ff'}" stroke="none"/>`;
+  g+=`<rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="#1f2937" stroke-width=".07"/>`;
+  g+=`<line x1="${P[0]}" y1="${P[1]}" x2="${Q[0]}" y2="${Q[1]}" stroke="#dc2626" stroke-width=".1"/>`;
+  g+=angMark(B,[-1,0],[0,-1],.5,true,.05);
+  [P,Q].forEach(p=>g+=`<circle cx="${p[0]}" cy="${p[1]}" r=".09" fill="#dc2626"/>`);
+  g+=t([-.35,H+.4],'A','end',V)+t([W+.35,H+.4],'B','start',V)+t([W+.35,-.35],'C','start',V)+t([-.35,-.35],'D','end',V);
+  g+=t([P[0],H+.5],svgSub('P'),'middle',V)+t([W+.4,Q[1]],svgSub('Q'),'start',V);
+  if(o.lx)g+=t([P[0]/2,H-.35],o.lx);
+  if(o.lpb)g+=t([(P[0]+W)/2,H-.35],o.lpb);
+  if(o.lq)g+=t([W-.25,(H+Q[1])/2],o.lq,'end');
+  if(o.la)g+=o.square?t([-.45,H/2],o.la,'end'):t([W/2,-.45],o.la);
+  if(o.lb)g+=t([-.45,H/2],o.lb,'end');
+  return `<svg class="fig" style="width:${o.w||340}px" viewBox="-2.4 -1.3 ${W+4.8} ${H+2.6}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+function extremExperiment(body,done){
+  let x=2,rows=[];
+  const L=v=>Math.sqrt((8-v)*(8-v)+v*v);
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb','aria-live':'polite'});
+  const out=h('output',{},'2'),r=h('input',{type:'range',min:.5,max:7.5,step:.5,value:2});
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  function draw(){fig.innerHTML=moveSvg({a:8,b:8,x,lx:'x',lq:'x',la:'8 cm',w:360});info.innerHTML=`${LPB} = ${fmt(8-x,1)} cm &nbsp;|&nbsp; ${LBQ} = ${fmt(x,1)} cm &nbsp;|&nbsp; ${LPQ} ≈ ${fmt(L(x),2)} cm`;}
+  r.addEventListener('input',()=>{x=parseFloat(r.value);out.textContent=r.value.replace('.',',');draw();});
+  function table(){tbl.innerHTML='';if(!rows.length)return;
+    const t=h('table',{class:'t'},h('tr',{},...['x',LPB,LBQ,LPQ+'²',LPQ].map(v=>h('th',{html:v}))));
+    rows.forEach(v=>t.append(h('tr',{},...[fmt(v,1),fmt(8-v,1),fmt(v,1),fmt((8-v)*(8-v)+v*v,2),fmt(L(v),2)].map(z=>h('td',{},z)))));tbl.append(t);}
+  add.addEventListener('click',()=>{if(!rows.includes(x)){rows.push(x);rows.sort((p,q)=>p-q);}table();
+    const lo=rows.filter(v=>v<4).length,hi=rows.filter(v=>v>4).length;go.disabled=!(rows.length>=5&&lo>=2&&hi>=2);
+    fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 5 verschiedene Werte für x ein, davon mindestens 2 kleiner als 4 und 2 größer als 4 (bisher: ${rows.length}).`:'Gut! Für welches x ist die Strecke am kürzesten? Was fällt dir an den Werten links und rechts davon auf? Klicke dann auf „Fertig – weiter“.';});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;r.disabled=true;done();});
+  body.append(h('p',{html:`<b>Auftrag:</b> Das Quadrat ABCD hat die Seitenlänge 8 cm. Der Punkt ${PN} wandert auf der Seite ${ov('AB')}, der Punkt ${QN} auf der Seite ${ov('BC')}. Dabei gilt immer ${LAP} = ${LBQ} = x cm. Verändere x und beobachte die Länge der roten Strecke ${ov(PN+QN)}. Trage Messungen in die Tabelle ein.`}),h('div',{},h('label',{},'x = ',out,' cm'),r),fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+// |PnQn|² = (a − x)² + (kx)² = m·x² − 2a·x + a² mit m = 1 + k²
+function s5data(a,b,k){const m=1+k*k,d=a/m,e=a*a-a*a/m,max=Math.min(a,b/k);return {m,d,e,max};}
+function s5setup(a,b,k){const q=k===1?'x':k+'x';return (a===b?`Im Quadrat ABCD mit der Seitenlänge ${a} cm`:`Im Rechteck ABCD mit ${len('AB')} = ${a} cm und ${len('BC')} = ${b} cm`)+` liegen Punkte ${PN} auf ${ov('AB')} und Punkte ${QN} auf ${ov('BC')}. Es gilt ${LAP} = x cm und ${LBQ} = ${q} cm.`;}
+function s5fig(a,b,k,o={}){const xm=Math.min(a,b/k);return moveSvg({a,b,k,x:xm*.38,lx:'x',lq:k===1?'x':k+'x',la:a+' cm',lb:a===b?null:b+' cm',...o});}
+function s5term(a,k){const m=1+k*k;return `${m}x² − ${2*a}x + ${a*a}`;}
+function s5steps(a,k){
+  const {m,d,e}=s5data(a,1e9,k),kq=k===1?'x²':`(${k}x)²`;
+  return `<div>Rechtwinkliges Dreieck ${PN}B${QN} (rechter Winkel bei B): ${LPB} = (${a} − x) cm; ${LBQ} = ${k===1?'x':k+'x'} cm</div>`+
+    `<div>${LPQ}² = (${a} − x)² + ${kq} = ${a*a} − ${2*a}x + x² + ${k*k===1?'':k*k}x² = ${s5term(a,k)}</div>`+
+    `<div>= ${m}(x² − ${fmt(2*a/m)}x) + ${a*a}</div>`+
+    `<div>= ${m}(x² − ${fmt(2*a/m)}x + ${fmt(d)}² − ${fmt(d)}²) + ${a*a}</div>`+
+    `<div>= ${m}(x − ${fmt(d)})² − ${fmt(m*d*d)} + ${a*a} = ${m}(x − ${fmt(d)})² + ${fmt(e)}</div>`+
+    `<div>(x − ${fmt(d)})² ≥ 0 ⇒ kleinster Wert für x = ${fmt(d)}: ${LPQ}² = ${fmt(e)}</div>`;
+}
+function s5leicht(){
+  if(Math.random()<.5){
+    const a=pick([6,8,10,12]),b=Math.random()<.5?a:pick([a-2,a+2]),x=rint(1,Math.min(a,b)-1),v=Math.sqrt((a-x)*(a-x)+x*x);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(v*100)/100,prompt:s5fig(a,b,1),question:s5setup(a,b,1)+` Berechne ${LPQ} für x = ${x} (zwei Nachkommastellen).`,
+      badHint:`Setze x = ${x} ein: ${LPB} = ${a} − ${x} und ${LBQ} = ${x}. Dann Satz des Pythagoras im Dreieck ${PN}B${QN}.`,
+      hints:[`Der rechte Winkel liegt bei B. ${ov(PN+QN)} ist die Hypotenuse.`,`${LPB} = (${a} − ${x}) cm = ${a-x} cm`],
+      solution:`<div>${LPB} = ${a} cm − ${x} cm = ${a-x} cm; ${LBQ} = ${x} cm</div><div>${LPQ}² = ${a-x}² + ${x}² = ${(a-x)*(a-x)} + ${x*x} = ${(a-x)*(a-x)+x*x}</div><div>${LPQ} = √${(a-x)*(a-x)+x*x} ≈ <b>${fmt(v)} cm</b></div>`};
+  }
+  const k=Math.random()<.7?1:2,a=pick([6,8,10,12]),b=k===1?a:a+pick([0,2]),kq=k===1?'x':`(${k}x)`;
+  return {kind:'mc',prompt:s5fig(a,b,k),question:s5setup(a,b,k)+` Welcher Term gilt für ${LPQ}²?`,
+    options:[`${LPQ}² = (${a} − x)² + ${kq}²`,`${LPQ}² = (${a} + x)² + ${kq}²`,`${LPQ}² = ${a}² + ${kq}²`,`${LPQ}² = (${a} − x)² − ${kq}²`],correct:0,
+    badHint:`Die Katheten im Dreieck ${PN}B${QN} sind ${ov(PN+'B')} und ${ov('B'+QN)}. Wie lang ist ${ov(PN+'B')}, wenn von ${len('AB')} = ${a} cm das Stück x abgeht?`,
+    hints:[`Der rechte Winkel liegt bei B. Die Hypotenuse ist ${ov(PN+QN)}.`,`${LPB} = (${a} − x) cm`],
+    solution:`<div>Katheten: ${LPB} = (${a} − x) cm und ${LBQ} = ${k===1?'x':k+'x'} cm</div><div>Satz des Pythagoras: <b>${LPQ}² = (${a} − x)² + ${kq}²</b></div>`};
+}
+function s5standard(){
+  if(Math.random()<.65){
+    const a=pick([6,8,10,12,14]),b=rint(a/2+1,a+3),{d,e,max}=s5data(a,b,1),v=Math.sqrt(e);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(v*100)/100,prompt:s5fig(a,b,1),
+      question:s5setup(a,b,1)+` Berechne die minimale Länge ${LPQ}<sub>min</sub> (zwei Nachkommastellen).`,
+      badHint:`Stelle ${LPQ}² als Term auf, bringe ihn mit quadratischer Ergänzung in die Form 2(x − …)² + … und lies den kleinsten Wert ab. Am Ende die Wurzel ziehen.`,
+      hints:[`${LPQ}² = (${a} − x)² + x² = ${s5term(a,1)}`,`Klammere 2 aus: 2(x² − ${a}x) + ${a*a}. Ergänze (${a} : 2)² = ${d*d}.`,`Der kleinste Wert von ${LPQ}² ist ${fmt(e)}.`],
+      solution:s5steps(a,1)+`<div>${LPQ}<sub>min</sub> = √${fmt(e)} cm ≈ <b>${fmt(v)} cm</b> (für x = ${fmt(d)}; 0 < ${fmt(d)} < ${fmt(max)} ✓)</div>`};
+  }
+  const a=pick([5,10,15]),b=rint(Math.ceil(.4*a)+1,a+3),{m,d,e}=s5data(a,b,2);
+  return {kind:'num',unit:'',tol:.001,answer:d,prompt:s5fig(a,b,2),
+    question:s5setup(a,b,2)+` Für welchen Wert von x ist die Strecke ${ov(PN+QN)} am kürzesten?`,
+    badHint:`Stelle ${LPQ}² = (${a} − x)² + (2x)² auf, vereinfache und klammere ${m} aus. Dann quadratisch ergänzen.`,
+    hints:[`(2x)² = 4x². Also ${LPQ}² = ${s5term(a,2)}.`,`${m}(x² − ${fmt(2*a/m)}x) + ${a*a}. Ergänze (${fmt(2*a/m)} : 2)² = ${fmt(d*d)}.`],
+    solution:s5steps(a,2)+`<div>Die Strecke ist für <b>x = ${fmt(d)}</b> am kürzesten.</div>`};
+}
+function s5plus(){
+  const w=rint(0,3);
+  if(w===0){const a=pick([6,8,10,12,14]),{d,e}=s5data(a,a,1);
+    return {kind:'num',unit:'cm²',tol:.001,answer:e,prompt:s5fig(a,a,1,{square:true}),
+      question:s5setup(a,a,1)+` Außerdem liegen Punkte R<sub>n</sub> auf ${ov('CD')} und S<sub>n</sub> auf ${ov('DA')} mit ${len('CR<sub>n</sub>')} = ${len('DS<sub>n</sub>')} = x cm. So entstehen Quadrate ${PN}${QN}R<sub>n</sub>S<sub>n</sub>. Berechne den kleinsten Flächeninhalt A<sub>min</sub>.`,
+      badHint:`Die Seitenlänge des inneren Quadrats ist ${LPQ}. Also gilt A(x) = ${LPQ}². Stelle den Term auf und ergänze quadratisch.`,
+      hints:[`A(x) = ${LPQ}² = (${a} − x)² + x²`,`A(x) = ${s5term(a,1)} = 2(x² − ${a}x) + ${a*a}`,`Ergänze (${a} : 2)² = ${d*d}.`],
+      solution:s5steps(a,1)+`<div>A(x) = ${LPQ}² ⇒ <b>A<sub>min</sub> = ${fmt(e)} cm²</b> für x = ${fmt(d)}</div>`};}
+  if(w===1){const a=pick([6,8,10,12]),b=rint(a/2+1,a+3),d=a/2,e=a*a/8;
+    return {kind:'num',unit:'cm²',tol:.001,answer:e,prompt:s5fig(a,b,1,{fillTri:true}),
+      question:s5setup(a,b,1)+` Berechne den größten Flächeninhalt A<sub>max</sub> der Dreiecke ${PN}B${QN}.`,
+      badHint:`A(x) = ${HALF} · ${LPB} · ${LBQ} = 0,5 · (${a} − x) · x. Ausmultiplizieren und quadratisch ergänzen (−0,5 ausklammern).`,
+      hints:['Die Katheten sind Grundseite und Höhe des rechtwinkligen Dreiecks.',`A(x) = 0,5 · (${a} − x) · x = −0,5x² + ${fmt(a/2)}x`,`= −0,5(x² − ${a}x) = −0,5(x² − ${a}x + ${d}² − ${d}²)`],
+      solution:`<div>A(x) = ${HALF} · (${a} − x) · x = −0,5x² + ${fmt(a/2)}x</div><div>= −0,5(x² − ${a}x + ${d}² − ${d}²)</div><div>= −0,5(x − ${d})² + 0,5 · ${d*d} = −0,5(x − ${d})² + ${fmt(e)}</div><div>Vor der Klammer steht −0,5 &lt; 0 ⇒ größter Wert für x = ${d}</div><div><b>A<sub>max</sub> = ${fmt(e)} cm²</b></div>`};}
+  if(w===2){const a=pick([5,10,15]),b=rint(Math.ceil(.4*a)+1,a+3),{d,e,max}=s5data(a,b,2),v=Math.sqrt(e);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(v*100)/100,prompt:s5fig(a,b,2),
+      question:s5setup(a,b,2)+` Berechne die minimale Länge ${LPQ}<sub>min</sub> (zwei Nachkommastellen).`,
+      badHint:`${LPQ}² = (${a} − x)² + (2x)². Vereinfachen, 5 ausklammern, quadratisch ergänzen, Wurzel ziehen.`,
+      hints:[`${LPQ}² = ${s5term(a,2)}`,`= 5(x² − ${fmt(2*a/5)}x) + ${a*a}`,`Ergänze (${fmt(2*a/5)} : 2)² = ${fmt(d*d)}.`],
+      solution:s5steps(a,2)+`<div>${LPQ}<sub>min</sub> = √${fmt(e)} cm ≈ <b>${fmt(v)} cm</b> (für x = ${fmt(d)}; 0 < ${fmt(d)} < ${fmt(max)} ✓)</div>`};}
+  let a,b;do{a=pick([8,10,12]);b=pick([6,8,10,12,14]);}while(!(b/2<a&&b!==a&&b!==a/2));
+  return {kind:'mc',prompt:s5fig(a,b,2),question:s5setup(a,b,2)+' Welche Werte darf x annehmen, damit Dreiecke '+PN+'B'+QN+' entstehen?',
+    options:[`0 < x < ${b/2}`,`0 < x < ${a}`,`0 < x < ${b}`,`0 < x < ${a/2}`],correct:0,
+    badHint:`Beide Punkte müssen auf ihrer Seite bleiben: x < ${a} (wegen ${PN}) und 2x < ${b} (wegen ${QN}). Welche Bedingung ist strenger?`,
+    hints:[`${PN} liegt auf ${ov('AB')}: x < ${a}.`,`${QN} liegt auf ${ov('BC')}: 2x < ${b}, also x < ${b/2}.`],
+    solution:`<div>${PN} auf ${ov('AB')}: 0 < x < ${a}</div><div>${QN} auf ${ov('BC')}: 0 < 2x < ${b} ⇒ 0 < x < ${b/2}</div><div>Beide Bedingungen gleichzeitig: <b>0 < x < ${b/2}</b></div>`};
+}
+
+/* ====== Station 6: Pythagoras in Körpern ====== */
+const Q45=.5*Math.SQRT1_2; // Schrägbild: Verzerrungswinkel 45°, Verkürzungsfaktor 1/2
+const HS='h<sub>s</sub>',HSV='h<tspan font-size=".32" dy=".1">s</tspan>'; // HSV: für SVG-Beschriftungen
+const prj=(p,k)=>[(p[0]+p[1]*Q45)*k,-(p[2]+p[1]*Q45)*k];
+function view3d(P,w,pad=1.3){const pts=Object.values(P),xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);const x0=Math.min(...xs)-pad-.6,y0=Math.min(...ys)-pad;
+  return `class="fig" style="width:${w}px" viewBox="${x0} ${y0} ${Math.max(...xs)-x0+pad+2.4} ${Math.max(...ys)-y0+pad}" xmlns="http://www.w3.org/2000/svg"`;}
+function draw3d(P,cen,vo={}){
+  const uv=(p,q)=>{const dx=P[q][0]-P[p][0],dy=P[q][1]-P[p][1],l=Math.hypot(dx,dy)||1;return[dx/l,dy/l];};
+  const ln=(p,q,col='#1f2937',sw=.07,dash)=>`<line x1="${P[p][0]}" y1="${P[p][1]}" x2="${P[q][0]}" y2="${P[q][1]}" stroke="${col}" stroke-width="${sw}"${dash?` stroke-dasharray="${dash}"`:''} stroke-linecap="round"/>`;
+  const poly=(ns,col)=>`<polygon points="${ns.map(n=>P[n].join(',')).join(' ')}" fill="${col}" fill-opacity=".45" stroke="none"/>`;
+  const vx=n=>{let ox,oy;if(vo[n])[ox,oy]=vo[n];else{const dx=P[n][0]-cen[0],dy=P[n][1]-cen[1],l=Math.hypot(dx,dy)||1;ox=dx/l*.45;oy=dy/l*.45;}return `<text x="${P[n][0]+ox}" y="${P[n][1]+oy}" font-size=".48" font-weight="700" fill="#1e3a8a" text-anchor="middle" dominant-baseline="middle">${n}</text>`;};
+  const lab=(p,q,s,off,col='#111',anc='middle',f=.5)=>`<text x="${P[p][0]+(P[q][0]-P[p][0])*f+off[0]}" y="${P[p][1]+(P[q][1]-P[p][1])*f+off[1]}" font-size=".46" text-anchor="${anc}" dominant-baseline="middle" fill="${col}" font-weight="600">${s}</text>`;
+  const right=(v,p,q)=>angMark(P[v],uv(v,p),uv(v,q),.42,true,.045);
+  return {ln,poly,vx,lab,right};
+}
+function quaderSvg(o){
+  const {a,b,c}=o,k=7/Math.max(a+b*Q45,c+b*Q45),V={A:[0,0,0],B:[a,0,0],C:[a,b,0],D:[0,b,0],E:[0,0,c],F:[a,0,c],G:[a,b,c],H:[0,b,c]},P={};
+  for(const n in V)P[n]=prj(V[n],k);
+  const cen=prj([a/2,b/2,c/2],k),d=draw3d(P,cen,{A:[-.35,.35],B:[.2,.45],C:[.45,-.15],D:[-.35,-.3],E:[-.4,0],F:[-.3,-.32],G:[.3,-.3],H:[-.3,-.3]}),D='.22 .16';
+  let g=`<polygon points="${['A','B','F','G','H','E'].map(n=>P[n].join(',')).join(' ')}" fill="#f8fafc" stroke="none"/>`;
+  if(o.tri==='base')g+=d.poly(['A','B','C'],'#93c5fd');
+  if(o.tri==='diag')g+=d.poly(['A','C','G'],'#fdba74');
+  g+=d.ln('C','D','#6b7280',.05,D)+d.ln('D','A','#6b7280',.05,D)+d.ln('D','H','#6b7280',.05,D);
+  [['A','B'],['B','C'],['E','F'],['F','G'],['G','H'],['H','E'],['A','E'],['B','F'],['C','G']].forEach(([p,q])=>g+=d.ln(p,q));
+  if(o.e)g+=d.ln('A','C','#2563eb',.09,'.3 .14');
+  if(o.d)g+=d.ln('A','G','#dc2626',.1);
+  if(o.tri==='base')g+=d.right('B','A','C');
+  if(o.tri==='diag')g+=d.right('C','A','G');
+  Object.keys(V).forEach(n=>g+=d.vx(n));
+  if(o.la)g+=d.lab('A','B',o.la,[0,.55]);
+  if(o.lb)g+=d.lab('B','C',o.lb,[.4,.5],'#111','start');
+  if(o.lc)g+=d.lab('C','G',o.lc,[.3,0],'#111','start');
+  if(o.le)g+=d.lab('A','C',o.le,[-.25,-.35],'#1d4ed8');
+  if(o.ld)g+=d.lab('A','G',o.ld,[-.45,-.25],'#b91c1c');
+  return `<svg ${view3d(P,o.w||340)}>${g}</svg>`;
+}
+function pyrSvg(o){
+  const {a,h:hh}=o,k=7/Math.max(a+a*Q45,hh+a*Q45),V={A:[0,0,0],B:[a,0,0],C:[a,a,0],D:[0,a,0],S:[a/2,a/2,hh],M:[a/2,a/2,0],N:[a,a/2,0]},P={};
+  for(const n in V)P[n]=prj(V[n],k);
+  const cen=prj([a/2,a/2,hh/3],k),d=draw3d(P,cen),D='.22 .16';
+  let g='';
+  if(o.tri==='mns')g+=d.poly(['M','N','S'],'#fdba74');
+  if(o.tri==='cns')g+=d.poly(['C','N','S'],'#93c5fd');
+  g+=d.ln('C','D','#6b7280',.05,D)+d.ln('D','A','#6b7280',.05,D)+d.ln('D','S','#6b7280',.05,D);
+  [['A','B'],['B','C'],['S','A'],['S','B'],['S','C']].forEach(([p,q])=>g+=d.ln(p,q));
+  g+=d.ln('M','S','#7c3aed',.07,D)+d.ln('M','N','#6b7280',.05,D);
+  if(o.hs)g+=d.ln('N','S','#ea580c',.08);
+  if(o.s)g+=d.ln('C','S','#dc2626',.1);
+  if(o.tri==='mns'||o.hs)g+=d.right('M','N','S');
+  if(o.tri==='cns')g+=d.right('N','C','S');
+  ['A','B','C','D','S'].forEach(n=>g+=d.vx(n));
+  g+=`<text x="${P.M[0]-.35}" y="${P.M[1]+.3}" font-size=".42" font-weight="700" fill="#1e3a8a" text-anchor="middle">M</text><text x="${P.N[0]+.4}" y="${P.N[1]+.15}" font-size=".42" font-weight="700" fill="#1e3a8a" text-anchor="start">N</text>`;
+  if(o.la)g+=d.lab('A','B',o.la,[0,.55]);
+  if(o.lh)g+=d.lab('S','M',o.lh,[-.15,0],'#6d28d9','end',.72);
+  if(o.lhs)g+=d.lab('N','S',o.lhs,[-.1,0],'#c2410c','end',.25);
+  if(o.ls)g+=d.lab('C','S',o.ls,[.3,-.1],'#b91c1c','start');
+  return `<svg ${view3d(P,o.w||320)}>${g}</svg>`;
+}
+function quaderExperiment(body,done){
+  let a=4,b=3,c=2,rows=[];
+  const fig=h('div'),info=h('div',{class:'muted'}),tbl=h('div'),fb=h('div',{class:'fb','aria-live':'polite'});
+  const mk=(label,val,cb)=>{const o=h('output',{},String(val));const r=h('input',{type:'range',min:1,max:8,step:1,value:val});r.addEventListener('input',()=>{o.textContent=r.value;cb(parseFloat(r.value));});return h('div',{},h('label',{},label+' = ',o,' cm'),r);};
+  const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
+  const dd=()=>Math.sqrt(a*a+b*b+c*c);
+  function draw(){fig.innerHTML=quaderSvg({a,b,c,e:true,d:true,tri:'diag',le:'e',ld:'d',la:'a',lb:'b',lc:'c',w:380});info.innerHTML=`Gemessen: Flächendiagonale e ≈ ${fmt(Math.hypot(a,b),2)} cm &nbsp;|&nbsp; Raumdiagonale d ≈ ${fmt(dd(),2)} cm`;}
+  function table(){tbl.innerHTML='';if(!rows.length)return;const t=h('table',{class:'t'},h('tr',{},...['a','b','c','a² + b² + c²','d (gemessen)','d²'].map(x=>h('th',{},x))));
+    rows.forEach(x=>{const s=x.a*x.a+x.b*x.b+x.c*x.c;t.append(h('tr',{},...[x.a,x.b,x.c,s,fmt(Math.sqrt(s),2),fmt(s,1)].map(v=>h('td',{},String(v)))));});tbl.append(t);}
+  add.addEventListener('click',()=>{const key=[a,b,c].join('/');if(!rows.some(x=>x.key===key))rows.push({a,b,c,key});if(rows.length>8)rows.shift();table();
+    go.disabled=rows.length<3;fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 3 verschiedene Quader ein (bisher: ${rows.length}).`:'Gut! Vergleiche die Spalten „a² + b² + c²“ und „d²“. Was fällt dir auf? Klicke dann auf „Fertig – weiter“.';});
+  go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;done();});
+  body.append(h('p',{html:'<b>Auftrag:</b> Der Quader hat die Länge a, die Breite b und die Höhe c. Die <span style="color:#1d4ed8;font-weight:600">Flächendiagonale e</span> verläuft in der Grundfläche von A nach C, die <span style="color:#b91c1c;font-weight:600">Raumdiagonale d</span> durch den Körper von A nach G. Verändere die Maße und trage <b>mindestens 3 verschiedene Quader</b> in die Tabelle ein.'}),
+    mk('Länge a',a,v=>{a=v;draw();}),mk('Breite b',b,v=>{b=v;draw();}),mk('Höhe c',c,v=>{c=v;draw();}),fig,info,h('div',{},add,go),fb,tbl);
+  draw();
+}
+const QUADS=[[1,2,2,3],[2,3,6,7],[1,4,8,9],[4,4,7,9],[2,6,9,11],[6,6,7,11],[3,4,12,13],[2,5,14,15],[2,10,11,15],[8,9,12,17]];
+function s6dsol(a,b,c,u='cm'){const e2=a*a+b*b,d2=e2+c*c,d=Math.sqrt(d2);
+  return `<div>1. Grundfläche, Dreieck ABC: e² = ${fmt(a)}² + ${fmt(b)}² = ${fmt(a*a)} + ${fmt(b*b)} = ${fmt(e2)}</div><div>2. Dreieck ACG: d² = e² + c² = ${fmt(e2)} + ${fmt(c)}² = ${fmt(e2)} + ${fmt(c*c)} = ${fmt(d2)}</div><div>d = √${fmt(d2)} ${Number.isInteger(d)?'=':'≈'} <b>${fmt(d)} ${u}</b></div>`;}
+const QFIG=o=>quaderSvg({a:5,b:3.2,c:3,...o});
+function s6hs(a,hh){const hs2=hh*hh+a*a/4;return {hs2,hs:Math.sqrt(hs2)};}
+function s6leicht(){
+  const w=rint(0,2);
+  if(w===0){const [a,b,c]=shuffle(pick(QUADS).slice(0,3));const dd=Math.sqrt(a*a+b*b+c*c);
+    return {kind:'num',unit:'cm',tol:.001,answer:dd,prompt:QFIG({la:`a = ${a} cm`,lb:`b = ${b} cm`,lc:`c = ${c} cm`,d:true,ld:'d = ?'}),
+      question:`Ein Quader hat die Kantenlängen a = ${a} cm, b = ${b} cm und c = ${c} cm. Berechne die Länge der Raumdiagonale d.`,
+      badHint:'Zuerst die Flächendiagonale e der Grundfläche, dann d² = e² + c². Oder direkt: d² = a² + b² + c².',
+      hints:['Die Raumdiagonale ist die Hypotenuse im Dreieck ACG.','d² = a² + b² + c²'],solution:s6dsol(a,b,c)};}
+  if(w===1){const [a,b,e]=pick(TRIPLES.filter(t=>t[2]<=25)),c=rint(2,9);
+    return {kind:'num',unit:'cm',tol:.001,answer:e,prompt:QFIG({la:`a = ${a} cm`,lb:`b = ${b} cm`,lc:`c = ${c} cm`,e:true,le:'e = ?',tri:'base'}),
+      question:`Ein Quader hat die Kantenlängen a = ${a} cm, b = ${b} cm und c = ${c} cm. Berechne die Länge der Flächendiagonale e der Grundfläche ABCD.`,
+      badHint:'Die Flächendiagonale liegt in der Grundfläche. Die Höhe c brauchst du hier nicht.',
+      hints:['Rechtwinkliges Dreieck ABC mit dem rechten Winkel bei B.','e² = a² + b²'],
+      solution:`<div>Dreieck ABC (rechter Winkel bei B): e² = ${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a+b*b}</div><div>e = √${a*a+b*b} = <b>${e} cm</b> (die Höhe c wird nicht gebraucht)</div>`};}
+  const a=rint(2,12),r3=a*Math.sqrt(3);
+  return {kind:'mc',prompt:'',question:`Ein Würfel hat die Kantenlänge ${a} cm. Wie lang ist seine Raumdiagonale d?`,
+    options:[`d = ${a} · √3 cm ≈ ${fmt(r3)} cm`,`d = ${a} · √2 cm ≈ ${fmt(a*Math.SQRT2)} cm`,`d = ${3*a} cm`,`d = ${3*a*a} cm`],correct:0,
+    badHint:'Beim Würfel gilt d² = a² + a² + a² = 3a².',hints:['Flächendiagonale: e² = a² + a² = 2a².','Raumdiagonale: d² = e² + a² = 3a².'],
+    solution:`<div>d² = ${a}² + ${a}² + ${a}² = 3 · ${a*a} = ${3*a*a}</div><div>d = √${3*a*a} = ${a} · √3 cm ≈ <b>${fmt(r3)} cm</b></div>`};
+}
+function s6standard(){
+  const w=rint(0,3);
+  if(w===0){const a=rint(15,90)/10,b=rint(15,90)/10,c=rint(15,90)/10,dd=Math.sqrt(a*a+b*b+c*c);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(dd*100)/100,prompt:QFIG({la:`a = ${fmt(a,1)} cm`,lb:`b = ${fmt(b,1)} cm`,lc:`c = ${fmt(c,1)} cm`,d:true,ld:'d = ?'}),
+      question:`Ein Quader hat die Kantenlängen a = ${fmt(a,1)} cm, b = ${fmt(b,1)} cm und c = ${fmt(c,1)} cm. Berechne die Raumdiagonale d (zwei Nachkommastellen).`,
+      badHint:'d² = a² + b² + c², danach die Wurzel ziehen.',hints:['Zwei Schritte: e² = a² + b², dann d² = e² + c².'],solution:s6dsol(a,b,c)};}
+  if(w===1){const [a,b,c,d]=pick(QUADS);const [x,y]=shuffle([a,b]);
+    return {kind:'num',unit:'cm',tol:.001,answer:c,prompt:QFIG({la:`a = ${x} cm`,lb:`b = ${y} cm`,lc:'c = ?',d:true,ld:`d = ${d} cm`,tri:'diag',e:true}),
+      question:`Ein Quader hat die Länge a = ${x} cm, die Breite b = ${y} cm und eine ${d} cm lange Raumdiagonale. Berechne die Höhe c.`,
+      badHint:'Die Raumdiagonale ist die Hypotenuse: c² = d² − e² = d² − a² − b².',hints:['Berechne zuerst e² = a² + b².','Im Dreieck ACG ist c eine Kathete: c² = d² − e².'],
+      solution:`<div>e² = ${x}² + ${y}² = ${x*x+y*y}</div><div>c² = d² − e² = ${d}² − ${x*x+y*y} = ${d*d} − ${x*x+y*y} = ${c*c}</div><div>c = √${c*c} = <b>${c} cm</b></div>`};}
+  if(w===2){const a=2*rint(2,8),hh=rint(3,15),{hs2,hs}=s6hs(a,hh);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mns'}),
+      question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Höhe ${HS} einer Seitenfläche (zwei Nachkommastellen).`,
+      badHint:`Dreieck MNS mit dem rechten Winkel bei M: ${HS}² = h² + (${fr('a','2')})².`,hints:[`|${ov('MN')}| ist die halbe Grundkante: ${a/2} cm.`,`${HS}² = ${hh}² + ${a/2}²`],
+      solution:`<div>${len('MN')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}
+  const a=rint(15,120)/10,r3=a*Math.sqrt(3);
+  return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(r3*100)/100,prompt:quaderSvg({a:3.5,b:3.5,c:3.5,d:true,ld:'d = ?',la:`a = ${fmt(a,1)} cm`}),
+    question:`Ein Würfel hat die Kantenlänge a = ${fmt(a,1)} cm. Berechne die Länge seiner Raumdiagonale (zwei Nachkommastellen).`,
+    badHint:'Würfel: d = a · √3.',hints:['d² = a² + a² + a² = 3a²'],
+    solution:`<div>d² = 3 · ${fmt(a,1)}² = 3 · ${fmt(a*a)} = ${fmt(3*a*a)}</div><div>d = ${fmt(a,1)} · √3 ≈ <b>${fmt(r3)} cm</b></div>`};
+}
+function s6plus(){
+  const w=rint(0,3);
+  if(w===0){let l,b,c,dd,L;do{l=rint(30,80);b=rint(20,50);c=rint(15,40);dd=Math.sqrt(l*l+b*b+c*c);L=Math.round(dd+pick([-1,1])*rnd(1.5,5));}while(Math.abs(L-dd)<1.2||L<=Math.max(l,b,c));
+    const fits=L<dd;
+    return {kind:'mc',prompt:'',question:`Ein Karton ist ${l} cm lang, ${b} cm breit und ${c} cm hoch. Passt ein ${fmt(L/100,2)} m langer, dünner Stab hinein, wenn man ihn schräg legt?`,
+      options:['Ja, denn die Raumdiagonale des Kartons ist länger als der Stab.','Nein, denn die Raumdiagonale des Kartons ist kürzer als der Stab.','Ja, denn der Stab ist kürzer als die Summe der drei Kantenlängen.'],correct:fits?0:1,
+      badHint:'Die längste Strecke im Quader ist die Raumdiagonale. Rechne alle Längen in cm um und vergleiche.',hints:[`${fmt(L/100,2)} m = ${L} cm`,'d² = l² + b² + c²'],
+      solution:`<div>d² = ${l}² + ${b}² + ${c}² = ${l*l} + ${b*b} + ${c*c} = ${l*l+b*b+c*c}</div><div>d ≈ ${fmt(dd,1)} cm; Stab: ${L} cm</div><div><b>${fits?'Der Stab passt hinein':'Der Stab passt nicht hinein'}</b>, weil ${fits?`${L} cm < ${fmt(dd,1)} cm`:`${L} cm > ${fmt(dd,1)} cm`}.</div>`};}
+  if(w===1){const a=2*rint(2,8),hh=rint(3,15),{hs2}=s6hs(a,hh),s2=hs2+a*a/4,s=Math.sqrt(s2);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(s*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV,s:true,ls:'s = ?',tri:'cns'}),
+      question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Länge einer Seitenkante s (zwei Nachkommastellen).`,
+      badHint:`Zwei Schritte: zuerst ${HS} im Dreieck MNS, dann s im Dreieck CNS (rechter Winkel bei N).`,hints:[`${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hs2}`,`s² = ${HS}² + (${fr('a','2')})² = ${hs2} + ${a*a/4}`],
+      solution:`<div>1. Dreieck MNS: ${HS}² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>2. Dreieck CNS: s² = ${HS}² + ${a/2}² = ${hs2} + ${a*a/4} = ${s2}</div><div>s = √${s2} ${Number.isInteger(s)?'=':'≈'} <b>${fmt(s)} cm</b></div>`};}
+  if(w===2){const a=2*rint(2,6),s=rint(Math.ceil(a*.75)+2,16),hs2=s*s-a*a/4,h2=hs2-a*a/4,hh=Math.sqrt(h2);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h = ?',hs:true,lhs:HSV,s:true,ls:'s',tri:'mns'}),
+      question:`Bei einer geraden quadratischen Pyramide ist die Grundkante a = ${a} cm und jede Seitenkante s = ${s} cm lang. Berechne die Höhe h der Pyramide (zwei Nachkommastellen).`,
+      badHint:`Rückwärts in zwei Schritten: ${HS}² = s² − (${fr('a','2')})², dann h² = ${HS}² − (${fr('a','2')})².`,hints:[`Dreieck CNS: ${HS}² = ${s}² − ${a/2}² = ${hs2}`,`Dreieck MNS: h² = ${HS}² − ${a/2}²`],
+      solution:`<div>1. Dreieck CNS: ${HS}² = ${s}² − ${a/2}² = ${s*s} − ${a*a/4} = ${hs2}</div><div>2. Dreieck MNS: h² = ${HS}² − ${a/2}² = ${hs2} − ${a*a/4} = ${h2}</div><div>h = √${h2} ${Number.isInteger(hh)?'=':'≈'} <b>${fmt(hh)} cm</b></div>`};}
+  const d=rint(5,30),a=d/Math.sqrt(3);
+  return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(a*100)/100,prompt:quaderSvg({a:3.5,b:3.5,c:3.5,d:true,ld:`d = ${d} cm`,la:'a = ?'}),
+    question:`Die Raumdiagonale eines Würfels ist ${d} cm lang. Berechne die Kantenlänge a (zwei Nachkommastellen).`,
+    badHint:'d² = 3a², also a² = d² : 3.',hints:['Beim Würfel gilt d² = a² + a² + a² = 3a².',`a² = ${d}² : 3 = ${fmt(d*d/3)}`],
+    solution:`<div>3a² = d² = ${d}² = ${d*d}</div><div>a² = ${d*d} : 3 ≈ ${fmt(d*d/3)}</div><div>a ≈ <b>${fmt(a)} cm</b></div>`};
+}
+
 /* ====== Stationen ====== */
 const STATIONS={
 1:{title:'Den Satz des Pythagoras entdecken',komp:'Seiten im rechtwinkligen Dreieck benennen; den Zusammenhang der Quadratflächen selbst entdecken und formulieren.',
@@ -793,9 +1088,94 @@ const STATIONS={
    [{q:'Was ist der erste sinnvolle Schritt bei einer Aufgabe zu einem Trapez oder gleichschenkligen Dreieck ohne rechten Winkel?',options:['Höhe einzeichnen und das rechtwinklige Teildreieck suchen','Alle Seitenlängen addieren','Sofort a² + b² = c² mit den gegebenen Zahlen rechnen','Den Flächeninhalt schätzen'],explain:'Erst ein rechtwinkliges Teildreieck erzeugen, dann den Satz des Pythagoras anwenden.'},
     {q:'Ein Rechteck ist 12 cm lang und 5 cm breit. Wie lang ist seine Diagonale?',options:['13 cm','17 cm','√119 cm','60 cm'],explain:'Die Diagonale ist die Hypotenuse: d² = 12² + 5² = 144 + 25 = 169, also d = 13 cm.'}]
  ],done);}}
+ ]},
+5:{title:'Funktionale Abhängigkeiten und Extremwerte',komp:'Streckenlängen und Flächeninhalte in Figuren mit wandernden Punkten als Term in x aufstellen, die Werte für x angeben und Extremwerte mit quadratischer Ergänzung bestimmen.',
+ steps:[
+ {title:'Experiment: Eine Strecke verändert ihre Länge',render:extremExperiment},
+ {title:'Einen Term für die Streckenlänge aufstellen',render(body,done){
+   body.append(h('div',{html:moveSvg({a:8,b:8,x:3,lx:'x',lpb:'8 − x',lq:'x',la:'8 cm',w:340})}));
+   guided(body,[
+    {type:'mc',q:'Bei welchem Wert von x war die Strecke '+ov(PN+QN)+' in deinem Experiment am kürzesten?',options:['x = 4','x = 0,5','x = 7,5','Die Länge war immer gleich.'],correct:0,explain:'Bei x = 4 war '+LPQ+' ≈ 5,66 cm – kürzer als bei allen anderen Werten. Jetzt weist du das rechnerisch nach.',hint:'Schau in deine Tabelle: Wo ist der Wert in der letzten Spalte am kleinsten?'},
+    {type:'mc',q:'In welchem rechtwinkligen Dreieck ist '+ov(PN+QN)+' die Hypotenuse?',options:['Im Dreieck '+PN+'B'+QN+' mit dem rechten Winkel bei B','Im Dreieck A'+PN+'D mit dem rechten Winkel bei '+PN,'Im Dreieck '+PN+QN+'C mit dem rechten Winkel bei C'],correct:0,explain:'Bei B treffen sich zwei Quadratseiten – dort ist der rechte Winkel.',hint:'Wo liegt ein rechter Winkel, der an beiden Punkten '+PN+' und '+QN+' anliegt?'},
+    {type:'mc',q:'Wie lang ist die Kathete '+ov(PN+'B')+' in Abhängigkeit von x?',options:['(8 − x) cm','(x − 8) cm','8x cm','(8 + x) cm'],correct:0,explain:'Von der Seite '+ov('AB')+' (8 cm) geht das Stück '+ov('A'+PN)+' (x cm) ab.',hint:LAP+' + '+LPB+' = 8 cm'},
+    {type:'mc',q:'Stelle mit dem Satz des Pythagoras einen Term für '+LPQ+'² auf.',options:[LPQ+'² = (8 − x)² + x²',LPQ+'² = (8 − x)² − x²',LPQ+'² = 8² + x²',LPQ+'² = (8 − x) + x'],correct:0,explain:'Katheten: (8 − x) cm und x cm.',hint:'Hypotenuse² = Kathete² + Kathete²'},
+    {type:'mc',q:'Vereinfache den Term (8 − x)² + x².',options:['2x² − 16x + 64','x² − 16x + 64','2x² + 64','2x² − 16x − 64'],correct:0,explain:'(8 − x)² = 64 − 16x + x², dazu kommt noch x².',hint:'2. binomische Formel: (8 − x)² = 64 − 16x + x²'},
+    {type:'mc',q:'Welche Werte darf x annehmen, damit Dreiecke '+PN+'B'+QN+' entstehen?',options:['0 < x < 8','0 ≤ x ≤ 8','x > 0','−8 < x < 8'],correct:0,explain:'Für x = 0 fällt '+QN+' auf B, für x = 8 fällt '+PN+' auf B. Dann gibt es kein Dreieck.',hint:'Was passiert bei x = 0 und bei x = 8 mit den Punkten?'},
+    {type:'num',q:'Berechne '+LPQ+' für x = 2 (zwei Nachkommastellen).',unit:'cm',answer:6.32,tol:.0051,hint:LPQ+'² = 2 · 2² − 16 · 2 + 64 = 40, dann die Wurzel ziehen.'}
+   ],done);
+ }},
+ {title:'Auffrischung: quadratische Ergänzung',render(body,done){
+   videoBlock(body,'s5','<b>Optional:</b> Schau dir ein Erklärvideo zur quadratischen Ergänzung (Extremwert bestimmen) an.');
+   body.append(h('div',{class:'info',html:'<b>Quadratische Ergänzung – so geht’s:</b> Du bringst den Term in die Form <b>a(x − d)² + e</b>. Weil ein Quadrat nie negativ ist, kannst du den kleinsten (oder größten) Wert direkt ablesen.<br>1. Den Faktor vor x² aus den x-Gliedern ausklammern.<br>2. In der Klammer (halber Faktor vor x)² addieren und gleich wieder subtrahieren.<br>3. Binomische Formel anwenden.<br>4. Die eckige Klammer auflösen und zusammenfassen.'}));
+   guided(body,[
+    {type:'mc',q:'Schritt 1: Klammere bei '+LPQ+'² = 2x² − 16x + 64 den Faktor 2 aus den x-Gliedern aus.',options:['2(x² − 8x) + 64','2(x² − 16x) + 64','2(x² − 8x) + 32','2(x² + 8x) + 64'],correct:0,explain:'2 · x² = 2x² und 2 · (−8x) = −16x. Die 64 bleibt außerhalb der Klammer.',hint:'Teile nur 2x² und −16x durch 2.'},
+    {type:'num',q:'Schritt 2: Welche Zahl wird in der Klammer ergänzt? x² − 8x + ?',answer:16,tol:.001,hint:'Halber Faktor vor x: 8 : 2 = 4. Davon das Quadrat.'},
+    {type:'mc',q:'Schritt 3 und 4: 2(x² − 8x + 4² − 4²) + 64 = 2[(x − 4)² − 16] + 64. Fasse zusammen.',options:['2(x − 4)² + 32','2(x − 4)² + 48','2(x − 4)² + 64','2(x + 4)² + 32'],correct:0,explain:'2 · (−16) + 64 = −32 + 64 = 32.',hint:'Die −16 steht in der eckigen Klammer und wird auch mit 2 multipliziert.'},
+    {type:'mc',q:'Für welchen Wert von x wird 2(x − 4)² + 32 am kleinsten?',options:['x = 4, denn dann ist (x − 4)² = 0','x = −4, denn dann ist (x − 4)² = 0','x = 32','x = 0'],correct:0,explain:'Ein Quadrat ist nie negativ. Für x = 4 ist es 0 – kleiner geht es nicht.',hint:'Wann ist (x − 4)² gleich 0?'},
+    {type:'num',q:'Wie groß ist '+LPQ+'² für x = 4?',unit:'cm²',answer:32,tol:.001,hint:'2 · 0 + 32'},
+    {type:'num',q:'Berechne die minimale Streckenlänge '+LPQ+'<sub>min</sub> = √32 cm (zwei Nachkommastellen).',unit:'cm',answer:5.66,tol:.0051,hint:'Ist der Radikand am kleinsten, ist auch die Wurzel am kleinsten. Taschenrechner: √32.'},
+    {type:'mc',html:'<div class="info">Auch <b>Flächeninhalte</b> kannst du so untersuchen. Steht vor der Klammer eine <b>negative</b> Zahl, gibt es einen <b>größten</b> Wert.</div>',q:'Für einen Flächeninhalt gilt A(x) = −0,5(x − 3)² + 12 cm². Was kannst du ablesen?',options:['Größter Flächeninhalt 12 cm² für x = 3','Kleinster Flächeninhalt 12 cm² für x = 3','Größter Flächeninhalt 12 cm² für x = −3','Kleinster Flächeninhalt −0,5 cm² für x = 3'],correct:0,explain:'−0,5 · (x − 3)² ist nie positiv. Am größten ist A(x) also, wenn die Klammer 0 ist: bei x = 3 mit 12 cm².',hint:'−0,5 · (Quadrat) ist immer ≤ 0. Wann wird also am wenigsten abgezogen?'}
+   ],done);
+ }},
+ merkStep(5),
+ {title:'Üben',render(body,done){practice(body,5,{leicht:s5leicht,standard:s5standard,plus:s5plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,5,[
+   [{q:`Im Quadrat ABCD mit der Seitenlänge 6 cm gilt ${LAP} = ${LBQ} = x cm (${PN} auf ${ov('AB')}, ${QN} auf ${ov('BC')}). Welcher Term gilt für ${LPQ}²?`,options:['(6 − x)² + x²','6² + x²','(6 − x)² − x²','(6 + x)² + x²'],explain:`Im Dreieck ${PN}B${QN} mit dem rechten Winkel bei B sind ${LPB} = (6 − x) cm und ${LBQ} = x cm die Katheten.`},
+    {q:`Im Quadrat ABCD mit der Seitenlänge 10 cm gilt ${LAP} = ${LBQ} = x cm (${PN} auf ${ov('AB')}, ${QN} auf ${ov('BC')}). Welcher Term gilt für ${LPQ}²?`,options:['(10 − x)² + x²','10² + x²','(10 − x)² − x²','(10 + x)² + x²'],explain:`Im Dreieck ${PN}B${QN} mit dem rechten Winkel bei B sind ${LPB} = (10 − x) cm und ${LBQ} = x cm die Katheten.`}],
+   [{q:`Für die Länge einer Strecke gilt ${LPQ}² = 2(x − 3)² + 18 (in cm²). Was folgt daraus?`,options:[`Für x = 3 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = √18 cm`,`Für x = −3 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = √18 cm`,`Für x = 3 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = 18 cm`,'Für x = 3 ist die Strecke am längsten.'],explain:`(x − 3)² ist nie negativ und für x = 3 gleich 0. Dann ist ${LPQ}² = 18 cm², also ${LPQ} = √18 cm ≈ 4,24 cm.`},
+    {q:`Für die Länge einer Strecke gilt ${LPQ}² = 2(x − 5)² + 50 (in cm²). Was folgt daraus?`,options:[`Für x = 5 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = √50 cm`,`Für x = −5 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = √50 cm`,`Für x = 5 ist die Strecke am kürzesten: ${LPQ}<sub>min</sub> = 50 cm`,'Für x = 5 ist die Strecke am längsten.'],explain:`(x − 5)² ist nie negativ und für x = 5 gleich 0. Dann ist ${LPQ}² = 50 cm², also ${LPQ} = √50 cm ≈ 7,07 cm.`}],
+   [{q:`Im Rechteck ABCD gilt ${len('AB')} = 10 cm und ${len('BC')} = 6 cm. ${PN} liegt auf ${ov('AB')}, ${QN} auf ${ov('BC')} mit ${LAP} = ${LBQ} = x cm. Welche Werte darf x annehmen?`,options:['0 < x < 6','0 < x < 10','0 ≤ x ≤ 6','0 < x < 16'],explain:`${QN} muss auf ${ov('BC')} bleiben (6 cm). Für x = 0 entsteht kein Dreieck. Also 0 < x < 6.`},
+    {q:'Für den Flächeninhalt von Dreiecken gilt A(x) = −0,5(x − 4)² + 8 (in cm²). Was kannst du ablesen?',options:['Größter Flächeninhalt 8 cm² für x = 4','Kleinster Flächeninhalt 8 cm² für x = 4','Größter Flächeninhalt 8 cm² für x = −4','Größter Flächeninhalt 4 cm² für x = 8'],explain:'Vor der Klammer steht −0,5 < 0. Am größten ist A(x) für x = 4: A<sub>max</sub> = 8 cm².'}]
+ ],done);}}
+ ]},
+6:{title:'Pythagoras in Körpern',komp:'Rechtwinklige Dreiecke in Quader, Würfel und gerader quadratischer Pyramide erkennen und damit Flächen- und Raumdiagonalen, Kanten und Höhen berechnen.',
+ steps:[
+ {title:'Experiment: Die Raumdiagonale des Quaders',render:quaderExperiment},
+ {title:'Die Raumdiagonale in zwei Schritten',render(body,done){
+   videoBlock(body,'s6','<b>Optional:</b> Schau dir ein Erklärvideo zur Raumdiagonale im Quader an.');
+   body.append(h('div',{html:quaderSvg({a:4,b:3,c:5,la:'a = 4 cm',lb:'b = 3 cm',lc:'c = 12 cm',e:true,le:'e',d:true,ld:'d',tri:'base',w:340})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
+   guided(body,[
+    {type:'mc',q:'In welchem rechtwinkligen Dreieck liegt die Flächendiagonale e = '+len('AC')+'?',options:['Im Dreieck ABC in der Grundfläche (rechter Winkel bei B)','Im Dreieck ACG (rechter Winkel bei G)','Im Dreieck ABF (rechter Winkel bei A)'],correct:0,explain:'Die Grundfläche ABCD ist ein Rechteck. Die Diagonale teilt sie in zwei rechtwinklige Dreiecke.',hint:'Die Flächendiagonale liegt in der Grundfläche ABCD.'},
+    {type:'num',q:'Berechne e² = 4² + 3².',unit:'cm²',answer:25,tol:.001,hint:'16 + 9'},
+    {type:'num',q:'e = √25 = ?',unit:'cm',answer:5,tol:.001,hint:'5 · 5 = 25',},
+    {type:'mc',q:'Die Raumdiagonale d = '+len('AG')+' liegt im Dreieck ACG. Wo ist der rechte Winkel?',options:['Bei C – die Kante '+ov('CG')+' steht senkrecht auf der Grundfläche.','Bei A','Bei G'],correct:0,explain:'Die Kante '+ov('CG')+' steht senkrecht auf der Grundfläche, also auch auf der Diagonale '+ov('AC')+'.',hint:'Welche Kante steht senkrecht auf der Grundfläche?'},
+    {type:'num',html:quaderSvg({a:4,b:3,c:5,la:'a = 4 cm',lb:'b = 3 cm',lc:'c = 12 cm',e:true,le:'e = 5 cm',d:true,ld:'d = ?',tri:'diag',w:340}),q:'Berechne d² = e² + c² = 5² + 12².',unit:'cm²',answer:169,tol:.001,hint:'25 + 144'},
+    {type:'num',q:'d = √169 = ?',unit:'cm',answer:13,tol:.001,hint:'13 · 13 = 169'},
+    {type:'mc',q:'Fasse beide Schritte zusammen: Wie berechnet man die Raumdiagonale eines Quaders allgemein?',options:['d = '+sq('a² + b² + c²'),'d = a + b + c','d = '+sq('a² + b²')+' + c','d² = a² + b² − c²'],correct:0,explain:'d² = e² + c² und e² = a² + b², also d² = a² + b² + c².',hint:'Setze e² = a² + b² in d² = e² + c² ein.'}
+   ],done);
+ }},
+ {title:'Sonderfall Würfel',render(body,done){
+   body.append(h('div',{html:quaderSvg({a:3.5,b:3.5,c:3.5,la:'a',lb:'a',lc:'a',e:true,le:'e',d:true,ld:'d',tri:'diag',w:300})}));
+   guided(body,[
+    {type:'mc',q:'Beim Würfel sind alle Kanten gleich lang (a). Wie groß ist das Quadrat der Flächendiagonale e?',options:['e² = a² + a² = 2a²','e² = a²','e² = a² · a²','e² = 4a²'],correct:0,explain:'Also e = '+sq('2a²')+' = a · √2.',hint:'e² = a² + b² mit b = a.'},
+    {type:'mc',q:'Wie groß ist das Quadrat der Raumdiagonale d?',options:['d² = e² + a² = 3a²','d² = e² + a² = 2a²','d² = a³','d² = 4a²'],correct:0,explain:'d = '+sq('3a²')+' = a · √3.',hint:'d² = e² + a² mit e² = 2a².'},
+    {type:'num',q:'Ein Würfel hat die Kantenlänge 5 cm. Berechne d = 5 · √3 (zwei Nachkommastellen).',unit:'cm',answer:8.66,tol:.0051,hint:'Taschenrechner: 5 · √3'}
+   ],done);
+ }},
+ {title:'Die gerade quadratische Pyramide',render(body,done){
+   body.append(h('div',{class:'info',html:`Bei einer <b>geraden quadratischen Pyramide</b> liegt die Spitze S senkrecht über dem Diagonalenschnittpunkt M der Grundfläche. N ist der Mittelpunkt der Grundkante ${ov('BC')}.<br>• <b>h</b> = ${len('MS')}: Höhe der Pyramide<br>• <b>${HS}</b> = ${len('NS')}: Höhe der Seitenfläche BCS<br>• <b>s</b> = ${len('CS')}: Seitenkante`}));
+   body.append(h('div',{html:pyrSvg({a:4,h:5,la:'a = 6 cm',lh:'h',hs:true,lhs:HSV,s:true,ls:'s',tri:'mns',w:340})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
+   guided(body,[
+    {type:'mc',q:`In welchem rechtwinkligen Dreieck kommen h und ${HS} vor?`,options:['Im Dreieck MNS mit dem rechten Winkel bei M','Im Dreieck CNS mit dem rechten Winkel bei S','Im Dreieck ABS mit dem rechten Winkel bei A'],correct:0,explain:`Die Höhe h steht senkrecht auf der Grundfläche. ${HS} ist die Hypotenuse.`,hint:'Die Höhe steht senkrecht auf der Grundfläche – im Punkt M.'},
+    {type:'num',q:`Wie lang ist ${len('MN')}?`,unit:'cm',answer:3,tol:.001,hint:`${len('MN')} ist die halbe Grundkante: 6 cm : 2.`},
+    {type:'num',q:`Berechne ${HS}: ${HS}² = 4² + 3².`,unit:'cm',answer:5,tol:.001,hint:`${HS}² = 16 + 9 = 25, dann die Wurzel ziehen.`},
+    {type:'mc',q:'Für die Seitenkante s nutzt du das Dreieck CNS. Wo liegt der rechte Winkel?',options:['Bei N – die Höhe der Seitenfläche steht senkrecht auf '+ov('BC'),'Bei C','Bei S'],correct:0,explain:`Im gleichschenkligen Dreieck BCS halbiert ${HS} die Basis ${ov('BC')} senkrecht.`,hint:'Die Seitenfläche BCS ist ein gleichschenkliges Dreieck mit der Höhe '+HS+'.'},
+    {type:'num',q:`Berechne s: s² = ${HS}² + ${len('CN')}² = 5² + 3² (zwei Nachkommastellen).`,unit:'cm',answer:5.83,tol:.0051,hint:'s² = 25 + 9 = 34, dann s = √34.'}
+   ],done);
+ }},
+ merkStep(6),
+ {title:'Üben',render(body,done){practice(body,6,{leicht:s6leicht,standard:s6standard,plus:s6plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,6,[
+   [{q:'Ein Quader hat die Kantenlängen 3 cm, 4 cm und 12 cm. Wie lang ist die Raumdiagonale?',options:['13 cm','19 cm','5 cm','169 cm'],explain:'d² = 3² + 4² + 12² = 9 + 16 + 144 = 169, also d = 13 cm.'},
+    {q:'Ein Quader hat die Kantenlängen 2 cm, 3 cm und 6 cm. Wie lang ist die Raumdiagonale?',options:['7 cm','11 cm','√13 cm','49 cm'],explain:'d² = 2² + 3² + 6² = 4 + 9 + 36 = 49, also d = 7 cm.'}],
+   [{q:'Ein Würfel hat die Kantenlänge 4 cm. Wie lang ist seine Raumdiagonale?',options:['4 · √3 cm ≈ 6,93 cm','4 · √2 cm ≈ 5,66 cm','12 cm','48 cm'],explain:'d² = 4² + 4² + 4² = 48, also d = √48 cm = 4 · √3 cm ≈ 6,93 cm.'},
+    {q:'Mit welchem rechtwinkligen Dreieck berechnet man die Raumdiagonale '+ov('AG')+' eines Quaders ABCDEFGH?',options:['Dreieck ACG: Flächendiagonale '+ov('AC')+', Kante '+ov('CG')+', rechter Winkel bei C','Dreieck ABG: rechter Winkel bei G','Dreieck ABC: rechter Winkel bei B','Dreieck AEG: rechter Winkel bei G'],explain:'Die Kante '+ov('CG')+' steht senkrecht auf der Grundfläche und damit auf '+ov('AC')+'. '+ov('AG')+' ist die Hypotenuse.'}],
+   [{q:'Eine gerade quadratische Pyramide hat die Grundkante a = 6 cm und die Höhe h = 4 cm. Wie groß ist die Höhe '+HS+' einer Seitenfläche?',options:['5 cm','√52 cm','7 cm','10 cm'],explain:HS+'² = h² + (a : 2)² = 4² + 3² = 25, also '+HS+' = 5 cm.'},
+    {q:'Eine gerade quadratische Pyramide hat die Grundkante a = 10 cm und die Höhe h = 12 cm. Wie groß ist die Höhe '+HS+' einer Seitenfläche?',options:['13 cm','√244 cm','17 cm','22 cm'],explain:HS+'² = h² + (a : 2)² = 12² + 5² = 169, also '+HS+' = 13 cm.'}]
+ ],done);}}
  ]}
 };
-const PLANNED=['Funktionale Abhängigkeiten und Extremwerte','Pythagoras in Körpern','Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit','Streckenlänge in Abhängigkeit von x','Abschluss-Check'];
+const PLANNED=['Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit','Streckenlänge in Abhängigkeit von x','Abschluss-Check'];
 
 /* ====== Ansichten ====== */
 function unlocked(n){return TEACHER||n===1||!!state[n-1];}
@@ -805,11 +1185,11 @@ function home(){
   app.append(h('div',{class:'card'},h('h2',{},'Rechtwinklige Dreiecke'),
     h('p',{html:'Du erarbeitest dieses Kapitel selbstständig. Du entdeckst Regeln, schreibst Merkkästen (<span style="background:#fff7d6;padding:0 6px;border:1px solid #e0b400;border-radius:4px">✏️ Merkheft</span>) in dein Merkheft ab, übst auf deinem Niveau und schließt jede Station mit einem Exit-Ticket ab.'}),
     h('p',{class:'muted'},'Du brauchst: Merkheft, Stift, Taschenrechner, Geodreieck.'),
-    h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft (Prototyp: Stationen 1–4)`)));
+    h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft (Prototyp: Stationen 1–6)`)));
   const hasData=Object.keys(state).length>0;
   const list=h('div',{class:'stations'});
   Object.keys(STATIONS).forEach(k=>{const n=+k,st=STATIONS[n];const b=h('button',{class:'stn'+(state[n]?' ok':''),type:'button'},h('div',{class:'nr'},state[n]?'✓':String(n)),h('div',{},h('div',{class:'t'},st.title),h('div',{class:'s'},st.komp)));if(!unlocked(n))b.disabled=true;b.addEventListener('click',()=>station(n));list.append(b);});
-  PLANNED.forEach((t,i)=>list.append(h('button',{class:'stn',type:'button',disabled:'disabled'},h('div',{class:'nr',style:'background:#9ca3af'},String(i+5)),h('div',{},h('div',{class:'t'},t),h('div',{class:'s'},'in Vorbereitung')))));
+  PLANNED.forEach((t,i)=>list.append(h('button',{class:'stn',type:'button',disabled:'disabled'},h('div',{class:'nr',style:'background:#9ca3af'},String(i+7)),h('div',{},h('div',{class:'t'},t),h('div',{class:'s'},'in Vorbereitung')))));
   app.append(list);
   if(TEACHER)app.append(teacherCard());
   if(hasData)app.append(h('div',{class:'card'},h('p',{class:'muted',style:'margin-top:0'},'Arbeitest du an einem geteilten iPad? Dann setze am Ende deinen Fortschritt zurück, damit die nächste Person von vorne beginnt.'),
