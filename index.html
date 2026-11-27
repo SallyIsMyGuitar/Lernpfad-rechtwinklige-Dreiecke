@@ -116,7 +116,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const fmt=(x,d=2)=>Number(x.toFixed(d)).toString().replace('.',',');
 // akzeptiert z. B. „12,5“, „,5“, „12.5“, „5 cm“, „25 cm²“
-const parseNum=s=>{const t=String(s).trim().replace(/\s*(mm|cm|dm|km|m)?\s*[²³]?$/i,'').replace(/\s+/g,'').replace(',','.');return /^-?(\d+(\.\d*)?|\.\d+)$/.test(t)?parseFloat(t):NaN;};
+const parseNum=s=>{const t=String(s).trim().replace(/\s*(mm|cm|dm|km|m|LE|FE)?\s*[²³]?$/i,'').replace(/\s+/g,'').replace(',','.');return /^-?(\d+(\.\d*)?|\.\d+)$/.test(t)?parseFloat(t):NaN;};
 const once=fn=>{let d=false;return(...a)=>{if(d)return;d=true;return fn(...a);};};
 
 // Notation nach Zeichenkatalog: Strecke AB̅, Länge |AB̅|, Quadratwurzel mit Wurzelstrich, Bruch
@@ -148,8 +148,10 @@ const MERK={
 <p><b>Bezeichnungen im rechtwinkligen Dreieck:</b><br>
 Die beiden Seiten am rechten Winkel heißen <b>Katheten</b> (a, b).<br>
 Die Seite gegenüber dem rechten Winkel heißt <b>Hypotenuse</b> (c) – sie ist die längste Seite.</p>
-<p><b>Satz des Pythagoras:</b> In jedem rechtwinkligen Dreieck ist die Summe der Flächeninhalte der Quadrate über den Katheten so groß wie der Flächeninhalt des Quadrats über der Hypotenuse.</p>
+<p><b>Satz des Pythagoras:</b> In jedem rechtwinkligen Dreieck ist die Summe der Flächeninhalte der Quadrate über den Katheten gleich dem Flächeninhalt des Quadrats über der Hypotenuse.</p>
 <div class="formel">a² + b² = c²</div>
+<p><b>Begründung (Ergänzungsfigur):</b> Ein Quadrat mit der Seitenlänge (a + b) enthält vier kongruente rechtwinklige Dreiecke und das Quadrat über der Hypotenuse:<br>
+c² = (a + b)² − 4 · ${HALF} · a · b = a² + 2ab + b² − 2ab = a² + b²</p>
 <div class="ex"><b>Beispiel 1:</b> Dreieck PQR mit rechtem Winkel bei Q.<br>
 Hypotenuse: ${ov('PR')} (liegt gegenüber von Q)<br>
 Satz des Pythagoras: ${len('PQ')}² + ${len('QR')}² = ${len('PR')}²</div>
@@ -157,41 +159,49 @@ Satz des Pythagoras: ${len('PQ')}² + ${len('QR')}² = ${len('PR')}²</div>
 Hypotenusenquadrat: 9 cm² + 16 cm² = 25 cm²</div>`},
 2:{title:'Seitenlängen berechnen',html:`
 <div class="mh">Seitenlängen im rechtwinkligen Dreieck berechnen</div>
-<p>Immer zuerst: <b>Skizze</b> anfertigen, rechten Winkel markieren, Hypotenuse bestimmen. Die Hypotenuse liegt dem rechten Winkel gegenüber (bei α = 90° ist a die Hypotenuse). Vor dem Rechnen alle Längen in <b>dieselbe Einheit</b> umrechnen.</p>
+<p><b>Vorgehen:</b> 1. Beschriftete <b>Skizze</b> anfertigen, rechten Winkel markieren, Hypotenuse bestimmen (sie liegt dem rechten Winkel gegenüber; bei α = 90° ist a die Hypotenuse). Alle Längen in <b>dieselbe Einheit</b> umrechnen. · 2. Satz des Pythagoras anwenden. · 3. Umformen und zusammenfassen. · 4. Wurzel ziehen.</p>
 <p><b>Hypotenuse gesucht:</b> &nbsp; c² = a² + b² &nbsp;⇒&nbsp; <b>c = ${sq('a² + b²')}</b></p>
 <p><b>Kathete gesucht:</b> &nbsp; a² = c² − b² &nbsp;⇒&nbsp; <b>a = ${sq('c² − b²')}</b> &nbsp; (entsprechend b = ${sq('c² − a²')})</p>
-<p>Ist das Ergebnis keine Quadratzahl: Taschenrechner benutzen und sinnvoll runden. Die Hypotenuse ist immer die längste Seite (Probe!).</p>
-<div class="ex"><b>Beispiel 1 (Hypotenuse):</b> a = 6 cm; b = 8 cm<br>
-c² = 6² + 8² = 36 + 64 = 100<br>
-c = √100 = 10 cm</div>
-<div class="ex"><b>Beispiel 2 (Kathete):</b> c = 13 cm; a = 5 cm<br>
-b² = 13² − 5² = 169 − 25 = 144<br>
-b = √144 = 12 cm</div>`},
+<p>Es geht um Strecken, also gibt es <b>keine negative Lösung</b>. Ist das Ergebnis keine Quadratzahl: Taschenrechner benutzen und sinnvoll runden. Probe: Die Hypotenuse ist immer die längste Seite.</p>
+<div class="ex"><b>Beispiel 1 (Hypotenuse):</b> γ = 90°; a = 6 cm; b = 8 cm<br>
+c² = (6 cm)² + (8 cm)² = 36 cm² + 64 cm² = 100 cm²<br>
+c = 10 cm</div>
+<div class="ex"><b>Beispiel 2 (Kathete):</b> α = 90°; a = 2,9 dm; b = 21 cm<br>
+Hypotenuse ist a; a = 2,9 dm = 29 cm<br>
+b² + c² = a² ⇒ c² = (29 cm)² − (21 cm)² = 841 cm² − 441 cm² = 400 cm²<br>
+c = 20 cm</div>`},
 3:{title:'Umkehrung des Satzes des Pythagoras',html:`
 <div class="mh">Umkehrung des Satzes des Pythagoras</div>
 <p><b>Umkehrung:</b> Gilt in einem Dreieck für die Seitenlängen a, b und c (c ist die längste Seite) die Gleichung</p>
 <div class="formel">a² + b² = c²</div>
-<p>so ist das Dreieck <b>rechtwinklig</b>. Der rechte Winkel liegt der längsten Seite c gegenüber.<br>
-Gilt die Gleichung nicht, ist das Dreieck <b>nicht rechtwinklig</b>.</p>
+<p>so ist das Dreieck <b>rechtwinklig</b>. Der rechte Winkel liegt der längsten Seite c gegenüber.</p>
+<p>Gilt die Gleichung nicht, ist das Dreieck <b>nicht rechtwinklig</b>:<br>
+a² + b² &gt; c² ⇒ <b>spitzwinkliges</b> Dreieck (γ &lt; 90°)<br>
+a² + b² &lt; c² ⇒ <b>stumpfwinkliges</b> Dreieck (γ &gt; 90°)</p>
 <p><b>Nachweis in 4 Schritten:</b> 1. längste Seite c bestimmen · 2. a² + b² berechnen · 3. c² berechnen · 4. vergleichen und Antwortsatz schreiben.</p>
+<p><b>Pythagoräische Zahlentripel:</b> drei natürliche Zahlen mit a² + b² = c², z. B. (3; 4; 5), (5; 12; 13), (8; 15; 17). Vielfache eines Tripels sind wieder Tripel: (6; 8; 10), (9; 12; 15).</p>
 <div class="ex"><b>Beispiel 1:</b> a = 4,5 cm; b = 6 cm; c = 7,5 cm<br>
-a² + b² = 20,25 + 36 = 56,25<br>
-c² = 56,25 ⇒ a² + b² = c²<br>
+a² + b² = (4,5 cm)² + (6 cm)² = 20,25 cm² + 36 cm² = 56,25 cm²<br>
+c² = (7,5 cm)² = 56,25 cm² ⇒ a² + b² = c²<br>
 Das Dreieck ist rechtwinklig.</div>
 <div class="ex"><b>Beispiel 2:</b> a = 4 cm; b = 5 cm; c = 7 cm<br>
-a² + b² = 16 + 25 = 41; c² = 49<br>
-41 ≠ 49 ⇒ Das Dreieck ist nicht rechtwinklig.</div>`},
+a² + b² = 16 cm² + 25 cm² = 41 cm²; c² = 49 cm²<br>
+41 cm² &lt; 49 cm² ⇒ Das Dreieck ist nicht rechtwinklig (stumpfwinklig).</div>`},
 4:{title:'Satz des Pythagoras in ebenen Figuren',html:`
 <div class="mh">Satz des Pythagoras in ebenen Figuren</div>
-<p>Vorgehen: <b>Skizze</b> zeichnen · <b>rechtwinkliges Teildreieck</b> suchen (Höhe, Diagonale) · bekannte und gesuchte Seite bestimmen · Satz des Pythagoras anwenden · Antwortsatz.</p>
-<p><b>Gleichschenkliges Dreieck:</b> Die Höhe auf die Basis halbiert die Basis.<br>
-<b>Raute:</b> Die Diagonalen halbieren sich und stehen senkrecht aufeinander. Es gilt <span class="nw">a² = (${fr('e','2')})² + (${fr('f','2')})²</span>.</p>
+<p>Vorgehen: beschriftete <b>Skizze</b> · <b>rechtwinkliges Teildreieck</b> suchen (Höhe, Diagonale) · bekannte und gesuchte Seite bestimmen · Satz des Pythagoras anwenden · Antwortsatz.</p>
+<p><b>Rechteck und Quadrat:</b> Die Diagonale ist die Hypotenuse: d² = a² + b²; beim Quadrat <b>d = a · √2</b>.<br>
+<b>Gleichschenkliges Dreieck:</b> Die Höhe auf die Basis halbiert die Basis.<br>
+<b>Gleichseitiges Dreieck</b> (Seitenlänge a): <b>h = ${fr('a','2')} · √3</b> &nbsp;und&nbsp; <b>A = ${fr('a²','4')} · √3</b><br>
+<b>Raute:</b> Die Diagonalen halbieren sich und stehen senkrecht aufeinander: <span class="nw">a² = (${fr('e','2')})² + (${fr('f','2')})²</span>.<br>
+<b>Drachenviereck:</b> Die Diagonalen stehen senkrecht aufeinander; die Symmetrieachse halbiert die andere Diagonale. A = ${HALF} · e · f<br>
+<b>Gleichschenkliges Trapez:</b> Die Höhe schneidet an jeder Seite ein rechtwinkliges Dreieck ab.</p>
 <div class="ex"><b>Beispiel 1:</b> Gleichschenkliges Dreieck, Schenkel 10 cm, Basis 12 cm<br>
-h² = 10² − 6² = 100 − 36 = 64 ⇒ h = 8 cm<br>
+h² = (10 cm)² − (6 cm)² = 100 cm² − 36 cm² = 64 cm² ⇒ h = 8 cm<br>
 A = ${HALF} · 12 cm · 8 cm = 48 cm²</div>
-<div class="ex"><b>Beispiel 2:</b> Raute mit e = 48 mm und f = 64 mm<br>
-a² = 24² + 32² = 576 + 1024 = 1600 ⇒ a = 40 mm<br>
-Umfang u = 4 · 40 mm = 160 mm</div>`},
+<div class="ex"><b>Beispiel 2:</b> Gleichseitiges Dreieck mit a = 6 cm<br>
+h² = (6 cm)² − (3 cm)² = 27 cm² ⇒ h = ${fr('6','2')} · √3 cm ≈ 5,20 cm<br>
+A = ${fr('(6 cm)²','4')} · √3 = 9 · √3 cm² ≈ 15,59 cm²</div>`},
 5:{title:'Funktionale Abhängigkeiten und Extremwerte',html:`
 <div class="mh">Funktionale Abhängigkeiten und Extremwerte</div>
 <p>Wandern Punkte P<sub>n</sub>, Q<sub>n</sub>, … auf den Seiten einer Figur, hängen Streckenlängen und Flächeninhalte von x ab.</p>
@@ -201,40 +211,46 @@ Umfang u = 4 · 40 mm = 160 mm</div>`},
 3. Werte für x angeben: Alle Strecken müssen länger als 0 cm sein und die Punkte auf ihren Seiten liegen.<br>
 4. Quadratische Ergänzung: Term in die Form a(x − d)² + e bringen.<br>
 5. Ablesen: a &gt; 0 ⇒ <b>kleinster</b> Wert e für x = d; a &lt; 0 ⇒ <b>größter</b> Wert e für x = d.<br>
-6. Bei Streckenlängen die Wurzel ziehen: Ist der Radikand am kleinsten, ist auch die Wurzel am kleinsten. Antwortsatz.</p>
+6. Bei Streckenlängen die Wurzel ziehen: Ein Wurzelterm ist minimal, wenn der Radikand minimal ist. Antwortsatz.</p>
 <div class="ex"><b>Beispiel:</b> Quadrat ABCD mit 8 cm Seitenlänge; ${len('AP<sub>n</sub>')} = ${len('BQ<sub>n</sub>')} = x cm<br>
 ${len('P<sub>n</sub>B')} = (8 − x) cm; 0 &lt; x &lt; 8<br>
-${len('P<sub>n</sub>Q<sub>n</sub>')}² = (8 − x)² + x² = 2x² − 16x + 64<br>
-= 2(x² − 8x + 4² − 4²) + 64 = 2(x − 4)² + 32<br>
+${len('P<sub>n</sub>Q<sub>n</sub>')}² = [(8 − x)² + x²] cm² = (2x² − 16x + 64) cm²<br>
+= [2(x² − 8x + 4² − 4²) + 64] cm² = [2(x − 4)² + 32] cm²<br>
 Für x = 4 ist die Strecke am kürzesten: ${len('P<sub>n</sub>Q<sub>n</sub>')}<sub>min</sub> = √32 cm ≈ 5,66 cm</div>`},
 6:{title:'Satz des Pythagoras in Körpern',html:`
 <div class="mh">Satz des Pythagoras in Körpern</div>
-<p>Vorgehen: rechtwinkliges Dreieck im Körper suchen (in einer Seitenfläche oder im Inneren) und als ebene Skizze herauszeichnen. Oft braucht man zwei Schritte.</p>
+<p>Vorgehen: rechtwinkliges <b>Stützdreieck</b> im Körper suchen (in einer Seitenfläche oder im Inneren) und als ebene Skizze herauszeichnen. Oft braucht man zwei Schritte.</p>
 <p><b>Quader</b> (Länge a, Breite b, Höhe c):<br>
 Flächendiagonale der Grundfläche: e² = a² + b²<br>
 Raumdiagonale: d² = e² + c² &nbsp;⇒&nbsp; <b>d = ${sq('a² + b² + c²')}</b></p>
 <p><b>Würfel</b> (Kantenlänge a): Flächendiagonale e = a · √2; Raumdiagonale <b>d = a · √3</b></p>
-<p><b>Gerade quadratische Pyramide</b> (Grundkante a, Höhe h):<br>
-Höhe der Seitenfläche: h<sub>s</sub>² = h² + (${fr('a','2')})²<br>
-Seitenkante: s² = h<sub>s</sub>² + (${fr('a','2')})²</p>
+<p><b>Gerade Pyramide</b> mit rechteckiger Grundfläche ABCD (a = ${len('AB')}, b = ${len('BC')}, Höhe h = ${len('MS')}):<br>
+Seitenflächenhöhe über a (Dreieck MES): h<sub>a</sub>² = h² + (${fr('b','2')})²<br>
+Seitenflächenhöhe über b (Dreieck MFS): h<sub>b</sub>² = h² + (${fr('a','2')})²<br>
+Seitenkante (Dreieck AMS): s² = h² + ${len('AM')}² mit ${len('AM')} = ${HALF} · ${len('AC')}<br>
+Bei <b>quadratischer</b> Grundfläche ist b = a und h<sub>a</sub> = h<sub>b</sub>; dann auch s² = h<sub>a</sub>² + (${fr('a','2')})² (Dreieck BES).</p>
 <div class="ex"><b>Beispiel 1:</b> Quader mit a = 4 cm; b = 3 cm; c = 12 cm<br>
-e² = 4² + 3² = 25 ⇒ e = 5 cm<br>
-d² = 5² + 12² = 169 ⇒ d = 13 cm</div>
-<div class="ex"><b>Beispiel 2:</b> Pyramide mit a = 6 cm; h = 4 cm<br>
-h<sub>s</sub>² = 4² + 3² = 25 ⇒ h<sub>s</sub> = 5 cm<br>
-s² = 5² + 3² = 34 ⇒ s ≈ 5,83 cm</div>`},
+e² = (4 cm)² + (3 cm)² = 25 cm² ⇒ e = 5 cm<br>
+d² = (5 cm)² + (12 cm)² = 169 cm² ⇒ d = 13 cm</div>
+<div class="ex"><b>Beispiel 2:</b> Quadratische Pyramide mit a = 6 cm; h = 4 cm<br>
+h<sub>a</sub>² = (4 cm)² + (3 cm)² = 25 cm² ⇒ h<sub>a</sub> = 5 cm<br>
+s² = (5 cm)² + (3 cm)² = 34 cm² ⇒ s ≈ 5,83 cm</div>`},
 7:{title:'Strecken im Koordinatensystem',html:`
 <div class="mh">Strecken im Koordinatensystem</div>
+<p>Im Koordinatensystem gibt man Längen in <b>Längeneinheiten (LE)</b> und Flächeninhalte in <b>Flächeneinheiten (FE)</b> an.</p>
 <p><b>Vektor</b> von P(x<sub>P</sub> | y<sub>P</sub>) nach Q(x<sub>Q</sub> | y<sub>Q</sub>) („Spitze minus Fuß“):</p>
 <div class="formel">${vec('PQ')} = ${cvec('x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>')}</div>
-<p>Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks. Die Länge des Vektors heißt <b>Betrag</b>. Die Strecke ${ov('PQ')} ist so lang wie der Vektor:</p>
-<div class="formel">${len('PQ')} = |${vec('PQ')}| = ${sq('(x<sub>Q</sub> − x<sub>P</sub>)² + (y<sub>Q</sub> − y<sub>P</sub>)²')}</div>
-<p><b>Rechtwinkligkeit prüfen:</b> Die Quadrate aller drei Seitenlängen berechnen. Gilt für die beiden kleineren und das größte Quadrat a² + b² = c², ist das Dreieck rechtwinklig (Umkehrung des Satzes des Pythagoras). Der rechte Winkel liegt der längsten Seite gegenüber.</p>
+<p>Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks. Die Länge des Pfeils heißt <b>Betrag</b> des Vektors:</p>
+<div class="formel">|${vec('v')}| = ${sq('v<sub>x</sub>² + v<sub>y</sub>²')} &nbsp; für &nbsp; ${vec('v')} = ${cvec('v<sub>x</sub>','v<sub>y</sub>')}</div>
+<p><b>Länge der Strecke:</b></p>
+<div class="formel">${len('PQ')} = ${sq('(x<sub>Q</sub> − x<sub>P</sub>)² + (y<sub>Q</sub> − y<sub>P</sub>)²')} LE</div>
+<p><b>Rechtwinkligkeit prüfen:</b> Die Quadrate aller drei Seitenlängen berechnen. Gilt für die beiden kleineren und das größte Quadrat a² + b² = c², ist das Dreieck rechtwinklig (Umkehrung des Satzes des Pythagoras). Der rechte Winkel liegt der längsten Seite gegenüber.<br>
+<b>Gleichschenklig</b> ist ein Dreieck, wenn zwei Seiten gleich lang sind. Bei Vierecken vergleicht man ebenso Seiten- und Diagonalenlängen (z. B. Raute: vier gleich lange Seiten).</p>
 <div class="ex"><b>Beispiel 1:</b> P(1 | 2); Q(5 | 5)<br>
 ${vec('PQ')} = ${cvec('5 − 1','5 − 2')} = ${cvec(4,3)}<br>
-${len('PQ')} = ${sq('4² + 3²')} = √25 = 5 cm</div>
+${len('PQ')} = ${sq('4² + 3²')} LE = 5 LE</div>
 <div class="ex"><b>Beispiel 2:</b> A(−2 | 3); B(2 | 1); C(5 | 7)<br>
-${len('AB')}² = 4² + (−2)² = 20; ${len('BC')}² = 3² + 6² = 45; ${len('AC')}² = 7² + 4² = 65<br>
+${len('AB')}² = [4² + (−2)²] LE² = 20 LE²; ${len('BC')}² = (3² + 6²) LE² = 45 LE²; ${len('AC')}² = (7² + 4²) LE² = 65 LE²<br>
 20 + 45 = 65 ⇒ Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei B.</div>`},
 8:{title:'Streckenlänge in Abhängigkeit von x',html:`
 <div class="mh">Streckenlänge in Abhängigkeit von x</div>
@@ -243,13 +259,25 @@ ${len('AB')}² = 4² + (−2)² = 20; ${len('BC')}² = 3² + 6² = 45; ${len('AC
 1. Vektor aufstellen: ${vec('QP<sub>n</sub>')}(x) = Spitze minus Fuß.<br>
 2. Satz des Pythagoras: ${len('QP<sub>n</sub>')}² = (x-Koordinate)² + (y-Koordinate)², mit den binomischen Formeln vereinfachen.<br>
 3. Quadratische Ergänzung: Term in die Form a(x − d)² + e bringen.<br>
-4. Für x = d ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √e. Koordinaten von P<sub>0</sub> mit der Geradengleichung berechnen.<br>
-Die kürzeste Strecke steht <b>senkrecht</b> auf der Geraden g.</p>
+4. Für x = d ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √e LE (ein Wurzelterm ist minimal, wenn der Radikand minimal ist). Koordinaten von P<sub>0</sub> mit der Geradengleichung berechnen.<br>
+Die kürzeste Strecke steht <b>senkrecht</b> auf der Geraden g.<br>
+Sollen zwei Strecken gleich lang sein (z. B. gleichschenkliges Dreieck, Raute wird zum Quadrat), setzt man die Terme gleich und löst die Gleichung.</p>
 <div class="ex"><b>Beispiel:</b> g: y = 0,5x + 1; Q(6 | −1)<br>
 ${vec('QP<sub>n</sub>')}(x) = ${cvec('x − 6','0,5x + 1 − (−1)')} = ${cvec('x − 6','0,5x + 2')}<br>
-${len('QP<sub>n</sub>')}² = (x − 6)² + (0,5x + 2)² = x² − 12x + 36 + 0,25x² + 2x + 4 = 1,25x² − 10x + 40<br>
-= 1,25(x² − 8x + 4² − 4²) + 40 = 1,25(x − 4)² + 20<br>
-Für x = 4 ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √20 cm ≈ 4,47 cm mit P<sub>0</sub>(4 | 3)</div>`}
+${len('QP<sub>n</sub>')}² = [(x − 6)² + (0,5x + 2)²] LE² = (1,25x² − 10x + 40) LE²<br>
+= [1,25(x² − 8x + 4² − 4²) + 40] LE² = [1,25(x − 4)² + 20] LE²<br>
+Für x = 4 ist die Strecke am kürzesten: ${len('QP<sub>0</sub>')} = √20 LE ≈ 4,47 LE mit P<sub>0</sub>(4 | 3)</div>`},
+10:{title:'Kathetensatz und Höhensatz',html:`
+<div class="mh">Kathetensatz und Höhensatz (Zusatz)</div>
+<p>Im rechtwinkligen Dreieck ABC (γ = 90°) teilt der Höhenfußpunkt D die Hypotenuse c in die <b>Hypotenusenabschnitte</b> p = ${len('BD')} (an der Kathete a) und q = ${len('AD')} (an der Kathete b). Es gilt c = p + q.</p>
+<p><b>Kathetensatz:</b> Der Flächeninhalt des Quadrats über einer Kathete ist gleich dem Flächeninhalt des Rechtecks aus der Hypotenuse und dem anliegenden Hypotenusenabschnitt.</p>
+<div class="formel">a² = c · p &nbsp;&nbsp; und &nbsp;&nbsp; b² = c · q</div>
+<p><b>Höhensatz:</b> Der Flächeninhalt des Quadrats über der Höhe ist gleich dem Flächeninhalt des Rechtecks aus den beiden Hypotenusenabschnitten.</p>
+<div class="formel">h² = p · q</div>
+<div class="ex"><b>Beispiel:</b> p = 16 cm; h = 12 cm<br>
+Höhensatz: (12 cm)² = 16 cm · q ⇒ q = 144 cm² : 16 cm = 9 cm ⇒ c = 25 cm<br>
+Kathetensatz: a² = 25 cm · 16 cm = 400 cm² ⇒ a = 20 cm<br>
+Satz des Pythagoras: b² = (25 cm)² − (20 cm)² = 225 cm² ⇒ b = 15 cm</div>`}
 };
 
 /* ====== Zeichnen: Winkelbogen (Zeichenkatalog: rechter Winkel = Bogen mit Punkt) ====== */
@@ -307,6 +335,27 @@ function squaresSvg(a,b,gdeg){
   svg+=lab(sa,'a² = '+f(a*a))+lab(sb,'b² = '+f(b*b))+lab(sc,'c² = '+f(c2));
   svg+=angMark([0,0],[1,0],[Math.cos(g),-Math.sin(g)],Math.min(a,b)*.25,Math.abs(gdeg-90)<.01,fs/10);
   return {svg:`<svg class="fig" style="width:100%;max-width:520px" viewBox="${minx} ${miny} ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`,c2};
+}
+
+/* ====== Zeichnen: Ergänzungsfigur (Begründung des Satzes) ====== */
+function proofSvg(){
+  const a=3,b=4,S=a+b,ox=S+2.2,fs=.62;
+  const pg=(pts,col,dx=0,op=.55)=>`<polygon points="${pts.map(([x,y])=>(x+dx)+','+y).join(' ')}" fill="${col}" fill-opacity="${op}" stroke="#1f2937" stroke-width=".06"/>`;
+  const tx=(x,y,t,col='#111',w=600)=>`<text x="${x}" y="${y}" font-size="${fs}" text-anchor="middle" dominant-baseline="middle" fill="${col}" font-weight="${w}">${t}</text>`;
+  const T='#fca5a5';
+  let g='';
+  // linke Figur: vier Dreiecke, Quadrat über der Hypotenuse bleibt frei
+  [[[0,0],[a,0],[0,b]],[[S,0],[S,a],[a,0]],[[S,S],[b,S],[S,a]],[[0,S],[0,b],[b,S]]].forEach(t=>g+=pg(t,T));
+  g+=pg([[a,0],[S,a],[b,S],[0,b]],'#fdba74',0,.7)+tx(S/2,S/2,'c²','#9a3412',700);
+  g+=tx(a/2,-.45,'a')+tx(a+b/2,-.45,'b')+tx(S+.45,a/2,'a')+tx(S+.45,a+b/2,'b')+tx(S-a/2,S+.5,'a')+tx(b/2,S+.5,'b')+tx(-.45,S-a/2,'a')+tx(-.45,b/2,'b');
+  g+=tx((a+S)/2-.35,a/2-.35,'c','#9a3412')+tx(a/2-.25,b/2-.4,'c','#9a3412');
+  // rechte Figur: vier Dreiecke als zwei Rechtecke, Quadrate über den Katheten bleiben frei
+  [[[a,0],[S,0],[S,a]],[[a,0],[a,a],[S,a]],[[0,a],[a,a],[0,S]],[[a,a],[a,S],[0,S]]].forEach(t=>g+=pg(t,T,ox));
+  g+=pg([[0,0],[a,0],[a,a],[0,a]],'#93c5fd',ox,.7)+pg([[a,a],[S,a],[S,S],[a,S]],'#86efac',ox,.7);
+  g+=tx(ox+a/2,a/2,'a²','#1e3a8a',700)+tx(ox+a+b/2,a+b/2,'b²','#166534',700);
+  g+=tx(ox+a/2,-.45,'a')+tx(ox+a+b/2,-.45,'b')+tx(ox-.45,a/2,'a')+tx(ox-.45,a+b/2,'b');
+  g+=tx(S/2,S+1.35,'Figur 1','#374151')+tx(ox+S/2,S+1.35,'Figur 2','#374151');
+  return `<svg class="fig" style="width:100%;max-width:560px" viewBox="-1.2 -1.2 ${ox+S+2} ${S+3.2}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
 
 /* ====== Bausteine ====== */
@@ -438,7 +487,7 @@ function exitTicket(body,n,pools,done){
     if(pass){
       const d=new Date(),code=codeFor(n,score,d),nv=nivText(state.niv&&state.niv[n]);
       state[n]={score,date:d.toLocaleDateString('de-DE'),code,niv:nv};save();
-      box.append(h('div',{class:'checkin'},h('div',{html:`<b>Station ${n} geschafft!</b> – ${STATIONS[n].title}`}),h('div',{},`Exit-Ticket: ${score} von ${qs.length} · Datum: ${state[n].date}`),nv?h('div',{},`Geübt: ${nv}`):null,h('div',{html:`Kontrollcode: <span class="code">${code}</span>`}),h('div',{class:'muted'},'Zeige diese Karte deiner Lehrkraft (oder mache einen Screenshot).')));
+      box.append(h('div',{class:'checkin'},h('div',{html:`<b>${STATIONS[n].zusatz?'Zusatzstation':'Station '+n} geschafft!</b> – ${STATIONS[n].title}`}),h('div',{},`Exit-Ticket: ${score} von ${qs.length} · Datum: ${state[n].date}`),nv?h('div',{},`Geübt: ${nv}`):null,h('div',{html:`Kontrollcode: <span class="code">${code}</span>`}),h('div',{class:'muted'},'Zeige diese Karte deiner Lehrkraft (oder mache einen Screenshot).')));
       done();
     }else{
       box.append(h('p',{},'Noch nicht ganz. Lies die Auswertung, schau dir die Erklärungen oben noch einmal an und übe weiter. Beim nächsten Versuch bekommst du neue Fragen.'));
@@ -605,7 +654,7 @@ function s2winkel(){
 function s3text(dec,so,f){
   const [a,b,c]=so,u=x=>fmt(x/f,dec?2:0),l=x=>fmt(x/f,dec?1:0);
   const isR=a*a+b*b===c*c,lt=a*a+b*b<c*c;
-  return {isR,sol:`<div>Längste Seite: ${l(c)} cm</div><div>${l(a)}² + ${l(b)}² = ${u(a*a/f)} + ${u(b*b/f)} = <b>${u((a*a+b*b)/f)}</b></div><div>${l(c)}² = <b>${u(c*c/f)}</b></div><div>${isR?'Beide Werte sind gleich ⇒ rechtwinklig.':'Die Werte sind verschieden ⇒ nicht rechtwinklig.'}</div>`,
+  return {isR,sol:`<div>Längste Seite: ${l(c)} cm</div><div>(${l(a)} cm)² + (${l(b)} cm)² = ${u(a*a/f)} cm² + ${u(b*b/f)} cm² = <b>${u((a*a+b*b)/f)} cm²</b></div><div>(${l(c)} cm)² = <b>${u(c*c/f)} cm²</b></div><div>${isR?'Beide Werte sind gleich ⇒ rechtwinklig.':(lt?'Die Summe ist kleiner ⇒ nicht rechtwinklig, sondern stumpfwinklig.':'Die Summe ist größer ⇒ nicht rechtwinklig, sondern spitzwinklig.')}</div>`,
     idx:isR?0:(lt?1:2)};
 }
 function s3len(dec){
@@ -613,11 +662,26 @@ function s3len(dec){
   let s,so,right,ok;
   do{s=t.map(x=>Math.round(x*sc*f));right=Math.random()<.5;if(!right){const i=rint(0,2);s[i]+=pick([-2,-1,1,2]);}
      so=[...s].sort((x,y)=>x-y);ok=so[0]>0&&so[0]+so[1]>so[2]&&((so[0]*so[0]+so[1]*so[1]===so[2]*so[2])===right);}while(!ok);
-  const r=s3text(dec,so,f),show=shuffle(s).map(x=>fmt(x/f,dec?1:0)+' cm').join('; ');
-  return {kind:'mc',prompt:'',question:`Ein Dreieck hat die Seitenlängen ${show}. Ist es rechtwinklig?`,
-    options:['Ja, denn die Summe der Quadrate der beiden kürzeren Seiten ist gleich dem Quadrat der längsten Seite.','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist kleiner als das Quadrat der längsten Seite.','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist größer als das Quadrat der längsten Seite.'],correct:r.idx,
+  const r=s3text(dec,so,f),mm=dec&&Math.random()<.4?rint(0,2):-1,sh=shuffle(s);
+  const show=sh.map((x,i)=>i===mm?fmt(x*10/f,0)+' mm':fmt(x/f,dec?1:0)+' cm').join('; ');
+  if(mm>=0)r.sol=`<div>Einheiten angleichen: ${fmt(sh[mm]*10/f,0)} mm = ${fmt(sh[mm]/f,1)} cm</div>`+r.sol;
+  const nm=pick([['a','b','c'],['k','l','m'],['n','o','p'],['q','r','s']]);
+  return {kind:'mc',prompt:'',question:`Ein Dreieck hat die Seitenlängen ${sh.map((x,i)=>nm[i]+' = '+show.split('; ')[i]).join('; ')}. Ist es rechtwinklig?`,
+    options:['Ja, denn die Summe der Quadrate der beiden kürzeren Seiten ist gleich dem Quadrat der längsten Seite.','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist kleiner als das Quadrat der längsten Seite (stumpfwinkliges Dreieck).','Nein, denn die Summe der Quadrate der beiden kürzeren Seiten ist größer als das Quadrat der längsten Seite (spitzwinkliges Dreieck).'],correct:r.idx,
     badHint:'Bestimme die längste Seite und vergleiche ihr Quadrat mit der Summe der Quadrate der beiden anderen.',
     hints:['Die längste Seite spielt die Rolle der Hypotenuse (c).','Berechne a² + b² und c² getrennt.'],solution:r.sol};
+}
+function s3trip(){
+  const t=pick(TRIPLES.slice(0,6)),k=rint(2,6),[a,b,c]=t.map(x=>x*k);
+  if(Math.random()<.5)return {kind:'num',prompt:'',unit:'',tol:.001,answer:c,
+    question:`(${t.join('; ')}) ist ein pythagoräisches Zahlentripel. Ergänze zu einem weiteren Zahlentripel: (${a}; ${b}; ?)`,
+    badHint:'Vielfache eines Zahlentripels sind wieder Zahlentripel. Oder: Berechne √(a² + b²).',hints:[`${a} = ${k} · ${t[0]} und ${b} = ${k} · ${t[1]}`],
+    solution:`<div>Alle Zahlen mit ${k} multipliziert: ${k} · ${t[2]} = <b>${c}</b></div><div>Probe: ${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a+b*b} = ${c}²</div>`};
+  const w=rint(0,2),cand=w===0?[a,b,c]:w===1?t.map(x=>x*x):t.map(x=>x+k),ok=cand[0]**2+cand[1]**2===cand[2]**2;
+  return {kind:'mc',prompt:'',question:`Ist (${cand.join('; ')}) ein pythagoräisches Zahlentripel?`,
+    options:['Ja, denn die Summe der Quadrate der beiden kleineren Zahlen ist gleich dem Quadrat der größten Zahl.','Nein, denn die Summe der Quadrate der beiden kleineren Zahlen ist nicht gleich dem Quadrat der größten Zahl.'],correct:ok?0:1,
+    badHint:'Prüfe: kleinere Zahl² + mittlere Zahl² = größte Zahl²?',hints:['Nur Vielfache eines Zahlentripels sind sicher wieder Zahlentripel – nicht die Quadrate und nicht „plus eine Zahl“.'],
+    solution:`<div>${cand[0]}² + ${cand[1]}² = ${cand[0]**2} + ${cand[1]**2} = <b>${cand[0]**2+cand[1]**2}</b></div><div>${cand[2]}² = <b>${cand[2]**2}</b></div><div>${ok?'Gleich ⇒ Zahlentripel.':'Ungleich ⇒ kein Zahlentripel.'}</div>`};
 }
 function s3area(){
   const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([1,2,3,.5]);
@@ -674,7 +738,58 @@ function rhoSvg(l){
    +t(1.0,.9,l.a,'end')+t(4.6,2.2,'e')+t(3.2,3.9,'f','start')+t(3,5.95,`${l.e}; ${l.f}`);
   return `<svg class="fig" style="width:340px" viewBox="-3 -1 12.4 7.2" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
-function s4leicht(){
+function eqSvg(l){
+  const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`,H=5.2;
+  const g=`<polygon points="0,${H} 6,${H} 3,0" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="3" y1="0" x2="3" y2="${H}" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/>`+angMark([3,H],[1,0],[0,-1],.45,true,.05)
+   +t(0,H+.5,'A','middle','font-weight="700" fill="#1e3a8a"')+t(6,H+.5,'B','middle','font-weight="700" fill="#1e3a8a"')+t(3,-.2,'C','middle','font-weight="700" fill="#1e3a8a"')+t(3.2,H+.55,'M','start','font-weight="700" fill="#1e3a8a"')
+   +t(1.1,2.4,l.a,'end')+t(4.9,2.4,l.a,'start')+t(3.15,3.6,l.h,'start')+t(3,H+1.15,l.base||l.a);
+  return `<svg class="fig" style="width:320px" viewBox="-3 -1 12 8" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+function kiteSvg(l){
+  const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".5" text-anchor="${a}" ${w}>${s}</text>`,V='font-weight="700" fill="#1e3a8a"';
+  const g=`<polygon points="0,2.4 2.4,0 7.4,2.4 2.4,4.8" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="0" y1="2.4" x2="7.4" y2="2.4" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/><line x1="2.4" y1="0" x2="2.4" y2="4.8" stroke="#1f2937" stroke-width=".06" stroke-dasharray=".2 .15"/>`+angMark([2.4,2.4],[1,0],[0,-1],.45,true,.05)
+   +t(-.3,2.55,'A','end',V)+t(2.4,-.25,'B','middle',V)+t(7.7,2.55,'C','start',V)+t(2.4,5.35,'D','middle',V)+t(2.6,2.95,'E','start',V)
+   +t(.9,.9,l.ab||'','end')+t(5.2,.9,l.bc||'','start')+t(1.2,2.15,l.ae||'')+t(5,2.15,l.ec||'')+t(2.6,1.25,l.f||'','start');
+  return `<svg class="fig" style="width:340px" viewBox="-2.6 -1 12.4 7" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+function s4quad(){
+  const a=rint(3,15),d=a*Math.SQRT2;
+  if(Math.random()<.5)return {kind:'mc',prompt:'',question:`Ein Quadrat hat die Seitenlänge ${a} cm. Wie lang ist seine Diagonale d?`,
+    options:[`d = ${a} · √2 cm ≈ ${fmt(d)} cm`,`d = ${a} · √3 cm ≈ ${fmt(a*Math.sqrt(3))} cm`,`d = ${2*a} cm`,`d = ${a*a} cm`],correct:0,
+    badHint:'Die Diagonale teilt das Quadrat in zwei gleichschenklig-rechtwinklige Dreiecke: d² = a² + a².',hints:['d² = a² + a² = 2a²'],
+    solution:`<div>d² = (${a} cm)² + (${a} cm)² = ${2*a*a} cm²</div><div>d = √${2*a*a} cm = ${a} · √2 cm ≈ <b>${fmt(d)} cm</b></div>`};
+  const dd=rint(4,20),s=dd/Math.SQRT2;
+  return {kind:'num',prompt:'',unit:'cm',tol:.0051,answer:Math.round(s*100)/100,question:`Die Diagonale eines Quadrats ist ${dd} cm lang. Berechne die Seitenlänge a (zwei Nachkommastellen).`,
+    badHint:'d² = 2a², also a² = d² : 2.',hints:['d² = a² + a² = 2a²',`a² = (${dd} cm)² : 2`],
+    solution:`<div>2a² = (${dd} cm)² = ${dd*dd} cm²</div><div>a² = ${fmt(dd*dd/2)} cm²</div><div>a ≈ <b>${fmt(s)} cm</b></div>`};
+}
+function s4eq(){
+  const a=rint(20,140)/10,hh=a/2*Math.sqrt(3),A=a*a/4*Math.sqrt(3);
+  if(Math.random()<.5)return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:eqSvg({a:`${fmt(a,1)} cm`,h:'h = ?'}),
+    question:`Berechne die Höhe h des gleichseitigen Dreiecks ABC mit der Seitenlänge a = ${fmt(a,1)} cm (zwei Nachkommastellen).`,
+    badHint:'Die Höhe halbiert die Seite: h² = a² − (a/2)².',hints:['Rechtwinkliges Teildreieck AMC: Hypotenuse a, Kathete a/2.',`h² = (${fmt(a,1)} cm)² − (${fmt(a/2,2)} cm)²`],
+    solution:`<div>h² = (${fmt(a,1)} cm)² − (${fmt(a/2,2)} cm)² = ${fmt(a*a)} cm² − ${fmt(a*a/4,4)} cm² = ${fmt(.75*a*a,4)} cm²</div><div>h ≈ <b>${fmt(hh)} cm</b> &nbsp;(Formel: h = ${fr('a','2')} · √3)</div>`};
+  return {kind:'num',unit:'cm²',tol:.0251,answer:Math.round(A*100)/100,prompt:eqSvg({a:`${fmt(a,1)} cm`,h:'h'}),
+    question:`Berechne den Flächeninhalt des gleichseitigen Dreiecks ABC mit der Seitenlänge a = ${fmt(a,1)} cm (zwei Nachkommastellen).`,
+    badHint:`Zuerst h = ${fr('a','2')} · √3, dann A = ${HALF} · a · h. Oder direkt A = ${fr('a²','4')} · √3.`,hints:['Berechne zuerst die Höhe h mit dem Satz des Pythagoras.',`A = ${fr('a²','4')} · √3`],
+    solution:`<div>h = ${fr(fmt(a,1)+' cm','2')} · √3 ≈ ${fmt(hh,4)} cm</div><div>A = ${HALF} · ${fmt(a,1)} cm · ${fmt(hh,4)} cm ≈ <b>${fmt(A)} cm²</b></div>`};
+}
+function s4kite(){
+  let ae,ec,bf;do{ae=rint(2,8);ec=rint(ae+2,16);bf=rint(2,8);}while(false);
+  const ab=Math.hypot(ae,bf),bc=Math.hypot(ec,bf),u=2*(ab+bc),e=ae+ec,f=2*bf,A=e*f/2;
+  if(Math.random()<.5)return {kind:'num',unit:'cm',tol:.021,answer:Math.round(u*100)/100,prompt:kiteSvg({ae:`${ae} cm`,ec:`${ec} cm`,f:`${bf} cm`}),
+    question:`Im Drachenviereck ABCD mit der Symmetrieachse AC gilt ${len('AE')} = ${ae} cm, ${len('EC')} = ${ec} cm und ${len('BE')} = ${bf} cm. Berechne den Umfang (zwei Nachkommastellen).`,
+    badHint:'Die Diagonalen stehen senkrecht aufeinander. Berechne |AB| im Dreieck ABE und |BC| im Dreieck EBC.',hints:['Das Drachenviereck hat zwei Paare gleich langer Seiten: |AB| = |AD| und |BC| = |DC|.',`${len('AB')}² = (${ae} cm)² + (${bf} cm)²`],
+    solution:`<div>${len('AB')}² = (${ae} cm)² + (${bf} cm)² = ${ae*ae+bf*bf} cm² ⇒ ${len('AB')} ≈ ${fmt(ab)} cm</div><div>${len('BC')}² = (${ec} cm)² + (${bf} cm)² = ${ec*ec+bf*bf} cm² ⇒ ${len('BC')} ≈ ${fmt(bc)} cm</div><div>u = 2 · (${len('AB')} + ${len('BC')}) ≈ <b>${fmt(u)} cm</b></div>`};
+  return {kind:'num',unit:'cm²',tol:.001,answer:A,prompt:kiteSvg({ab:`${fmt(ab,2)} cm`,ae:`${ae} cm`,ec:`${ec} cm`}),
+    question:`Im Drachenviereck ABCD mit der Symmetrieachse AC ist ${len('AB')} ≈ ${fmt(ab,2)} cm, ${len('AE')} = ${ae} cm und ${len('EC')} = ${ec} cm. Berechne den Flächeninhalt.`,
+    badHint:'Berechne zuerst |BE| im Dreieck ABE, dann A = ½ · e · f.',hints:[`${len('BE')}² = ${len('AB')}² − ${len('AE')}²`,'f = 2 · |BE|; e = |AE| + |EC|'],
+    solution:`<div>${len('BE')}² ≈ (${fmt(ab,2)} cm)² − (${ae} cm)² ≈ ${bf*bf} cm² ⇒ ${len('BE')} = ${bf} cm</div><div>e = ${ae} cm + ${ec} cm = ${e} cm; f = 2 · ${bf} cm = ${f} cm</div><div>A = ${HALF} · ${e} cm · ${f} cm = <b>${fmt(A)} cm²</b></div>`};
+}
+function s4leicht(){return Math.random()<1/3?s4quad():s4leicht0();}
+function s4standard(){return Math.random()<1/3?s4eq():s4standard0();}
+function s4plus(){return Math.random()<1/3?s4kite():s4plus0();}
+function s4leicht0(){
   const t=pick(TRIPLES.filter(x=>x[2]<=25)),k=pick([1,2]),[a,b,c]=t.map(x=>x*k);
   if(Math.random()<.5)return {kind:'num',unit:'cm',tol:.001,answer:b,prompt:isoSvg({leg:c+' cm',base:2*a+' cm',h:'h = ?'}),
     question:`Das gleichschenklige Dreieck hat die Schenkellänge ${c} cm und die Basis ${2*a} cm. Berechne die Höhe h auf die Basis.`,
@@ -685,7 +800,7 @@ function s4leicht(){
     badHint:'Die Diagonalen halbieren sich senkrecht. Betrachte das Dreieck ABM mit den halben Diagonalen als Katheten.',hints:['Die Diagonalen einer Raute stehen senkrecht aufeinander und halbieren sich.',`Die halben Diagonalen sind ${a} cm und ${b} cm.`],
     solution:`<div>Halbe Diagonalen: ${a} cm und ${b} cm</div><div>a² = ${a}² + ${b}² = ${a*a} + ${b*b} = ${c*c}</div><div>a = <b>${c} cm</b></div>`};
 }
-function s4standard(){
+function s4standard0(){
   if(Math.random()<.5){
     const s=rint(70,150)/10,g=rint(30,Math.floor((2*s-1)*10))/10,hh=Math.sqrt(s*s-g*g/4),ar=Math.round(.5*g*hh*100)/100;
     return {kind:'num',unit:'cm²',tol:.08,answer:ar,prompt:isoSvg({leg:fmt(s,1)+' cm',base:fmt(g,1)+' cm',h:'h = ?'}),
@@ -699,7 +814,7 @@ function s4standard(){
     badHint:'Zuerst die Seitenlänge a aus den halben Diagonalen, dann u = 4 · a.',hints:['Die Diagonalen halbieren sich senkrecht.',`a² = ${fmt(e/2,1)}² + ${fmt(f/2,1)}²`],
     solution:`<div>a² = ${fmt(e/2,1)}² + ${fmt(f/2,1)}² = ${fmt(e*e/4+f*f/4,2)} ⇒ a ≈ ${fmt(a,2)} mm</div><div>u = 4 · a ≈ <b>${fmt(u,2)} mm</b></div>`};
 }
-function s4plus(){
+function s4plus0(){
   const w=rint(0,3);
   if(w===0){const L=rint(250,400)/10,H=Math.round((L-rint(5,15)/10)*10)/10,x=Math.sqrt(L*L-H*H);
     return {kind:'num',prompt:'',unit:'m',tol:.0051,answer:Math.round(x*100)/100,question:`Ein schiefer Turm ist an der Schräge ${fmt(L,1)} m lang. Seine Spitze liegt ${fmt(H,1)} m senkrecht über dem Boden. Wie groß ist der Überhang (waagrechter Abstand der Spitze vom Fußpunkt)?`,
@@ -838,7 +953,7 @@ function s5plus(){
 
 /* ====== Station 6: Pythagoras in Körpern ====== */
 const Q45=.5*Math.SQRT1_2; // Schrägbild: Verzerrungswinkel 45°, Verkürzungsfaktor 1/2
-const HS='h<sub>s</sub>',HSV='h<tspan font-size=".32" dy=".1">s</tspan>'; // HSV: für SVG-Beschriftungen
+const HS='h<sub>a</sub>',HSV='h<tspan font-size=".32" dy=".1">a</tspan>'; // HSV: für SVG-Beschriftungen
 const prj=(p,k)=>[(p[0]+p[1]*Q45)*k,-(p[2]+p[1]*Q45)*k];
 function view3d(P,w,pad=1.3){const pts=Object.values(P),xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);const x0=Math.min(...xs)-pad-.6,y0=Math.min(...ys)-pad;
   return `class="fig" style="width:${w}px" viewBox="${x0} ${y0} ${Math.max(...xs)-x0+pad+2.4} ${Math.max(...ys)-y0+pad}" xmlns="http://www.w3.org/2000/svg"`;}
@@ -873,25 +988,38 @@ function quaderSvg(o){
   return `<svg ${view3d(P,o.w||340)}>${g}</svg>`;
 }
 function pyrSvg(o){
-  const {a,h:hh}=o,k=7/Math.max(a+a*Q45,hh+a*Q45),V={A:[0,0,0],B:[a,0,0],C:[a,a,0],D:[0,a,0],S:[a/2,a/2,hh],M:[a/2,a/2,0],N:[a,a/2,0]},P={};
+  // E: Mittelpunkt von AB (Fußpunkt von h_a), F: Mittelpunkt von BC (Fußpunkt von h_b), M: Diagonalenschnittpunkt
+  const {a,h:hh}=o,b=o.b||a,k=7/Math.max(a+b*Q45,hh+b*Q45),V={A:[0,0,0],B:[a,0,0],C:[a,b,0],D:[0,b,0],S:[a/2,b/2,hh],M:[a/2,b/2,0],E:[a/2,0,0],F:[a,b/2,0]},P={};
   for(const n in V)P[n]=prj(V[n],k);
-  const cen=prj([a/2,a/2,hh/3],k),d=draw3d(P,cen),D='.22 .16';
+  const cen=prj([a/2,b/2,hh/3],k),d=draw3d(P,cen),D='.22 .16';
   let g='';
-  if(o.tri==='mns')g+=d.poly(['M','N','S'],'#fdba74');
-  if(o.tri==='cns')g+=d.poly(['C','N','S'],'#93c5fd');
+  const tri={mes:['M','E','S'],bes:['B','E','S'],mfs:['M','F','S'],ams:['A','M','S']}[o.tri];
+  if(tri)g+=d.poly(tri,o.tri==='bes'?'#93c5fd':'#fdba74');
   g+=d.ln('C','D','#6b7280',.05,D)+d.ln('D','A','#6b7280',.05,D)+d.ln('D','S','#6b7280',.05,D);
   [['A','B'],['B','C'],['S','A'],['S','B'],['S','C']].forEach(([p,q])=>g+=d.ln(p,q));
-  g+=d.ln('M','S','#7c3aed',.07,D)+d.ln('M','N','#6b7280',.05,D);
-  if(o.hs)g+=d.ln('N','S','#ea580c',.08);
-  if(o.s)g+=d.ln('C','S','#dc2626',.1);
-  if(o.tri==='mns'||o.hs)g+=d.right('M','N','S');
-  if(o.tri==='cns')g+=d.right('N','C','S');
+  g+=d.ln('M','S','#7c3aed',.07,D);
+  if(o.hs||o.tri==='mes')g+=d.ln('M','E','#6b7280',.05,D);
+  if(o.hb||o.tri==='mfs')g+=d.ln('M','F','#6b7280',.05,D);
+  if(o.tri==='ams'||o.am)g+=d.ln('A','M','#2563eb',.07,D);
+  if(o.hs)g+=d.ln('E','S','#ea580c',.08);
+  if(o.hb)g+=d.ln('F','S','#16a34a',.08);
+  if(o.s)g+=d.ln('B','S','#dc2626',.1);
+  if(o.tri==='mes')g+=d.right('M','E','S');
+  if(o.tri==='mfs')g+=d.right('M','F','S');
+  if(o.tri==='ams')g+=d.right('M','A','S');
+  if(o.tri==='bes')g+=d.right('E','B','S');
+  else if(o.hs)g+=d.right('E','B','S');
   ['A','B','C','D','S'].forEach(n=>g+=d.vx(n));
-  g+=`<text x="${P.M[0]-.35}" y="${P.M[1]+.3}" font-size=".42" font-weight="700" fill="#1e3a8a" text-anchor="middle">M</text><text x="${P.N[0]+.4}" y="${P.N[1]+.15}" font-size=".42" font-weight="700" fill="#1e3a8a" text-anchor="start">N</text>`;
-  if(o.la)g+=d.lab('A','B',o.la,[0,.55]);
-  if(o.lh)g+=d.lab('S','M',o.lh,[-.15,0],'#6d28d9','end',.72);
-  if(o.lhs)g+=d.lab('N','S',o.lhs,[-.1,0],'#c2410c','end',.25);
-  if(o.ls)g+=d.lab('C','S',o.ls,[.3,-.1],'#b91c1c','start');
+  const pl=(n,dx,dy,anc='middle')=>`<text x="${P[n][0]+dx}" y="${P[n][1]+dy}" font-size=".42" font-weight="700" fill="#1e3a8a" text-anchor="${anc}">${n}</text>`;
+  g+=pl('M',.28,-.22,'start');
+  if(o.hs||o.tri==='mes'||o.tri==='bes')g+=pl('E',.2,.5);
+  if(o.hb||o.tri==='mfs')g+=pl('F',.4,.15,'start');
+  if(o.la)g+=d.lab('A','B',o.la,[0,.55],'#111','middle',o.hs||o.tri==='mes'||o.tri==='bes'?.22:.5);
+  if(o.lb)g+=d.lab('B','C',o.lb,[.45,.25],'#111','start',.3);
+  if(o.lh)g+=d.lab('S','M',o.lh,[.15,0],'#6d28d9','start',.6);
+  if(o.lhs)g+=d.lab('E','S',o.lhs,[-.15,0],'#c2410c','end',.45);
+  if(o.lhb)g+=d.lab('F','S',o.lhb,[.15,0],'#15803d','start',.35);
+  if(o.ls)g+=d.lab('B','S',o.ls,[.3,-.1],'#b91c1c','start');
   return `<svg ${view3d(P,o.w||320)}>${g}</svg>`;
 }
 function quaderExperiment(body,done){
@@ -946,17 +1074,40 @@ function s6standard(){
       badHint:'Die Raumdiagonale ist die Hypotenuse: c² = d² − e² = d² − a² − b².',hints:['Berechne zuerst e² = a² + b².','Im Dreieck ACG ist c eine Kathete: c² = d² − e².'],
       solution:`<div>e² = ${x}² + ${y}² = ${x*x+y*y}</div><div>c² = d² − e² = ${d}² − ${x*x+y*y} = ${d*d} − ${x*x+y*y} = ${c*c}</div><div>c = √${c*c} = <b>${c} cm</b></div>`};}
   if(w===2){const a=2*rint(2,8),hh=rint(3,15),{hs2,hs}=s6hs(a,hh);
-    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mns'}),
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mes'}),
       question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Höhe ${HS} einer Seitenfläche (zwei Nachkommastellen).`,
-      badHint:`Dreieck MNS mit dem rechten Winkel bei M: ${HS}² = h² + (${fr('a','2')})².`,hints:[`|${ov('MN')}| ist die halbe Grundkante: ${a/2} cm.`,`${HS}² = ${hh}² + ${a/2}²`],
-      solution:`<div>${len('MN')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}
+      badHint:`Dreieck MES mit dem rechten Winkel bei M: ${HS}² = h² + (${fr('a','2')})².`,hints:[`|${ov('ME')}| ist die halbe Grundkante: ${a/2} cm.`,`${HS}² = ${hh}² + ${a/2}²`],
+      solution:`<div>${len('ME')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}
   const a=rint(15,120)/10,r3=a*Math.sqrt(3);
   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(r3*100)/100,prompt:quaderSvg({a:3.5,b:3.5,c:3.5,d:true,ld:'d = ?',la:`a = ${fmt(a,1)} cm`}),
     question:`Ein Würfel hat die Kantenlänge a = ${fmt(a,1)} cm. Berechne die Länge seiner Raumdiagonale (zwei Nachkommastellen).`,
     badHint:'Würfel: d = a · √3.',hints:['d² = a² + a² + a² = 3a²'],
     solution:`<div>d² = 3 · ${fmt(a,1)}² = 3 · ${fmt(a*a)} = ${fmt(3*a*a)}</div><div>d = ${fmt(a,1)} · √3 ≈ <b>${fmt(r3)} cm</b></div>`};
 }
-function s6plus(){
+const HB='h<sub>b</sub>',HBV='h<tspan font-size=".32" dy=".1">b</tspan>';
+function s6rect(){
+  let a,b;do{a=2*rint(3,8);b=2*rint(2,7);}while(a===b);
+  const hh=rint(3,12),w=rint(0,2),RF={a:4.6,b:3.2,h:4.6,w:320};
+  if(w===0){const ac2=a*a+b*b,am2=ac2/4,s2=hh*hh+am2,sv=Math.sqrt(s2);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(sv*100)/100,prompt:pyrSvg({...RF,la:`a = ${a} cm`,lb:`b = ${b} cm`,lh:'h',tri:'ams',s:false,am:true})+`<p class="muted" style="text-align:center;margin:0">Gesucht: Seitenkante s = ${len('AS')}</p>`,
+      question:`Eine gerade Pyramide hat eine rechteckige Grundfläche ABCD mit a = ${a} cm und b = ${b} cm. Ihre Höhe ist h = ${hh} cm. Berechne die Länge der Seitenkante s (zwei Nachkommastellen).`,
+      badHint:`Zwei Schritte: zuerst die Diagonale ${len('AC')} der Grundfläche, dann s im Stützdreieck AMS mit ${len('AM')} = ${HALF} · ${len('AC')}.`,hints:[`${len('AC')}² = a² + b²`,`s² = h² + ${len('AM')}²`],
+      solution:`<div>1. Dreieck ABC: ${len('AC')}² = (${a} cm)² + (${b} cm)² = ${ac2} cm² ⇒ ${len('AC')} ≈ ${fmt(Math.sqrt(ac2),4)} cm</div><div>${len('AM')} = ${HALF} · ${len('AC')} ⇒ ${len('AM')}² = ${fmt(am2)} cm²</div><div>2. Stützdreieck AMS: s² = (${hh} cm)² + ${fmt(am2)} cm² = ${fmt(s2)} cm²</div><div>s ${Number.isInteger(sv)?'=':'≈'} <b>${fmt(sv)} cm</b></div>`};}
+  const isA=w===1,k=isA?b:a,H=isA?HS:HB,v2=hh*hh+k*k/4,v=Math.sqrt(v2);
+  return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(v*100)/100,prompt:pyrSvg({...RF,la:`a = ${a} cm`,lb:`b = ${b} cm`,lh:'h',...(isA?{hs:true,lhs:HSV+' = ?',tri:'mes'}:{hb:true,lhb:HBV+' = ?',tri:'mfs'})}),
+    question:`Eine gerade Pyramide hat eine rechteckige Grundfläche ABCD mit a = ${len('AB')} = ${a} cm und b = ${len('BC')} = ${b} cm. Ihre Höhe ist h = ${hh} cm. Berechne die Seitenflächenhöhe ${H} (zwei Nachkommastellen).`,
+    badHint:`Stützdreieck ${isA?'MES':'MFS'} mit dem rechten Winkel bei M. ${isA?len('ME'):len('MF')} ist halb so lang wie ${isA?'b':'a'}.`,hints:[`${isA?len('ME'):len('MF')} = ${fr(isA?'b':'a','2')} = ${k/2} cm`,`${H}² = h² + (${fr(isA?'b':'a','2')})²`],
+    solution:`<div>${isA?len('ME'):len('MF')} = ${fr(isA?'b':'a','2')} = ${k/2} cm</div><div>${H}² = (${hh} cm)² + (${k/2} cm)² = ${hh*hh} cm² + ${k*k/4} cm² = ${v2} cm²</div><div>${H} ${Number.isInteger(v)?'=':'≈'} <b>${fmt(v)} cm</b></div>`};
+}
+function s6zyl(){
+  const d=rint(5,10),hz=rint(9,18),L=Math.sqrt(d*d+hz*hz);
+  return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(L*100)/100,prompt:'',
+    question:`Eine zylinderförmige Getränkedose hat einen Durchmesser von ${d} cm und ist ${hz} cm hoch. Wie lang muss ein Strohhalm mindestens sein, damit er schräg gestellt nicht ganz in der Dose versinkt (zwei Nachkommastellen)?`,
+    badHint:'Schneide die Dose senkrecht durch die Mitte: Es entsteht ein Rechteck aus Durchmesser und Höhe. Der Strohhalm liegt auf dessen Diagonale.',hints:['Stützdreieck: Katheten sind Durchmesser und Höhe.',`L² = (${d} cm)² + (${hz} cm)²`],
+    solution:`<div>Achsenschnitt: Rechteck ${d} cm × ${hz} cm</div><div>L² = (${d} cm)² + (${hz} cm)² = ${d*d+hz*hz} cm²</div><div>L ≈ <b>${fmt(L)} cm</b>. Ein kürzerer Strohhalm kann versinken.</div>`};
+}
+function s6plus(){const r=Math.random();if(r<.3)return s6rect();if(r<.42)return s6zyl();return s6plus0();}
+function s6plus0(){
   const w=rint(0,3);
   if(w===0){let l,b,c,dd,L;do{l=rint(30,80);b=rint(20,50);c=rint(15,40);dd=Math.sqrt(l*l+b*b+c*c);L=Math.round(dd+pick([-1,1])*rnd(1.5,5));}while(Math.abs(L-dd)<1.2||L<=Math.max(l,b,c));
     const fits=L<dd;
@@ -965,15 +1116,15 @@ function s6plus(){
       badHint:'Die längste Strecke im Quader ist die Raumdiagonale. Rechne alle Längen in cm um und vergleiche.',hints:[`${fmt(L/100,2)} m = ${L} cm`,'d² = l² + b² + c²'],
       solution:`<div>d² = ${l}² + ${b}² + ${c}² = ${l*l} + ${b*b} + ${c*c} = ${l*l+b*b+c*c}</div><div>d ≈ ${fmt(dd,1)} cm; Stab: ${L} cm</div><div><b>${fits?'Der Stab passt hinein':'Der Stab passt nicht hinein'}</b>, weil ${fits?`${L} cm < ${fmt(dd,1)} cm`:`${L} cm > ${fmt(dd,1)} cm`}.</div>`};}
   if(w===1){const a=2*rint(2,8),hh=rint(3,15),{hs2}=s6hs(a,hh),s2=hs2+a*a/4,s=Math.sqrt(s2);
-    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(s*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV,s:true,ls:'s = ?',tri:'cns'}),
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(s*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV,s:true,ls:'s = ?',tri:'bes'}),
       question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Länge einer Seitenkante s (zwei Nachkommastellen).`,
-      badHint:`Zwei Schritte: zuerst ${HS} im Dreieck MNS, dann s im Dreieck CNS (rechter Winkel bei N).`,hints:[`${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hs2}`,`s² = ${HS}² + (${fr('a','2')})² = ${hs2} + ${a*a/4}`],
-      solution:`<div>1. Dreieck MNS: ${HS}² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>2. Dreieck CNS: s² = ${HS}² + ${a/2}² = ${hs2} + ${a*a/4} = ${s2}</div><div>s = √${s2} ${Number.isInteger(s)?'=':'≈'} <b>${fmt(s)} cm</b></div>`};}
+      badHint:`Zwei Schritte: zuerst ${HS} im Dreieck MES, dann s im Dreieck BES (rechter Winkel bei E).`,hints:[`${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hs2}`,`s² = ${HS}² + (${fr('a','2')})² = ${hs2} + ${a*a/4}`],
+      solution:`<div>1. Dreieck MES: ${HS}² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>2. Dreieck BES: s² = ${HS}² + ${a/2}² = ${hs2} + ${a*a/4} = ${s2}</div><div>s = √${s2} ${Number.isInteger(s)?'=':'≈'} <b>${fmt(s)} cm</b></div>`};}
   if(w===2){const a=2*rint(2,6),s=rint(Math.ceil(a*.75)+2,16),hs2=s*s-a*a/4,h2=hs2-a*a/4,hh=Math.sqrt(h2);
-    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h = ?',hs:true,lhs:HSV,s:true,ls:'s',tri:'mns'}),
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h = ?',hs:true,lhs:HSV,s:true,ls:'s',tri:'mes'}),
       question:`Bei einer geraden quadratischen Pyramide ist die Grundkante a = ${a} cm und jede Seitenkante s = ${s} cm lang. Berechne die Höhe h der Pyramide (zwei Nachkommastellen).`,
-      badHint:`Rückwärts in zwei Schritten: ${HS}² = s² − (${fr('a','2')})², dann h² = ${HS}² − (${fr('a','2')})².`,hints:[`Dreieck CNS: ${HS}² = ${s}² − ${a/2}² = ${hs2}`,`Dreieck MNS: h² = ${HS}² − ${a/2}²`],
-      solution:`<div>1. Dreieck CNS: ${HS}² = ${s}² − ${a/2}² = ${s*s} − ${a*a/4} = ${hs2}</div><div>2. Dreieck MNS: h² = ${HS}² − ${a/2}² = ${hs2} − ${a*a/4} = ${h2}</div><div>h = √${h2} ${Number.isInteger(hh)?'=':'≈'} <b>${fmt(hh)} cm</b></div>`};}
+      badHint:`Rückwärts in zwei Schritten: ${HS}² = s² − (${fr('a','2')})², dann h² = ${HS}² − (${fr('a','2')})².`,hints:[`Dreieck BES: ${HS}² = ${s}² − ${a/2}² = ${hs2}`,`Dreieck MES: h² = ${HS}² − ${a/2}²`],
+      solution:`<div>1. Dreieck BES: ${HS}² = ${s}² − ${a/2}² = ${s*s} − ${a*a/4} = ${hs2}</div><div>2. Dreieck MES: h² = ${HS}² − ${a/2}² = ${hs2} − ${a*a/4} = ${h2}</div><div>h = √${h2} ${Number.isInteger(hh)?'=':'≈'} <b>${fmt(hh)} cm</b></div>`};}
   const d=rint(5,30),a=d/Math.sqrt(3);
   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(a*100)/100,prompt:quaderSvg({a:3.5,b:3.5,c:3.5,d:true,ld:`d = ${d} cm`,la:'a = ?'}),
     question:`Die Raumdiagonale eines Würfels ist ${d} cm lang. Berechne die Kantenlänge a (zwei Nachkommastellen).`,
@@ -1014,7 +1165,7 @@ const inKS=(...ps)=>ps.every(p=>p[0]>=KS7.x0+.5&&p[0]<=KS7.x1-.5&&p[1]>=KS7.y0+.
 const vecOf=(P,Q)=>[Q[0]-P[0],Q[1]-P[1]];
 // Vektor-Rechnung „Spitze minus Fuß“ als HTML
 function vecCalc2(nP,P,nQ,Q){const v=vecOf(P,Q),neg=z=>z<0?`(${nf(z)})`:nf(z);return `${vec(nP+nQ)} = ${cvec(`${nf(Q[0])} − ${neg(P[0])}`,`${nf(Q[1])} − ${neg(P[1])}`)} = ${cvec(nf(v[0]),nf(v[1]))}`;}
-function lenSol(nP,P,nQ,Q,u='cm'){const v=vecOf(P,Q),s=d2(P,Q),r=Math.sqrt(s);
+function lenSol(nP,P,nQ,Q,u='LE'){const v=vecOf(P,Q),s=d2(P,Q),r=Math.sqrt(s);
   return `<div>${vecCalc2(nP,P,nQ,Q)}</div><div>${len(nP+nQ)} = |${vec(nP+nQ)}| = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} = ${sq(String(s))} ${Number.isInteger(r)?'=':'≈'} <b>${fmt(r)} ${u}</b></div>`;}
 function s7fig(pts,o={}){return coordSvg({...KS7,w:340,pts:pts.map(([n,p])=>({n,p})),...o});}
 function triFig(T){const c=[(T.A[0]+T.B[0]+T.C[0])/3,(T.A[1]+T.B[1]+T.C[1])/3],off=p=>{const dx=p[0]-c[0],dy=p[1]-c[1],l=Math.hypot(dx,dy)||1;return [dx/l*.5-.15,-dy/l*.5+.15];};
@@ -1034,7 +1185,7 @@ function triGen(right){
 }
 function triSol(T){
   const sides=[['AB',T.A,T.B,'C'],['BC',T.B,T.C,'A'],['AC',T.A,T.C,'B']];
-  let s=sides.map(([n,P,Q])=>{const v=vecOf(P,Q);return `<div>${vec(n)} = ${cvec(nf(v[0]),nf(v[1]))} ⇒ ${len(n)}² = ${sqp(v[0])} + ${sqp(v[1])} = ${d2(P,Q)}</div>`;}).join('');
+  let s=sides.map(([n,P,Q])=>{const v=vecOf(P,Q);return `<div>${vec(n)} = ${cvec(nf(v[0]),nf(v[1]))} ⇒ ${len(n)}² = [${sqp(v[0])} + ${sqp(v[1])}] LE² = ${d2(P,Q)} LE²</div>`;}).join('');
   const so=sides.map(([n,P,Q,opp])=>({n,v:d2(P,Q),opp})).sort((a,b)=>a.v-b.v),eq=so[0].v+so[1].v===so[2].v;
   s+=`<div>Längste Seite: ${ov(so[2].n)}. ${so[0].v} + ${so[1].v} = ${so[0].v+so[1].v} ${eq?'=':'≠'} ${so[2].v}</div>`;
   s+=`<div><b>${eq?`Das Dreieck ist rechtwinklig. Der rechte Winkel liegt bei ${so[2].opp} (gegenüber der längsten Seite).`:'Das Dreieck ist nicht rechtwinklig.'}</b></div>`;
@@ -1053,8 +1204,8 @@ function t7vec(){
 function t7lenInt(){
   const tr=pick([[3,4],[4,3],[6,8],[8,6]]);let P,Q,v;
   do{v=[tr[0]*pick([1,-1]),tr[1]*pick([1,-1])];P=[rint(-4,7),rint(-3,7)];Q=[P[0]+v[0],P[1]+v[1]];}while(!inKS(P,Q));
-  return {kind:'num',exact:true,unit:'cm',tol:.001,answer:Math.sqrt(d2(P,Q)),prompt:s7fig([['A',P],['B',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
-    question:`Berechne die Länge der Strecke ${ov('AB')} mit ${ptS('A',P[0],P[1])} und ${ptS('B',Q[0],Q[1])} (Längeneinheit 1 cm).`,
+  return {kind:'num',exact:true,unit:'LE',tol:.001,answer:Math.sqrt(d2(P,Q)),prompt:s7fig([['A',P],['B',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
+    question:`Berechne die Länge der Strecke ${ov('AB')} mit ${ptS('A',P[0],P[1])} und ${ptS('B',Q[0],Q[1])}.`,
     badHint:`Stelle zuerst ${vec('AB')} auf („Spitze minus Fuß“). Dann ${len('AB')} = Wurzel aus (x-Koordinate² + y-Koordinate²).`,
     hints:[`${vec('AB')} = ${cvec('x<sub>B</sub> − x<sub>A</sub>','y<sub>B</sub> − y<sub>A</sub>')}`,'Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks.'],
     solution:lenSol('A',P,'B',Q)};
@@ -1062,8 +1213,8 @@ function t7lenInt(){
 function t7len(){
   let P,Q,v;do{P=[rint(-4,7),rint(-3,7)];Q=[rint(-4,7),rint(-3,7)];v=vecOf(P,Q);}while(!inKS(P,Q)||v[0]===0||v[1]===0||Number.isInteger(Math.sqrt(d2(P,Q)))||(P[0]>=0&&P[1]>=0&&Q[0]>=0&&Q[1]>=0));
   const r=Math.sqrt(d2(P,Q));
-  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s7fig([['P',P],['Q',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
-    question:`Berechne die Länge der Strecke ${ov('PQ')} mit ${ptS('P',P[0],P[1])} und ${ptS('Q',Q[0],Q[1])} (Längeneinheit 1 cm; zwei Nachkommastellen).`,
+  return {kind:'num',exact:true,unit:'LE',tol:.0051,answer:Math.round(r*100)/100,prompt:s7fig([['P',P],['Q',Q]],{segs:[{a:P,b:Q,col:'#2563eb'}]}),
+    question:`Berechne die Länge der Strecke ${ov('PQ')} mit ${ptS('P',P[0],P[1])} und ${ptS('Q',Q[0],Q[1])} (zwei Nachkommastellen).`,
     badHint:'Achte auf die Vorzeichen: Minus mal Minus ergibt Plus, z. B. 3 − (−2) = 5.',
     hints:[`${vec('PQ')} = ${cvec('x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>')}`,'Beim Quadrieren wird jede Zahl positiv: (−4)² = 16.'],
     solution:lenSol('P',P,'Q',Q)};
@@ -1074,25 +1225,86 @@ function t7tri(){
     options:TRI_OPTS,correct:c,badHint:'Berechne die Quadrate aller drei Seitenlängen und vergleiche mit der Umkehrung des Satzes des Pythagoras. Nach Augenmaß zu entscheiden reicht nicht.',
     hints:[`Berechne ${len('AB')}², ${len('BC')}² und ${len('AC')}² mit den Vektoren.`,'Der rechte Winkel liegt der längsten Seite gegenüber.'],solution:triSol(T),T};
 }
-function s7leicht(){return Math.random()<.5?t7vec():t7lenInt();}
-function s7standard(){return Math.random()<.5?t7len():t7tri();}
-function s7plus(){
+function t7betrag(){
+  let v;do{v=[rint(-9,9),rint(-9,9)];}while(v[0]===0&&v[1]===0);
+  const s2=v[0]**2+v[1]**2,r=Math.sqrt(s2);
+  return {kind:'num',unit:'LE',tol:.051,answer:Math.round(r*10)/10,prompt:'',question:`Berechne den Betrag des Vektors ${vec('v')} = ${cvec(nf(v[0]),nf(v[1]))}. Runde auf eine Stelle nach dem Komma.`,
+    badHint:`|${vec('v')}| = ${sq('v<sub>x</sub>² + v<sub>y</sub>²')}`,hints:['Die Koordinaten des Vektors sind die Katheten eines rechtwinkligen Dreiecks.','Beim Quadrieren wird jede Zahl positiv.'],
+    solution:`<div>|${vec('v')}| = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} LE = √${s2} LE ${Number.isInteger(r)?'=':'≈'} <b>${fmt(r,1)} LE</b></div>`};
+}
+function isoGen(iso){
+  for(let k=0;k<500;k++){
+    const A=[rint(-4,4),rint(-3,4)],p=rint(-3,3),q=rint(-3,3);if(p===0&&q===0)continue;
+    const B=[A[0]+2*p,A[1]+2*q],t=pick([1,-1,2,-2,3]),M=[A[0]+p,A[1]+q];let C=[M[0]-q*t,M[1]+p*t];
+    if(!iso)C=[C[0]+pick([1,-1]),C[1]+pick([1,-1,0])];
+    const pts=shuffle([A,B,C]),T={A:pts[0],B:pts[1],C:pts[2]};if(!inKS(T.A,T.B,T.C))continue;
+    const ab=d2(T.A,T.B),bc=d2(T.B,T.C),ac=d2(T.A,T.C),area2=Math.abs((T.B[0]-T.A[0])*(T.C[1]-T.A[1])-(T.C[0]-T.A[0])*(T.B[1]-T.A[1]));
+    if(area2<4||Math.max(ab,bc,ac)>130)continue;
+    const eq=(ab===ac?1:0)+(ab===bc?1:0)+(bc===ac?1:0);if(iso?eq!==1:eq!==0)continue;
+    return {T,ab,bc,ac};}
+  return iso?{T:{A:[-2,1],B:[4,-1],C:[2,5]},ab:40,bc:40,ac:32}:{T:{A:[0,0],B:[5,1],C:[2,5]},ab:26,bc:25,ac:29};
+}
+function t7iso(){
+  const {T,ab,bc,ac}=isoGen(Math.random()<.65),c=ab===ac?0:ab===bc?1:bc===ac?2:3;
+  return {kind:'mc',exact:true,prompt:triFig(T),question:`Entscheide durch Rechnung, ob das Dreieck ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} gleichschenklig ist.`,
+    options:[`Gleichschenklig, denn ${len('AB')} = ${len('AC')} (Spitze A)`,`Gleichschenklig, denn ${len('AB')} = ${len('BC')} (Spitze B)`,`Gleichschenklig, denn ${len('AC')} = ${len('BC')} (Spitze C)`,'Nicht gleichschenklig, denn alle Seiten sind verschieden lang'],correct:c,
+    badHint:'Berechne die Quadrate aller drei Seitenlängen und vergleiche. Nach Augenmaß zu entscheiden reicht nicht.',hints:[`Berechne ${len('AB')}², ${len('BC')}² und ${len('AC')}² mit den Vektoren.`,'Sind die Quadrate gleich, sind auch die Längen gleich.'],
+    solution:['AB','BC','AC'].map(n=>{const P=T[n[0]],Q=T[n[1]],v=vecOf(P,Q);return `<div>${vec(n)} = ${cvec(nf(v[0]),nf(v[1]))} ⇒ ${len(n)}² = [${sqp(v[0])} + ${sqp(v[1])}] LE² = ${d2(P,Q)} LE²</div>`;}).join('')+`<div><b>${c<3?`Zwei Seiten sind gleich lang ⇒ gleichschenklig.`:'Alle Seiten sind verschieden lang ⇒ nicht gleichschenklig.'}</b></div>`};
+}
+const QUAD_OPTS=['Quadrat','Raute, aber kein Quadrat','Rechteck, aber kein Quadrat','Parallelogramm, aber weder Raute noch Rechteck'];
+function t7quad(){
+  for(let k=0;k<500;k++){
+    const typ=rint(0,3),A=[rint(-4,3),rint(-3,3)];let u,v;
+    const base=pick([[1,2],[2,1],[1,3],[3,1],[2,3],[3,2],[3,4],[4,3]]);u=[base[0]*pick([1,-1]),base[1]*pick([1,-1])];
+    if(typ===0)v=[-u[1],u[0]];
+    else if(typ===2)v=[-u[1]*2,u[0]*2];
+    else if(typ===1){const L=u[0]**2+u[1]**2,c=[];for(let x=-6;x<=6;x++)for(let y=-6;y<=6;y++)if(x*x+y*y===L&&x*u[0]+y*u[1]!==0&&!(x===u[0]&&y===u[1])&&!(x===-u[0]&&y===-u[1]))c.push([x,y]);if(!c.length)continue;v=pick(c);}
+    else{v=[rint(-4,4),rint(-4,4)];if(v[0]*u[0]+v[1]*u[1]===0||v[0]**2+v[1]**2===u[0]**2+u[1]**2)continue;}
+    if(v[0]*u[1]-v[1]*u[0]>=0)v=[-v[0],-v[1]];
+    const B=[A[0]+u[0],A[1]+u[1]],C=[B[0]+v[0],B[1]+v[1]],D=[A[0]+v[0],A[1]+v[1]];
+    if(!inKS(A,B,C,D))continue;if(Math.abs(u[0]*v[1]-u[1]*v[0])<3)continue;
+    const ab=d2(A,B),bc=d2(B,C),ac=d2(A,C),bd=d2(B,D);
+    const off=p=>{const c=[(A[0]+C[0])/2,(A[1]+C[1])/2],dx=p[0]-c[0],dy=p[1]-c[1],l=Math.hypot(dx,dy)||1;return [dx/l*.5-.15,-dy/l*.5+.15];};
+    const fig=coordSvg({...KS7,w:340,segs:[[A,B],[B,C],[C,D],[D,A]].map(([a,b])=>({a,b,col:'#1f2937',w:.05})).concat([{a:A,b:C,col:'#9ca3af',w:.035},{a:B,b:D,col:'#9ca3af',w:.035}]),pts:[['A',A],['B',B],['C',C],['D',D]].map(([n,p])=>({n,p,d:off(p)}))});
+    const r=(n,P,Q)=>{const w=vecOf(P,Q);return `<div>${len(n)}² = [${sqp(w[0])} + ${sqp(w[1])}] LE² = ${d2(P,Q)} LE²</div>`;};
+    return {kind:'mc',exact:true,prompt:fig,question:`Das Viereck ABCD mit ${ptS('A',A[0],A[1])}, ${ptS('B',B[0],B[1])}, ${ptS('C',C[0],C[1])} und ${ptS('D',D[0],D[1])} ist ein Parallelogramm. Um welches besondere Viereck handelt es sich? Entscheide durch Rechnung.`,
+      options:QUAD_OPTS,correct:typ,badHint:'Vergleiche die Seitenlängen |AB| und |BC| sowie die Diagonalenlängen |AC| und |BD|.',
+      hints:['Raute: alle Seiten gleich lang. Rechteck: Diagonalen gleich lang. Quadrat: beides.',`Berechne ${len('AB')}², ${len('BC')}², ${len('AC')}² und ${len('BD')}².`],
+      solution:r('AB',A,B)+r('BC',B,C)+r('AC',A,C)+r('BD',B,D)+`<div>Seiten ${ab===bc?'gleich lang':'verschieden lang'}, Diagonalen ${ac===bd?'gleich lang':'verschieden lang'} ⇒ <b>${QUAD_OPTS[typ]}</b></div>`};
+  }
+  return t7iso();
+}
+function t7xachse(){
+  let A,C,x;do{A=[rint(-5,2),rint(1,6)];C=[rint(1,7),rint(1,6)];}while(C[0]===A[0]);
+  const num=C[0]**2+C[1]**2-A[0]**2-A[1]**2,den=2*(C[0]-A[0]);x=num/den;
+  const tA=poly([1,'x²'],[-2*A[0],'x'],[A[0]**2+A[1]**2,'']),tC=poly([1,'x²'],[-2*C[0],'x'],[C[0]**2+C[1]**2,'']);
+  const neg=z=>z<0?`(${nf(z)})`:nf(z);
+  return {kind:'num',exact:true,unit:'',tol:.0051,answer:Math.round(x*100)/100,prompt:s7fig([['A',A],['C',C]]),
+    question:`Der Punkt B(x | 0) liegt auf der x-Achse und ist von ${ptS('A',A[0],A[1])} und ${ptS('C',C[0],C[1])} gleich weit entfernt. Berechne x (zwei Nachkommastellen).`,
+    badHint:`Bedingung: ${len('AB')} = ${len('CB')}. Gleiche Wurzeln haben gleiche Radikanden: Setze ${len('AB')}² = ${len('CB')}².`,
+    hints:[`${len('AB')}² = (x − ${neg(A[0])})² + (0 − ${neg(A[1])})²`,'Die x²-Terme fallen weg, es bleibt eine lineare Gleichung.'],
+    solution:`<div>${len('AB')} = ${sq(`(x − ${neg(A[0])})² + (0 − ${neg(A[1])})²`)} LE = ${sq(tA)} LE</div><div>${len('CB')} = ${sq(`(x − ${neg(C[0])})² + (0 − ${neg(C[1])})²`)} LE = ${sq(tC)} LE</div><div>${len('AB')} = ${len('CB')} ⇒ ${tA} = ${tC}</div><div>${poly([-2*A[0]+2*C[0],'x'])} = ${nf(num)} ⇒ x ${Number.isInteger(x)?'=':'≈'} <b>${fmt(x)}</b></div><div>B(${fmt(x)} | 0)</div>`};
+}
+function s7leicht(){const r=Math.random();return r<.35?t7vec():r<.7?t7lenInt():t7betrag();}
+function s7standard(){const r=Math.random();return r<.35?t7len():r<.7?t7tri():t7iso();}
+function s7plus(){const r=Math.random();if(r<.25)return t7quad();if(r<.45)return t7xachse();return s7plus0();}
+function s7plus0(){
   const w=rint(0,2);
   if(w===0){const tr=pick([[3,4,5],[4,3,5],[6,8,10],[8,6,10]]);let P;do{P=[rint(-4,4),rint(-3,3)];}while(P[1]+tr[1]>7||P[0]+tr[0]>7);
     const xQ=P[0]+tr[0],yQ=P[1]+tr[1];
-    return {kind:'num',unit:'',tol:.001,answer:yQ,prompt:'',question:`Gegeben sind ${ptS('P',P[0],P[1])} und Q(${nf(xQ)} | y) mit y &gt; ${nf(P[1])}. Die Strecke ${ov('PQ')} ist ${tr[2]} cm lang. Berechne y.`,
+    return {kind:'num',unit:'',tol:.001,answer:yQ,prompt:'',question:`Gegeben sind ${ptS('P',P[0],P[1])} und Q(${nf(xQ)} | y) mit y &gt; ${nf(P[1])}. Die Strecke ${ov('PQ')} ist ${tr[2]} LE lang. Berechne y.`,
       badHint:`Stelle die Gleichung ${len('PQ')}² = ${tr[2]}² auf und löse nach y auf.`,
       hints:[`${vec('PQ')} = ${cvec(`${nf(xQ)} − ${P[0]<0?'('+nf(P[0])+')':nf(P[0])}`,`y − ${P[1]<0?'('+nf(P[1])+')':nf(P[1])}`)} = ${cvec(nf(tr[0]),lin(1,-P[1]).replace(/^x/,'y'))}`,`${tr[0]}² + (${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]*tr[2]}`],
       solution:`<div>${vec('PQ')} = ${cvec(nf(tr[0]),lin(1,-P[1]).replace(/^x/,'y'))}</div><div>${tr[0]}² + (${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]}²</div><div>(${lin(1,-P[1]).replace(/^x/,'y')})² = ${tr[2]*tr[2]} − ${tr[0]*tr[0]} = ${tr[1]*tr[1]}</div><div>${lin(1,-P[1]).replace(/^x/,'y')} = ${tr[1]} oder ${lin(1,-P[1]).replace(/^x/,'y')} = −${tr[1]}</div><div>Wegen y &gt; ${nf(P[1])}: <b>y = ${nf(yQ)}</b></div>`};}
   if(w===1){const T=triGen(Math.random()<.4),ab=Math.sqrt(d2(T.A,T.B)),bc=Math.sqrt(d2(T.B,T.C)),ac=Math.sqrt(d2(T.A,T.C)),u=ab+bc+ac;
-    const r=(n,P,Q)=>{const v=vecOf(P,Q),s=d2(P,Q);return `<div>${len(n)} = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} = ${sq(String(s))} ${Number.isInteger(Math.sqrt(s))?'=':'≈'} ${fmt(Math.sqrt(s))} cm</div>`;};
-    return {kind:'num',exact:true,unit:'cm',tol:.021,answer:Math.round(u*100)/100,prompt:triFig(T),question:`Berechne den Umfang des Dreiecks ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} (Längeneinheit 1 cm; zwei Nachkommastellen).`,
+    const r=(n,P,Q)=>{const v=vecOf(P,Q),s=d2(P,Q);return `<div>${len(n)} = ${sq(`${sqp(v[0])} + ${sqp(v[1])}`)} = ${sq(String(s))} ${Number.isInteger(Math.sqrt(s))?'=':'≈'} ${fmt(Math.sqrt(s))} LE</div>`;};
+    return {kind:'num',exact:true,unit:'LE',tol:.021,answer:Math.round(u*100)/100,prompt:triFig(T),question:`Berechne den Umfang des Dreiecks ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} (zwei Nachkommastellen).`,
       badHint:'Berechne alle drei Seitenlängen und addiere sie.',hints:['u = |AB| + |BC| + |AC|',`${vec('AB')} = ${cvec(nf(T.B[0]-T.A[0]),nf(T.B[1]-T.A[1]))}`],
-      solution:r('AB',T.A,T.B)+r('BC',T.B,T.C)+r('AC',T.A,T.C)+`<div>u ≈ ${fmt(ab)} cm + ${fmt(bc)} cm + ${fmt(ac)} cm ≈ <b>${fmt(u)} cm</b></div>`};}
+      solution:r('AB',T.A,T.B)+r('BC',T.B,T.C)+r('AC',T.A,T.C)+`<div>u ≈ ${fmt(ab)} LE + ${fmt(bc)} LE + ${fmt(ac)} LE ≈ <b>${fmt(u)} LE</b></div>`};}
   const T=triGen(true),R=T.right,o=['A','B','C'].filter(n=>n!==R),l1=d2(T[R],T[o[0]]),l2=d2(T[R],T[o[1]]),A=Math.sqrt(l1*l2)/2;
-  return {kind:'num',exact:true,unit:'cm²',tol:.03,answer:Math.round(A*100)/100,prompt:triFig(T),question:`Das Dreieck ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} ist rechtwinklig. Bestimme, wo der rechte Winkel liegt, und berechne den Flächeninhalt.`,
+  return {kind:'num',exact:true,unit:'FE',tol:.03,answer:Math.round(A*100)/100,prompt:triFig(T),question:`Das Dreieck ABC mit ${ptS('A',T.A[0],T.A[1])}, ${ptS('B',T.B[0],T.B[1])} und ${ptS('C',T.C[0],T.C[1])} ist rechtwinklig. Bestimme, wo der rechte Winkel liegt, und berechne den Flächeninhalt.`,
     badHint:'Im rechtwinkligen Dreieck gilt A = ½ · Kathete · Kathete. Die Katheten liegen am rechten Winkel.',hints:['Suche mit den Seitenlängen² die längste Seite: Sie ist die Hypotenuse.',`Der rechte Winkel liegt bei ${R}.`],
-    solution:triSol(T)+`<div>Katheten: ${len(R+o[0])} = √${l1} cm; ${len(R+o[1])} = √${l2} cm</div><div>A = ${HALF} · √${l1} cm · √${l2} cm = ${HALF} · √${l1*l2} cm² ${Number.isInteger(A)||Number.isInteger(A*2)?'=':'≈'} <b>${fmt(A)} cm²</b></div>`};
+    solution:triSol(T)+`<div>Katheten: ${len(R+o[0])} = √${l1} LE; ${len(R+o[1])} = √${l2} LE</div><div>A = ${HALF} · √${l1} LE · √${l2} LE = ${HALF} · √${l1*l2} FE ${Number.isInteger(A)||Number.isInteger(A*2)?'=':'≈'} <b>${fmt(A)} FE</b></div>`};
 }
 function koordExperiment(body,done){
   let P=[1,1],Q=[5,4],rows=[];
@@ -1104,7 +1316,7 @@ function koordExperiment(body,done){
     if(v[1])segs.push({a:C,b:Q,col:'#ea580c',dash:true,label:nf(v[1]),lo:[v[0]>=0?.4:-.4,0]});
     if(v[0]||v[1])segs.push({a:P,b:Q,col:'#2563eb',w:.07,arrow:true});
     fig.innerHTML=coordSvg({x0:-5,x1:7,y0:-4,y1:6,w:420,segs,rights:v[0]&&v[1]?[{V:C,p1:P,p2:Q}]:[],pts:[{n:'P',p:P,d:[-.2,-.2]},{n:'Q',p:Q}]});
-    info.innerHTML=`${ptS('P',P[0],P[1])} &nbsp;|&nbsp; ${ptS('Q',Q[0],Q[1])} &nbsp;|&nbsp; gemessene Länge: ${len('PQ')} ≈ ${fmt(Math.sqrt(d2(P,Q)),2)} cm`;}
+    info.innerHTML=`${ptS('P',P[0],P[1])} &nbsp;|&nbsp; ${ptS('Q',Q[0],Q[1])} &nbsp;|&nbsp; gemessene Länge: ${len('PQ')} ≈ ${fmt(Math.sqrt(d2(P,Q)),2)} LE`;}
   function table(){tbl.innerHTML='';if(!rows.length)return;
     const t=h('table',{class:'t'},h('tr',{},...['P','Q','x<sub>Q</sub> − x<sub>P</sub>','y<sub>Q</sub> − y<sub>P</sub>','(x<sub>Q</sub> − x<sub>P</sub>)² + (y<sub>Q</sub> − y<sub>P</sub>)²',len('PQ')+' (gemessen)',len('PQ')+'²'].map(x=>h('th',{html:x}))));
     rows.forEach(r=>{const v=vecOf(r.P,r.Q),s=d2(r.P,r.Q);t.append(h('tr',{},...[`(${nf(r.P[0])} | ${nf(r.P[1])})`,`(${nf(r.Q[0])} | ${nf(r.Q[1])})`,nf(v[0]),nf(v[1]),String(s),fmt(Math.sqrt(s),2),fmt(Math.sqrt(s)**2,1)].map(z=>h('td',{},z))));});tbl.append(t);}
@@ -1113,7 +1325,7 @@ function koordExperiment(body,done){
     const neg=rows.some(r=>r.Q[0]<r.P[0]||r.Q[1]<r.P[1]);go.disabled=!(rows.length>=3&&neg);
     fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 3 verschiedene Messungen ein. Bei mindestens einer soll Q links von oder unter P liegen (bisher: ${rows.length}).`:'Gut! Vergleiche die Spalte „(xQ − xP)² + (yQ − yP)²“ mit der Spalte „|PQ|²“. Was fällt dir auf? Klicke dann auf „Fertig – weiter“.';});
   go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;body.querySelectorAll('input[type=range]').forEach(r=>r.disabled=true);done();});
-  body.append(h('p',{html:`<b>Auftrag:</b> Verschiebe die Punkte P und Q mit den Reglern (Längeneinheit 1 cm). Der blaue Pfeil ist der Vektor ${vec('PQ')}. Das gestrichelte Dreieck zeigt, wie weit du von P nach rechts bzw. links (grün) und nach oben bzw. unten (orange) gehen musst. Trage Messungen in die Tabelle ein.`}),
+  body.append(h('p',{html:`<b>Auftrag:</b> Verschiebe die Punkte P und Q mit den Reglern. Der blaue Pfeil ist der Vektor ${vec('PQ')}. Das gestrichelte Dreieck zeigt, wie weit du von P nach rechts bzw. links (grün) und nach oben bzw. unten (orange) gehen musst. Trage Messungen in die Tabelle ein.`}),
     h('div',{style:'display:flex;gap:12px;flex-wrap:wrap'},mk('x<sub>P</sub>',-4,6,P[0],v=>P[0]=v),mk('y<sub>P</sub>',-3,5,P[1],v=>P[1]=v)),
     h('div',{style:'display:flex;gap:12px;flex-wrap:wrap'},mk('x<sub>Q</sub>',-4,6,Q[0],v=>Q[0]=v),mk('y<sub>Q</sub>',-3,5,Q[1],v=>Q[1]=v)),
     fig,info,h('div',{},add,go),fb,tbl);
@@ -1133,7 +1345,7 @@ function s8gen(ms){
   return {m:.5,t:1,qx:6,qy:-1,c:2,d:4,A:1.25,B:-10,C:40,e:20,y0:3};
 }
 const gTerm=p=>lin(p.m,p.t);
-const s8setup=p=>`Die Punkte ${PN}(x | ${gTerm(p)}) liegen auf der Geraden g mit y = ${gTerm(p)}. Zusammen mit dem Punkt ${ptS('Q',p.qx,p.qy)} bilden sie Strecken ${ov('Q'+PN)} (Längeneinheit 1 cm).`;
+const s8setup=p=>`Die Punkte ${PN}(x | ${gTerm(p)}) liegen auf der Geraden g mit y = ${gTerm(p)}. Zusammen mit dem Punkt ${ptS('Q',p.qx,p.qy)} bilden sie Strecken ${ov('Q'+PN)}.`;
 const s8vec=p=>cvec(lin(1,-p.qx),lin(p.m,p.c));
 const s8vecRaw=p=>cvec(lin(1,-p.qx),`${gTerm(p)} − ${p.qy<0?'('+nf(p.qy)+')':nf(p.qy)}`);
 const s8term=p=>poly([p.A,'x²'],[p.B,'x'],[p.C,'']);
@@ -1153,7 +1365,7 @@ function s8steps(p,upTo=9){
   s+=`<div>(${lin(1,-p.d)})² ≥ 0 ⇒ kleinster Wert für x = ${nf(p.d)}: ${LQP}² = ${nf(p.e)}</div>`;
   return s;
 }
-const s8min=p=>`<div>${len('QP<sub>0</sub>')} = √${nf(p.e)} cm ${Number.isInteger(Math.sqrt(p.e))?'=':'≈'} <b>${fmt(Math.sqrt(p.e))} cm</b> mit ${ptS('P<sub>0</sub>',p.d,p.y0)}</div>`;
+const s8min=p=>`<div>${len('QP<sub>0</sub>')} = √${nf(p.e)} LE ${Number.isInteger(Math.sqrt(p.e))?'=':'≈'} <b>${fmt(Math.sqrt(p.e))} LE</b> mit ${ptS('P<sub>0</sub>',p.d,p.y0)}</div>`;
 const S8HINTS=p=>[`${VQP}(x) = ${cvec('x − x<sub>Q</sub>',`(${gTerm(p)}) − y<sub>Q</sub>`)} („Spitze minus Fuß“)`,`${LQP}² = (${lin(1,-p.qx)})² + (${lin(p.m,p.c)})². Wende die binomischen Formeln an.`,`Quadratische Ergänzung: ${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])}) + ${nf(p.C)}`];
 function t8point(p){const xv=pick([-1,0,1,2,3,4,5].filter(x=>x!==p.d)),yv=p.m*xv+p.t;
   return {kind:'mc',exact:true,prompt:s8fig(p,xv),question:s8setup(p)+` Welche Koordinaten hat der Punkt ${PN} für x = ${nf(xv)}?`,
@@ -1166,7 +1378,7 @@ function t8vec(p){
     badHint:`„Spitze minus Fuß“: Spitze ${PN}(x | ${gTerm(p)}), Fuß ${ptS('Q',p.qx,p.qy)}.`,hints:[`x-Koordinate: x − ${p.qx<0?'('+nf(p.qx)+')':nf(p.qx)}`,`y-Koordinate: (${gTerm(p)}) − ${p.qy<0?'('+nf(p.qy)+')':nf(p.qy)}`],
     solution:`<div><b>${VQP}(x) = ${s8vecRaw(p)} = ${s8vec(p)}</b></div>`};}
 function t8lenAt(p){const xv=pick([-1,0,1,2,3,5,6].filter(x=>x!==p.d)),P=[xv,p.m*xv+p.t],v=vecOf([p.qx,p.qy],P),s=v[0]**2+v[1]**2,r=Math.sqrt(s);
-  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,xv),question:s8setup(p)+` Berechne die Länge der Strecke ${ov('Q'+PN)} für x = ${nf(xv)} (zwei Nachkommastellen).`,
+  return {kind:'num',exact:true,unit:'LE',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,xv),question:s8setup(p)+` Berechne die Länge der Strecke ${ov('Q'+PN)} für x = ${nf(xv)} (zwei Nachkommastellen).`,
     badHint:`Berechne zuerst den Punkt ${PN} für x = ${nf(xv)} und dann den Vektor von Q zu diesem Punkt.`,hints:[`Für x = ${nf(xv)}: ${ptS('P',P[0],P[1])}`,`${vec('QP')} = ${cvec(nf(v[0]),nf(v[1]))}`],
     solution:`<div>${ptS('P',P[0],P[1])}</div>${lenSol('Q',[p.qx,p.qy],'P',P)}`};}
 function t8term(p){const wr=[poly([p.A,'x²'],[-p.B,'x'],[p.C,'']),poly([p.A,'x²'],[-2*p.qx,'x'],[p.C,'']),poly([p.A,'x²'],[p.B,'x'],[p.qx*p.qx+p.c,'']),poly([1+Math.abs(p.m),'x²'],[p.B,'x'],[p.C,''])];
@@ -1178,11 +1390,11 @@ function t8xmin(p){
     badHint:'Stelle den Term für die Länge² auf und bringe ihn mit der quadratischen Ergänzung in die Form a(x − d)² + e.',hints:S8HINTS(p),
     solution:s8steps(p)+`<div>Die Strecke ist für <b>x = ${nf(p.d)}</b> am kürzesten.</div>`};}
 function t8minFromTerm(p){const r=Math.sqrt(p.e);
-  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:'',question:`Für die Länge der Strecken ${ov('Q'+PN)} gilt ${LQP}² = (${s8term(p)}) cm². Berechne die minimale Länge (zwei Nachkommastellen).`,
+  return {kind:'num',exact:true,unit:'LE',tol:.0051,answer:Math.round(r*100)/100,prompt:'',question:`Für die Länge der Strecken ${ov('Q'+PN)} gilt ${LQP}² = (${s8term(p)}) LE². Berechne die minimale Länge (zwei Nachkommastellen).`,
     badHint:'Quadratische Ergänzung: Klammere den Faktor vor x² aus und ergänze in der Klammer.',hints:[`${nf(p.A)}(${poly([1,'x²'],[-2*p.d,'x'])}) + ${nf(p.C)}`,`Ergänze (${nf(Math.abs(2*p.d))} : 2)² = ${nf(p.d*p.d)}.`],
     solution:`<div>${LQP}² = ${s8term(p)}</div>`+s8steps(p).split('</div>').slice(2).join('</div>')+s8min(p)};}
 function t8min(p){const r=Math.sqrt(p.e);
-  return {kind:'num',exact:true,unit:'cm',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Berechne die minimale Länge der Strecken ${ov('Q'+PN)} (zwei Nachkommastellen).`,
+  return {kind:'num',exact:true,unit:'LE',tol:.0051,answer:Math.round(r*100)/100,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Berechne die minimale Länge der Strecken ${ov('Q'+PN)} (zwei Nachkommastellen).`,
     badHint:'Term aufstellen, vereinfachen, quadratische Ergänzung – dann die Wurzel aus dem kleinsten Wert ziehen.',hints:S8HINTS(p),solution:s8steps(p)+s8min(p)};}
 function t8y0(p){
   return {kind:'num',exact:true,unit:'',tol:.001,answer:p.y0,prompt:s8fig(p,p.d-2),question:s8setup(p)+` Die Strecke ${ov('QP<sub>0</sub>')} ist die kürzeste. Berechne die y-Koordinate des Punktes P<sub>0</sub>.`,
@@ -1196,7 +1408,22 @@ function t8perp(p){const vx=p.qx,vy=p.m*p.qx+p.t;
 const M8E=[.5,-.5,1,-1],M8P=[.5,-.5,2,-2,1,-1];
 function s8leicht(){const p=s8gen(M8E);return pick([t8point,t8vec,t8lenAt])(p);}
 function s8standard(){const p=s8gen(M8E);return pick([t8term,t8xmin,t8minFromTerm])(p);}
-function s8plus(){const p=s8gen(M8P);return pick([t8min,t8y0,t8perp])(p);}
+function t8iso(){
+  let m,t,A,B,al,be,x;
+  do{m=pick([.5,-.5,1,-1,2]);t=rint(-1,3);A=[rint(-4,1),rint(-3,1)];B=[rint(2,6),rint(-3,2)];
+     al=2*(B[0]-A[0])+2*m*(B[1]-A[1]);be=(B[0]-A[0])*(A[0]+B[0])+(B[1]-A[1])*(A[1]+B[1])-2*t*(B[1]-A[1]);x=al?be/al:NaN;}
+  while(!al||!isFinite(x)||Math.abs(x)>6||Math.abs(m*x+t)>7);
+  const C=[x,m*x+t],g=lin(m,t),neg=z=>z<0?`(${nf(z)})`:nf(z);
+  const yA=lin(m,t-A[1]),yB=lin(m,t-B[1]);
+  const tA=poly([1+m*m,'x²'],[-2*A[0]+2*m*(t-A[1]),'x'],[A[0]**2+(t-A[1])**2,'']),tB=poly([1+m*m,'x²'],[-2*B[0]+2*m*(t-B[1]),'x'],[B[0]**2+(t-B[1])**2,'']);
+  const L=-2*A[0]+2*m*(t-A[1]),R=-2*B[0]+2*m*(t-B[1]),cA=A[0]**2+(t-A[1])**2,cB=B[0]**2+(t-B[1])**2;
+  return {kind:'num',exact:true,unit:'',tol:.0051,answer:Math.round(x*100)/100,prompt:coordSvg({x0:-5,x1:8,y0:-4,y1:8,w:340,lines:[{m,t,label:'g'}],segs:[{a:A,b:B,col:'#1f2937',w:.05}],pts:[{n:'A',p:A},{n:'B',p:B}]}),
+    question:`Die Punkte C<sub>n</sub>(x | ${g}) liegen auf der Geraden g mit y = ${g}. Sie bilden mit ${ptS('A',A[0],A[1])} und ${ptS('B',B[0],B[1])} Dreiecke ABC<sub>n</sub>. Für welchen Wert von x ist das Dreieck ABC<sub>0</sub> gleichschenklig mit der Basis ${ov('AB')} (zwei Nachkommastellen)?`,
+    badHint:`Bedingung: ${len('AC<sub>n</sub>')} = ${len('BC<sub>n</sub>')}. Setze die Radikanden gleich – die x²-Terme fallen weg.`,
+    hints:[`${vec('AC<sub>n</sub>')}(x) = ${cvec(lin(1,-A[0]),yA)}`,`${len('AC<sub>n</sub>')}² = (${lin(1,-A[0])})² + (${yA})²`],
+    solution:`<div>${len('AC<sub>n</sub>')}² = [(${lin(1,-A[0])})² + (${yA})²] LE² = (${tA}) LE²</div><div>${len('BC<sub>n</sub>')}² = [(${lin(1,-B[0])})² + (${yB})²] LE² = (${tB}) LE²</div><div>Gleichsetzen: ${tA} = ${tB}</div><div>${poly([L-R,'x'])} = ${nf(cB-cA)} ⇒ x ${Number.isInteger(x)?'=':'≈'} <b>${fmt(x)}</b></div><div>C<sub>0</sub>(${fmt(x)} | ${fmt(m*x+t)})</div>`};
+}
+function s8plus(){if(Math.random()<.25)return t8iso();const p=s8gen(M8P);return pick([t8min,t8y0,t8perp])(p);}
 function geradeExperiment(body,done){
   const p={m:.5,t:1,qx:6,qy:-1};let x=0,rows=[];
   const Lf=v=>Math.sqrt((v-6)**2+(.5*v+2)**2);
@@ -1205,7 +1432,7 @@ function geradeExperiment(body,done){
   const add=h('button',{class:'btn',type:'button'},'➕ Messung in Tabelle eintragen'),go=h('button',{class:'btn sec',type:'button',disabled:'disabled'},'Fertig – weiter');
   function draw(){const P=[x,.5*x+1];
     fig.innerHTML=coordSvg({x0:-3,x1:9,y0:-3,y1:7,w:420,lines:[{m:p.m,t:p.t,label:'g'}],segs:[{a:[6,-1],b:P,col:'#ea580c',w:.07}],rights:x===4?[{V:P,p1:[6,-1],p2:[8,5]}]:[],pts:[{n:'Q',p:[6,-1]},{n:svgSub('P'),p:P,d:[-.2,-.25]}]});
-    info.innerHTML=`${PN}(${nf(x)} | ${nf(.5*x+1)}) &nbsp;|&nbsp; gemessene Länge: ${LQP} ≈ ${fmt(Lf(x),2)} cm`;}
+    info.innerHTML=`${PN}(${nf(x)} | ${nf(.5*x+1)}) &nbsp;|&nbsp; gemessene Länge: ${LQP} ≈ ${fmt(Lf(x),2)} LE`;}
   r.addEventListener('input',()=>{x=parseFloat(r.value);out.textContent=nf(x,1);draw();});
   function table(){tbl.innerHTML='';if(!rows.length)return;
     const t=h('table',{class:'t'},h('tr',{},...['x',PN,LQP+'²',LQP].map(v=>h('th',{html:v}))));
@@ -1214,8 +1441,61 @@ function geradeExperiment(body,done){
     const lo=rows.filter(v=>v<4).length,hi=rows.filter(v=>v>4).length;go.disabled=!(rows.length>=5&&lo>=2&&hi>=2);
     fb.className='fb';fb.textContent=go.disabled?`Trage mindestens 5 verschiedene Werte für x ein, davon mindestens 2 kleiner als 4 und 2 größer als 4 (bisher: ${rows.length}).`:'Gut! Für welches x ist die Strecke am kürzesten? Welchen Winkel bildet die kürzeste Strecke mit der Geraden g? Klicke dann auf „Fertig – weiter“.';});
   go.addEventListener('click',()=>{go.disabled=true;add.disabled=true;r.disabled=true;done();});
-  body.append(h('p',{html:`<b>Auftrag:</b> Die Punkte ${PN} wandern auf der Geraden g mit y = 0,5x + 1. Der Punkt ${ptS('Q',6,-1)} bleibt fest (Längeneinheit 1 cm). Verändere x und beobachte die Länge der orangen Strecke ${ov('Q'+PN)}. Trage Messungen in die Tabelle ein.`}),h('div',{},h('label',{},'x = ',out),r),fig,info,h('div',{},add,go),fb,tbl);
+  body.append(h('p',{html:`<b>Auftrag:</b> Die Punkte ${PN} wandern auf der Geraden g mit y = 0,5x + 1. Der Punkt ${ptS('Q',6,-1)} bleibt fest. Verändere x und beobachte die Länge der orangen Strecke ${ov('Q'+PN)}. Trage Messungen in die Tabelle ein.`}),h('div',{},h('label',{},'x = ',out),r),fig,info,h('div',{},add,go),fb,tbl);
   draw();
+}
+
+/* ====== Zusatzstation 10: Kathetensatz und Höhensatz ====== */
+function altSvg(l={}){
+  const A=[0,4],B=[7,4],D=[2.52,4],C=[2.52,.64],V='font-weight="700" fill="#1e3a8a"';
+  const t=(x,y,s,a='middle',w='')=>`<text x="${x}" y="${y}" font-size=".46" text-anchor="${a}" dominant-baseline="middle" ${w}>${s}</text>`;
+  const u=(P,Q)=>{const dx=Q[0]-P[0],dy=Q[1]-P[1],L=Math.hypot(dx,dy);return [dx/L,dy/L];};
+  let g=`<polygon points="${[A,B,C].map(p=>p.join(',')).join(' ')}" fill="#eef4ff" stroke="#1f2937" stroke-width=".07"/><line x1="${C[0]}" y1="${C[1]}" x2="${D[0]}" y2="${D[1]}" stroke="#7c3aed" stroke-width=".06" stroke-dasharray=".2 .14"/>`;
+  g+=angMark(C,u(C,A),u(C,B),.42,true,.05)+angMark(D,[1,0],[0,-1],.32,true,.04);
+  g+=t(-.3,4.1,'A','end',V)+t(7.3,4.1,'B','start',V)+t(2.52,.2,'C','middle',V)+t(2.52,4.5,'D','middle',V);
+  g+=t(.95,2.1,l.b||'b','end')+t(5.1,2.0,l.a||'a','start')+t(2.65,2.6,l.h||'h','start','fill="#6d28d9"');
+  g+=t(1.26,5.05,l.q||'q','middle','fill="#c2410c"')+t(4.76,5.05,l.p||'p','middle','fill="#c2410c"')+t(3.5,5.75,l.c||'c = p + q');
+  g+=`<line x1="0" y1="4.65" x2="2.47" y2="4.65" stroke="#c2410c" stroke-width=".04"/><line x1="2.57" y1="4.65" x2="7" y2="4.65" stroke="#c2410c" stroke-width=".04"/>`;
+  return `<svg class="fig" style="width:340px" viewBox="-2.4 -.4 11.8 6.6" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+const T10=[[3,4,5],[6,8,10],[9,12,15],[12,16,20],[15,20,25],[5,12,13],[8,15,17]];
+function s10leicht(){
+  const w=rint(0,1);
+  if(w===0){const p=rint(2,16),q=rint(2,16),hh=Math.sqrt(p*q);
+    return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:altSvg({p:`p = ${p} cm`,q:`q = ${q} cm`,h:'h = ?',a:'',b:'',c:''}),
+      question:`Im rechtwinkligen Dreieck ABC (γ = 90°) sind die Hypotenusenabschnitte p = ${p} cm und q = ${q} cm lang. Berechne die Höhe h (zwei Nachkommastellen).`,
+      badHint:'Höhensatz: h² = p · q',hints:['Die Höhe teilt die Hypotenuse in p und q.','h² = p · q'],
+      solution:`<div>h² = p · q = ${p} cm · ${q} cm = ${p*q} cm²</div><div>h ${Number.isInteger(hh)?'=':'≈'} <b>${fmt(hh)} cm</b></div>`};}
+  const c=rint(6,20),p=rint(2,c-2),a=Math.sqrt(c*p);
+  return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(a*100)/100,prompt:altSvg({p:`p = ${p} cm`,c:`c = ${c} cm`,a:'a = ?',b:'',h:'',q:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist die Hypotenuse c = ${c} cm und der Hypotenusenabschnitt p = ${p} cm lang. Berechne die Kathete a (zwei Nachkommastellen).`,
+    badHint:'Kathetensatz: a² = c · p (p liegt an der Kathete a).',hints:['Welcher Hypotenusenabschnitt liegt an der Kathete a?','a² = c · p'],
+    solution:`<div>a² = c · p = ${c} cm · ${p} cm = ${c*p} cm²</div><div>a ${Number.isInteger(a)?'=':'≈'} <b>${fmt(a)} cm</b></div>`};
+}
+function s10standard(){
+  const [x,y,z]=pick(T10),k=pick([1,2,3]),a=x*k,b=y*k,c=z*k,p=a*a/c,q=b*b/c,hh=a*b/c,w=rint(0,2);
+  const P=fmt(p,2),Q=fmt(q,2);
+  if(w===0)return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(p*100)/100,prompt:altSvg({a:`a = ${a} cm`,c:`c = ${c} cm`,p:'p = ?',b:'',h:'',q:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) gilt a = ${a} cm und c = ${c} cm. Berechne den Hypotenusenabschnitt p.`,
+    badHint:'Kathetensatz a² = c · p nach p umstellen.',hints:['p = a² : c'],solution:`<div>a² = c · p ⇒ p = a² : c = ${a*a} cm² : ${c} cm = <b>${P} cm</b></div>`};
+  if(w===1)return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hh*100)/100,prompt:altSvg({p:`p = ${P} cm`,q:`q = ${Q} cm`,h:'h = ?',a:'',b:'',c:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist p = ${P} cm und q = ${Q} cm. Berechne die Höhe h.`,
+    badHint:'Höhensatz: h² = p · q',hints:['h² = p · q'],solution:`<div>h² = ${P} cm · ${Q} cm = ${fmt(p*q,4)} cm²</div><div>h = <b>${fmt(hh)} cm</b></div>`};
+  return {kind:'num',unit:'cm',tol:.0051,answer:b,prompt:altSvg({c:`c = ${c} cm`,q:`q = ${Q} cm`,b:'b = ?',a:'',h:'',p:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist c = ${c} cm und q = ${Q} cm. Berechne die Kathete b.`,
+    badHint:'Kathetensatz: b² = c · q (q liegt an der Kathete b).',hints:['b² = c · q'],solution:`<div>b² = c · q = ${c} cm · ${Q} cm = ${fmt(c*q,2)} cm²</div><div>b = <b>${fmt(b)} cm</b></div>`};
+}
+function s10plus(){
+  const [x,y,z]=pick(T10),k=pick([1,2,4]),a=x*k,b=y*k,c=z*k,p=a*a/c,q=b*b/c,hh=a*b/c,P=fmt(p,2),H=fmt(hh,2),w=rint(0,1);
+  if(w===0)return {kind:'num',unit:'cm',tol:.0051,answer:c,prompt:altSvg({p:`p = ${P} cm`,h:`h = ${H} cm`,c:'c = ?',a:'',b:'',q:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist p = ${P} cm und h = ${H} cm. Berechne die Hypotenuse c.`,
+    badHint:'Zuerst q mit dem Höhensatz, dann c = p + q.',hints:['h² = p · q ⇒ q = h² : p','c = p + q'],
+    solution:`<div>Höhensatz: q = h² : p = (${H} cm)² : ${P} cm = ${fmt(q,2)} cm</div><div>c = p + q = ${P} cm + ${fmt(q,2)} cm = <b>${fmt(c)} cm</b></div>`};
+  const A=c*hh/2;
+  return {kind:'num',unit:'cm²',tol:.0051,answer:Math.round(A*100)/100,prompt:altSvg({a:`a = ${a} cm`,p:`p = ${P} cm`,c:'',b:'',h:'',q:''}),
+    question:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist a = ${a} cm und p = ${P} cm. Berechne den Flächeninhalt des Dreiecks.`,
+    badHint:'Kathetensatz liefert c, dann b mit Pythagoras (oder h mit dem Höhensatz).',hints:['a² = c · p ⇒ c = a² : p','A = ½ · a · b oder A = ½ · c · h'],
+    solution:`<div>c = a² : p = ${a*a} cm² : ${P} cm = ${fmt(c)} cm</div><div>b² = c² − a² = ${c*c} cm² − ${a*a} cm² = ${b*b} cm² ⇒ b = ${b} cm</div><div>A = ${HALF} · ${a} cm · ${b} cm = <b>${fmt(A)} cm²</b></div>`};
 }
 
 /* ====== Station 9: Abschluss-Check ====== */
@@ -1252,9 +1532,9 @@ const A9=[
    return {kind:'num',unit:'cm',tol:.0151,answer:Math.round(dd*100)/100,prompt:QFIG({la:`a = ${a} cm`,lb:`b = ${b} cm`,lc:`c = ${c} cm`,d:true,ld:'d = ?',w:300}),sketch:true,
     question:`Ein Quader hat die Kantenlängen a = ${a} cm, b = ${b} cm und c = ${c} cm. Berechne die Länge der Raumdiagonale d (zwei Nachkommastellen).`,solution:s6dsol(a,b,c)};}},
  {st:6,pts:1,gen(){const a=2*rint(2,8),hh=rint(3,15),{hs2,hs}=s6hs(a,hh);
-   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mns',w:300}),sketch:true,
+   return {kind:'num',unit:'cm',tol:.0051,answer:Math.round(hs*100)/100,prompt:pyrSvg({a:4,h:5,la:`a = ${a} cm`,lh:'h',hs:true,lhs:HSV+' = ?',tri:'mes',w:300}),sketch:true,
     question:`Eine gerade quadratische Pyramide hat die Grundkante a = ${a} cm und die Höhe h = ${hh} cm. Berechne die Höhe ${HS} einer Seitenfläche (zwei Nachkommastellen).`,
-    solution:`<div>${len('MN')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}},
+    solution:`<div>${len('ME')} = ${fr('a','2')} = ${a/2} cm</div><div>${HS}² = h² + (${fr('a','2')})² = ${hh}² + ${a/2}² = ${hh*hh} + ${a*a/4} = ${hs2}</div><div>${HS} = √${hs2} ${Number.isInteger(hs)?'=':'≈'} <b>${fmt(hs)} cm</b></div>`};}},
  {st:7,pts:1,gen:t7len},
  {st:7,pts:2,gen:t7tri},
  {st:8,pts:2,gen(){return t8min(s8gen(M8E));}}
@@ -1351,6 +1631,18 @@ const STATIONS={
      }else{fb.className='fb bad';fb.textContent='Noch nicht ganz. Schau in deine Tabelle: Bei welchem Winkel waren die Spalten „a² + b²“ und „c²“ gleich? Welche Seiten gehören zu den Quadraten, die zusammen so groß sind wie das dritte?';}
    });
  }},
+ {title:'Begründen: Warum gilt der Satz immer?',render(body,done){
+   body.append(h('div',{class:'info',html:'Im Experiment hast du den Satz an Beispielen gemessen. Messungen sind aber kein Beweis. Lege gedanklich vier gleiche rechtwinklige Dreiecke (Katheten a und b, Hypotenuse c) in zwei gleich große Quadrate mit der Seitenlänge <b>a + b</b>. Tipp: Du kannst die Dreiecke auch aus Papier ausschneiden und legen.'}));
+   body.append(h('div',{html:proofSvg()}));
+   guided(body,[
+    {type:'mc',q:'Wie groß ist der Flächeninhalt eines der großen Quadrate?',options:['(a + b)²','a² + b²','2 · (a + b)','a · b'],correct:0,explain:'Die Seitenlänge ist a + b, also A = (a + b)².',hint:'Flächeninhalt eines Quadrats: Seitenlänge mal Seitenlänge.'},
+    {type:'mc',q:'Wie groß ist der Flächeninhalt eines der rechtwinkligen Dreiecke?',options:[HALF+' · a · b','a · b',HALF+' · c²','a + b'],correct:0,explain:'Die Katheten stehen senkrecht aufeinander: Grundseite a, Höhe b.',hint:'Ein rechtwinkliges Dreieck ist ein halbes Rechteck mit den Seiten a und b.'},
+    {type:'mc',q:'Figur 1: Welche Gleichung beschreibt den Flächeninhalt des orangen Quadrats?',options:['c² = (a + b)² − 4 · '+HALF+' · a · b','c² = (a + b)² + 4 · '+HALF+' · a · b','c² = (a + b)² − a · b','c² = 4 · '+HALF+' · a · b'],correct:0,explain:'Großes Quadrat minus vier Dreiecke.',hint:'Vom großen Quadrat werden die vier Dreiecke abgezogen.'},
+    {type:'mc',q:'Figur 2: Welche Gleichung beschreibt die beiden freien Quadrate zusammen?',options:['a² + b² = (a + b)² − 4 · '+HALF+' · a · b','a² + b² = (a + b)²','a² + b² = 4 · '+HALF+' · a · b','a² + b² = (a + b)² − a · b'],correct:0,explain:'Auch hier: großes Quadrat minus dieselben vier Dreiecke.',hint:'Es fehlen wieder die gleichen vier Dreiecke.'},
+    {type:'mc',q:'Vereinfache: (a + b)² − 4 · '+HALF+' · a · b = ?',options:['a² + b²','a² + 2ab + b²','a² − b²','(a − b)²'],correct:0,explain:'(a + b)² − 2ab = a² + 2ab + b² − 2ab = a² + b².',hint:'1. binomische Formel: (a + b)² = a² + 2ab + b². Dann 4 · '+HALF+' · a · b = 2ab abziehen.'},
+    {type:'mc',q:'Was folgt aus beiden Figuren?',options:['In beiden Figuren bleibt gleich viel Fläche frei, also gilt c² = a² + b² für jedes rechtwinklige Dreieck.','Der Satz gilt nur für a = 3 und b = 4.','Es gilt c = a + b.','Es gilt c² = 2ab.'],correct:0,explain:'Die Begründung nutzt keine bestimmten Zahlen – sie gilt für alle rechtwinkligen Dreiecke.',hint:'Vergleiche die freien Flächen in Figur 1 und Figur 2.'}
+   ],done);
+ }},
  merkStep(1),
  {title:'Üben',render(body,done){practice(body,1,{leicht:s1leicht,standard:s1standard,plus:s1plus},3,done);}},
  {title:'Exit-Ticket',render(body,done){exitTicket(body,1,[
@@ -1374,6 +1666,7 @@ const STATIONS={
     {type:'mc',q:'Das Dreieck hat die Katheten a = 3 cm und b = 4 cm. Welche Gleichung stellst du für die gesuchte Hypotenuse c auf?',options:['c² = a² + b²','c² = a² − b²','c = a + b'],correct:0,explain:'Die Hypotenuse steht allein auf einer Seite.',hint:'Die Quadrate der Katheten werden addiert.'},
     {type:'num',q:'Setze ein: c² = 3² + 4² = ?',answer:25,tol:.001,hint:'3² = 9 und 4² = 16.'},
     {type:'num',q:'Ziehe die Wurzel: c = √25 = ?',unit:'cm',answer:5,tol:.001,hint:'Welche Zahl mit sich selbst multipliziert ergibt 25?',html:''},
+    {type:'mc',q:'Auch (−5)² = 25. Warum ist c = −5 cm keine Lösung?',options:['Es geht um eine Strecke. Längen sind immer positiv.','Weil −5 keine ganze Zahl ist.','Weil man aus negativen Zahlen keine Wurzel ziehen kann.'],correct:0,explain:'Bei Streckenlängen gibt es keine negative Lösung.',hint:'Kann eine Seite eines Dreiecks −5 cm lang sein?'},
     {type:'num',html:'<div class="info">Und wenn das Ergebnis keine „schöne“ Zahl ist? Dann hilft der Taschenrechner.</div>',q:'Transfer: a = 5 cm und b = 7 cm. Berechne c und runde auf zwei Nachkommastellen.',unit:'cm',answer:8.6,tol:.0051,hint:'c² = 5² + 7² = 74, dann c = √74 (Taschenrechner).'}
    ],done);
  }},
@@ -1420,7 +1713,7 @@ const STATIONS={
    ],done);
  }},
  merkStep(3),
- {title:'Üben',render(body,done){practice(body,3,{leicht:()=>s3len(false),standard:()=>s3len(true),plus:()=>(Math.random()<.5?s3area():s3len(true))},3,done);}},
+ {title:'Üben',render(body,done){practice(body,3,{leicht:()=>s3len(false),standard:()=>s3len(true),plus:()=>pick([s3area,()=>s3len(true),s3trip])()},3,done);}},
  {title:'Exit-Ticket',render(body,done){exitTicket(body,3,[
    [{q:'Ein Dreieck hat die Seitenlängen 5 cm, 12 cm und 13 cm. Ist es rechtwinklig?',options:['Ja, denn 5² + 12² = 13²','Nein, denn 5 + 12 ≠ 13','Nein, denn 5² + 13² ≠ 12²','Ja, denn 5 + 12 > 13'],explain:'25 + 144 = 169 = 13². Die längste Seite ist 13 cm.'},
     {q:'Ein Dreieck hat die Seitenlängen 8 cm, 15 cm und 17 cm. Ist es rechtwinklig?',options:['Ja, denn 8² + 15² = 17²','Nein, denn 8 + 15 ≠ 17','Nein, denn 8² + 17² ≠ 15²','Ja, denn 8 + 15 > 17'],explain:'64 + 225 = 289 = 17². Die längste Seite ist 17 cm.'}],
@@ -1430,7 +1723,7 @@ const STATIONS={
     {q:'Über den Seiten eines Dreiecks liegen Quadrate mit 10 m², 15 m² und 24 m². Ist das Dreieck rechtwinklig?',options:['Nein, denn 10 + 15 ≠ 24','Ja, denn 10 + 15 ist ungefähr 24','Ja, denn 24 ist der größte Flächeninhalt','Nein, denn Flächen kann man nicht vergleichen'],explain:'10 m² + 15 m² = 25 m² ≠ 24 m². „Ungefähr gleich“ reicht für den Nachweis nicht.'}]
  ],done);}}
  ]},
-4:{title:'Satz des Pythagoras in ebenen Figuren',komp:'Rechtwinklige Teildreiecke in ebenen Figuren erkennen (gleichschenkliges Dreieck, Raute, Trapez, Sachaufgaben) und damit Längen und Flächeninhalte berechnen.',
+4:{title:'Satz des Pythagoras in ebenen Figuren',komp:'Rechtwinklige Teildreiecke in ebenen Figuren erkennen (Rechteck, Quadrat, gleichschenkliges und gleichseitiges Dreieck, Raute, Drachenviereck, Trapez, Sachaufgaben) und damit Längen und Flächeninhalte berechnen.',
  steps:[
  {title:'Einstieg: Rechtwinklige Teildreiecke finden',render(body,done){
    videoBlock(body,'s4','<b>Optional:</b> Schau dir ein Erklärvideo an, in dem der Satz des Pythagoras im gleichschenkligen Dreieck oder in der Raute angewendet wird.');
@@ -1456,15 +1749,29 @@ const STATIONS={
     {type:'num',q:'Umfang der Raute: u = 4 · a = ?',unit:'mm',answer:160,tol:.001,hint:'Alle vier Seiten sind gleich lang.'}
    ],done);
  }},
+ {title:'Gleichseitiges Dreieck und Drachenviereck',render(body,done){
+   body.append(h('div',{html:eqSvg({a:'6 cm',h:'h = ?'})}));
+   guided(body,[
+    {type:'mc',q:'Im gleichseitigen Dreieck sind alle Seiten gleich lang. Was macht die Höhe h auf die Seite '+ov('AB')+'?',options:['Sie halbiert die Seite '+ov('AB')+' und steht senkrecht auf ihr.','Sie ist so lang wie eine Seite.','Sie teilt das Dreieck in zwei Quadrate.'],correct:0,explain:'Das gleichseitige Dreieck ist ein besonderes gleichschenkliges Dreieck.',hint:'Bei M siehst du den rechten Winkel.'},
+    {type:'num',q:'Im Dreieck AMC gilt h² = (6 cm)² − (3 cm)². Berechne h².',unit:'cm²',answer:27,tol:.001,hint:'36 − 9'},
+    {type:'num',q:'h = √27 cm ≈ ? (zwei Nachkommastellen)',unit:'cm',answer:5.2,tol:.0051,hint:'Taschenrechner: √27'},
+    {type:'mc',q:'Allgemein gilt h² = a² − ('+fr('a','2')+')² = '+fr('3','4')+'a². Welche Formel folgt daraus?',options:['h = '+fr('a','2')+' · √3','h = '+fr('a','3')+' · √2','h = '+fr('3','4')+' · a','h = a · √3'],correct:0,explain:'√('+fr('3','4')+'a²) = '+fr('a','2')+' · √3. Für den Flächeninhalt folgt A = '+HALF+' · a · h = '+fr('a²','4')+' · √3.',hint:'Ziehe die Wurzel aus '+fr('3','4')+' und aus a² getrennt.'},
+    {type:'num',html:'<div class="info">Ein <b>Drachenviereck</b> ist achsensymmetrisch zur Diagonale '+ov('AC')+'. Die Diagonalen stehen senkrecht aufeinander, '+ov('AC')+' halbiert die Diagonale '+ov('BD')+'.</div>'+kiteSvg({ae:'3 cm',ec:'8 cm',f:'4 cm',ab:'?',bc:'?'})+'<p class="muted" style="text-align:center;margin:0">'+len('BE')+' = 4 cm</p>',q:'Berechne '+len('AB')+' im Dreieck ABE.',unit:'cm',answer:5,tol:.001,hint:len('AB')+'² = (3 cm)² + (4 cm)² = 25 cm²'},
+    {type:'num',q:'Berechne '+len('BC')+' im Dreieck EBC (zwei Nachkommastellen).',unit:'cm',answer:8.94,tol:.0051,hint:len('BC')+'² = (8 cm)² + (4 cm)² = 80 cm²'},
+    {type:'num',q:'Flächeninhalt: A = '+HALF+' · e · f mit e = '+len('AC')+' = 11 cm und f = '+len('BD')+' = 8 cm.',unit:'cm²',answer:44,tol:.001,hint:HALF+' · 11 cm · 8 cm'}
+   ],done);
+ }},
  merkStep(4),
  {title:'Üben',render(body,done){practice(body,4,{leicht:s4leicht,standard:s4standard,plus:s4plus},3,done);}},
  {title:'Exit-Ticket',render(body,done){exitTicket(body,4,[
    [{q:'Eine Raute hat die Diagonalen 6 cm und 8 cm. Wie lang ist eine Seite?',options:['5 cm','7 cm','10 cm','14 cm'],explain:'a² = 3² + 4² = 25, also a = 5 cm (halbe Diagonalen sind die Katheten).'},
     {q:'Eine Raute hat die Diagonalen 10 cm und 24 cm. Wie lang ist eine Seite?',options:['13 cm','17 cm','26 cm','34 cm'],explain:'a² = 5² + 12² = 25 + 144 = 169, also a = 13 cm (halbe Diagonalen sind die Katheten).'}],
    [{q:'Ein gleichschenkliges Dreieck hat die Basis 10 cm und die Schenkel 13 cm. Wie hoch ist es?',options:['12 cm','3 cm','8 cm','√269 cm'],explain:'Halbe Basis 5 cm: h² = 13² − 5² = 144, also h = 12 cm.'},
-    {q:'Ein gleichschenkliges Dreieck hat die Basis 16 cm und die Schenkel 10 cm. Wie hoch ist es?',options:['6 cm','8 cm','2 cm','√164 cm'],explain:'Halbe Basis 8 cm: h² = 10² − 8² = 100 − 64 = 36, also h = 6 cm.'}],
+    {q:'Ein gleichschenkliges Dreieck hat die Basis 16 cm und die Schenkel 10 cm. Wie hoch ist es?',options:['6 cm','8 cm','2 cm','√164 cm'],explain:'Halbe Basis 8 cm: h² = 10² − 8² = 100 − 64 = 36, also h = 6 cm.'},
+    {q:'Ein gleichseitiges Dreieck hat die Seitenlänge 4 cm. Wie hoch ist es?',options:['2 · √3 cm ≈ 3,46 cm','4 · √3 cm ≈ 6,93 cm','2 cm','√20 cm ≈ 4,47 cm'],explain:'h² = (4 cm)² − (2 cm)² = 12 cm², also h = √12 cm = 2 · √3 cm ≈ 3,46 cm.'}],
    [{q:'Was ist der erste sinnvolle Schritt bei einer Aufgabe zu einem Trapez oder gleichschenkligen Dreieck ohne rechten Winkel?',options:['Höhe einzeichnen und das rechtwinklige Teildreieck suchen','Alle Seitenlängen addieren','Sofort a² + b² = c² mit den gegebenen Zahlen rechnen','Den Flächeninhalt schätzen'],explain:'Erst ein rechtwinkliges Teildreieck erzeugen, dann den Satz des Pythagoras anwenden.'},
-    {q:'Ein Rechteck ist 12 cm lang und 5 cm breit. Wie lang ist seine Diagonale?',options:['13 cm','17 cm','√119 cm','60 cm'],explain:'Die Diagonale ist die Hypotenuse: d² = 12² + 5² = 144 + 25 = 169, also d = 13 cm.'}]
+    {q:'Ein Rechteck ist 12 cm lang und 5 cm breit. Wie lang ist seine Diagonale?',options:['13 cm','17 cm','√119 cm','60 cm'],explain:'Die Diagonale ist die Hypotenuse: d² = 12² + 5² = 144 + 25 = 169, also d = 13 cm.'},
+    {q:'Ein Quadrat hat die Seitenlänge 6 cm. Wie lang ist seine Diagonale?',options:['6 · √2 cm ≈ 8,49 cm','12 cm','6 · √3 cm ≈ 10,39 cm','36 cm'],explain:'d² = (6 cm)² + (6 cm)² = 72 cm², also d = √72 cm = 6 · √2 cm ≈ 8,49 cm.'}]
  ],done);}}
  ]},
 5:{title:'Funktionale Abhängigkeiten und Extremwerte',komp:'Streckenlängen und Flächeninhalte in Figuren mit wandernden Punkten als Term in x aufstellen, die Werte für x angeben und Extremwerte mit quadratischer Ergänzung bestimmen.',
@@ -1506,7 +1813,7 @@ const STATIONS={
     {q:'Für den Flächeninhalt von Dreiecken gilt A(x) = −0,5(x − 4)² + 8 (in cm²). Was kannst du ablesen?',options:['Größter Flächeninhalt 8 cm² für x = 4','Kleinster Flächeninhalt 8 cm² für x = 4','Größter Flächeninhalt 8 cm² für x = −4','Größter Flächeninhalt 4 cm² für x = 8'],explain:'Vor der Klammer steht −0,5 < 0. Am größten ist A(x) für x = 4: A<sub>max</sub> = 8 cm².'}]
  ],done);}}
  ]},
-6:{title:'Pythagoras in Körpern',komp:'Rechtwinklige Dreiecke in Quader, Würfel und gerader quadratischer Pyramide erkennen und damit Flächen- und Raumdiagonalen, Kanten und Höhen berechnen.',
+6:{title:'Pythagoras in Körpern',komp:'Rechtwinklige Stützdreiecke in Quader, Würfel, Pyramide (quadratische und rechteckige Grundfläche) und Zylinder erkennen und damit Flächen- und Raumdiagonalen, Kanten und Höhen berechnen.',
  steps:[
  {title:'Experiment: Die Raumdiagonale des Quaders',render:quaderExperiment},
  {title:'Die Raumdiagonale in zwei Schritten',render(body,done){
@@ -1531,14 +1838,26 @@ const STATIONS={
    ],done);
  }},
  {title:'Die gerade quadratische Pyramide',render(body,done){
-   body.append(h('div',{class:'info',html:`Bei einer <b>geraden quadratischen Pyramide</b> liegt die Spitze S senkrecht über dem Diagonalenschnittpunkt M der Grundfläche. N ist der Mittelpunkt der Grundkante ${ov('BC')}.<br>• <b>h</b> = ${len('MS')}: Höhe der Pyramide<br>• <b>${HS}</b> = ${len('NS')}: Höhe der Seitenfläche BCS<br>• <b>s</b> = ${len('CS')}: Seitenkante`}));
-   body.append(h('div',{html:pyrSvg({a:4,h:5,la:'a = 6 cm',lh:'h',hs:true,lhs:HSV,s:true,ls:'s',tri:'mns',w:340})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
+   body.append(h('div',{class:'info',html:`Bei einer <b>geraden quadratischen Pyramide</b> liegt die Spitze S senkrecht über dem Diagonalenschnittpunkt M der Grundfläche. E ist der Mittelpunkt der Grundkante ${ov('AB')}.<br>• <b>h</b> = ${len('MS')}: Höhe der Pyramide<br>• <b>${HS}</b> = ${len('ES')}: Höhe der Seitenfläche ABS (Seitenflächenhöhe)<br>• <b>s</b> = ${len('BS')}: Seitenkante`}));
+   body.append(h('div',{html:pyrSvg({a:4,h:5,la:'a = 6 cm',lh:'h',hs:true,lhs:HSV,s:true,ls:'s',tri:'mes',w:340})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
    guided(body,[
-    {type:'mc',q:`In welchem rechtwinkligen Dreieck kommen h und ${HS} vor?`,options:['Im Dreieck MNS mit dem rechten Winkel bei M','Im Dreieck CNS mit dem rechten Winkel bei S','Im Dreieck ABS mit dem rechten Winkel bei A'],correct:0,explain:`Die Höhe h steht senkrecht auf der Grundfläche. ${HS} ist die Hypotenuse.`,hint:'Die Höhe steht senkrecht auf der Grundfläche – im Punkt M.'},
-    {type:'num',q:`Wie lang ist ${len('MN')}?`,unit:'cm',answer:3,tol:.001,hint:`${len('MN')} ist die halbe Grundkante: 6 cm : 2.`},
+    {type:'mc',q:`In welchem rechtwinkligen Dreieck kommen h und ${HS} vor?`,options:['Im Dreieck MES mit dem rechten Winkel bei M','Im Dreieck BES mit dem rechten Winkel bei S','Im Dreieck ABS mit dem rechten Winkel bei A'],correct:0,explain:`Die Höhe h steht senkrecht auf der Grundfläche. ${HS} ist die Hypotenuse.`,hint:'Die Höhe steht senkrecht auf der Grundfläche – im Punkt M.'},
+    {type:'num',q:`Wie lang ist ${len('ME')}?`,unit:'cm',answer:3,tol:.001,hint:`${len('ME')} ist die halbe Grundkante: 6 cm : 2.`},
     {type:'num',q:`Berechne ${HS}: ${HS}² = 4² + 3².`,unit:'cm',answer:5,tol:.001,hint:`${HS}² = 16 + 9 = 25, dann die Wurzel ziehen.`},
-    {type:'mc',q:'Für die Seitenkante s nutzt du das Dreieck CNS. Wo liegt der rechte Winkel?',options:['Bei N – die Höhe der Seitenfläche steht senkrecht auf '+ov('BC'),'Bei C','Bei S'],correct:0,explain:`Im gleichschenkligen Dreieck BCS halbiert ${HS} die Basis ${ov('BC')} senkrecht.`,hint:'Die Seitenfläche BCS ist ein gleichschenkliges Dreieck mit der Höhe '+HS+'.'},
-    {type:'num',q:`Berechne s: s² = ${HS}² + ${len('CN')}² = 5² + 3² (zwei Nachkommastellen).`,unit:'cm',answer:5.83,tol:.0051,hint:'s² = 25 + 9 = 34, dann s = √34.'}
+    {type:'mc',q:'Für die Seitenkante s nutzt du das Dreieck BES. Wo liegt der rechte Winkel?',options:['Bei E – die Höhe der Seitenfläche steht senkrecht auf '+ov('AB'),'Bei C','Bei S'],correct:0,explain:`Im gleichschenkligen Dreieck ABS halbiert ${HS} die Basis ${ov('AB')} senkrecht.`,hint:'Die Seitenfläche ABS ist ein gleichschenkliges Dreieck mit der Höhe '+HS+'.'},
+    {type:'num',q:`Berechne s: s² = ${HS}² + ${len('BE')}² = 5² + 3² (zwei Nachkommastellen).`,unit:'cm',answer:5.83,tol:.0051,hint:'s² = 25 + 9 = 34, dann s = √34.'}
+   ],done);
+ }},
+ {title:'Pyramide mit rechteckiger Grundfläche',render(body,done){
+   body.append(h('div',{class:'info',html:`Ist die Grundfläche ein <b>Rechteck</b> mit a = ${len('AB')} und b = ${len('BC')} (Beispiel: a = 8 cm, b = 6 cm, Höhe h = 4 cm), sind die Seitenflächen verschieden hoch: E ist der Mittelpunkt von ${ov('AB')}, F der Mittelpunkt von ${ov('BC')}.<br>• <b>${HS}</b> = ${len('ES')}: Höhe der Seitenfläche ABS<br>• <b>h<sub>b</sub></b> = ${len('FS')}: Höhe der Seitenfläche BCS<br>• <b>s</b> = ${len('AS')}: Seitenkante (Stützdreieck AMS)`}));
+   body.append(h('div',{html:pyrSvg({a:4.6,b:3.2,h:4.6,la:'a = 8 cm',lb:'b = 6 cm',lh:'h',hs:true,lhs:HSV,hb:true,lhb:'h<tspan font-size=".32" dy=".1">b</tspan>',w:340})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
+   guided(body,[
+    {type:'mc',q:`Im Stützdreieck MES ist ${len('ME')} eine Kathete. Wie lang ist ${len('ME')}?`,options:['3 cm (halbe Breite b)','4 cm (halbe Länge a)','5 cm','6 cm'],correct:0,explain:`${ov('ME')} verläuft parallel zu ${ov('BC')} vom Mittelpunkt M zur Seite ${ov('AB')}: ${len('ME')} = ${fr('b','2')}.`,hint:`Von M bis zur Seite ${ov('AB')} ist es so weit wie die halbe Seite ${ov('BC')}.`},
+    {type:'num',q:`Berechne ${HS}: ${HS}² = (4 cm)² + (3 cm)².`,unit:'cm',answer:5,tol:.001,hint:`${HS}² = 16 cm² + 9 cm² = 25 cm²`},
+    {type:'num',q:`Berechne h<sub>b</sub> im Dreieck MFS mit ${len('MF')} = ${fr('a','2')} = 4 cm (zwei Nachkommastellen).`,unit:'cm',answer:5.66,tol:.0051,hint:'h<sub>b</sub>² = (4 cm)² + (4 cm)² = 32 cm²'},
+    {type:'num',q:`Für die Seitenkante brauchst du zuerst die Diagonale der Grundfläche: ${len('AC')}² = (8 cm)² + (6 cm)². Wie lang ist ${len('AM')} = ${HALF} · ${len('AC')}?`,unit:'cm',answer:5,tol:.001,hint:`${len('AC')} = √100 cm = 10 cm`},
+    {type:'num',q:`Berechne s im Stützdreieck AMS: s² = (4 cm)² + (5 cm)² (zwei Nachkommastellen).`,unit:'cm',answer:6.4,tol:.0051,hint:'s² = 16 cm² + 25 cm² = 41 cm²'},
+    {type:'mc',q:'Eine zylinderförmige Dose (Durchmesser 6 cm, Höhe 8 cm) wird senkrecht durch die Mitte geschnitten. In welcher Figur findest du das Stützdreieck für einen schräg gestellten Strohhalm?',options:['Im Rechteck aus Durchmesser und Höhe – der Strohhalm ist die Diagonale.','Im Kreis der Grundfläche.','Im Dreieck aus Radius, Radius und Höhe.'],correct:0,explain:'Der Strohhalm reicht höchstens √((6 cm)² + (8 cm)²) = 10 cm weit.',hint:'Stell dir den Schnitt vor: Er ist ein Rechteck.'}
    ],done);
  }},
  merkStep(6),
@@ -1552,7 +1871,7 @@ const STATIONS={
     {q:'Eine gerade quadratische Pyramide hat die Grundkante a = 10 cm und die Höhe h = 12 cm. Wie groß ist die Höhe '+HS+' einer Seitenfläche?',options:['13 cm','√244 cm','17 cm','22 cm'],explain:HS+'² = h² + (a : 2)² = 12² + 5² = 169, also '+HS+' = 13 cm.'}]
  ],done);}}
  ]},
-7:{title:'Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit',komp:'Die Länge von Strecken im Koordinatensystem als Betrag eines Vektors berechnen und Dreiecke mit der Umkehrung des Satzes des Pythagoras auf Rechtwinkligkeit prüfen.',
+7:{title:'Koordinatensystem: Strecken, Betrag, Rechtwinkligkeit',komp:'Die Länge von Strecken im Koordinatensystem als Betrag eines Vektors berechnen, Dreiecke auf Rechtwinkligkeit und Gleichschenkligkeit prüfen und besondere Vierecke nachweisen.',
  steps:[
  {title:'Experiment: Strecken im Koordinatensystem',render:koordExperiment},
  {title:'Vom Vektor zur Länge',render(body,done){
@@ -1561,12 +1880,12 @@ const STATIONS={
    body.append(h('div',{html:s7fig([['P',[1,2]],['Q',[5,5]]],{segs:[{a:[1,2],b:[5,2],col:'#16a34a',dash:true},{a:[5,2],b:[5,5],col:'#ea580c',dash:true},{a:[1,2],b:[5,5],col:'#2563eb',arrow:true}],rights:[{V:[5,2],p1:[1,2],p2:[5,5]}]})}));
    guided(body,[
     {type:'mc',q:`Gegeben sind ${ptS('P',1,2)} und ${ptS('Q',5,5)}. Welche Koordinaten hat ${vec('PQ')}?`,options:[cvec(4,3),cvec('−4','−3'),cvec(6,7),cvec(3,4)],correct:0,explain:`${vec('PQ')} = ${cvec('5 − 1','5 − 2')} = ${cvec(4,3)}`,hint:'Spitze (Q) minus Fuß (P), getrennt für x und y.'},
-    {type:'num',q:`Die Koordinaten 4 und 3 sind die Katheten eines rechtwinkligen Dreiecks. Berechne ${len('PQ')}² = 4² + 3².`,unit:'cm²',answer:25,tol:.001,hint:'16 + 9'},
-    {type:'num',q:`Wie lang ist die Strecke ${ov('PQ')}?`,unit:'cm',answer:5,tol:.001,hint:'√25'},
+    {type:'num',q:`Die Koordinaten 4 und 3 sind die Katheten eines rechtwinkligen Dreiecks. Berechne ${len('PQ')}² = 4² + 3².`,unit:'LE²',answer:25,tol:.001,hint:'16 + 9'},
+    {type:'num',q:`Wie lang ist die Strecke ${ov('PQ')}?`,unit:'LE',answer:5,tol:.001,hint:'√25'},
     {type:'mc',html:`<div class="info">Die Länge eines Vektors heißt <b>Betrag</b>: |${vec('PQ')}| = ${sq('4² + 3²')} = 5. Die Strecke ${ov('PQ')} ist genauso lang wie der Vektor: ${len('PQ')} = |${vec('PQ')}|.</div>`,q:`Jetzt mit negativen Koordinaten: ${ptS('A',-2,3)} und ${ptS('B',4,-5)}. Welche Koordinaten hat ${vec('AB')}?`,options:[cvec(6,'−8'),cvec(2,'−2'),cvec('−6',8),cvec(6,8)],correct:0,explain:`${vec('AB')} = ${cvec('4 − (−2)','−5 − 3')} = ${cvec(6,'−8')}`,hint:'4 − (−2) = 4 + 2. Und −5 − 3 = ?'},
-    {type:'num',q:`Berechne ${len('AB')} = ${sq('6² + (−8)²')}.`,unit:'cm',answer:10,tol:.001,hint:'(−8)² = 64, also 36 + 64 = 100.'},
+    {type:'num',q:`Berechne ${len('AB')} = ${sq('6² + (−8)²')}.`,unit:'LE',answer:10,tol:.001,hint:'(−8)² = 64, also 36 + 64 = 100.'},
     {type:'mc',q:`Warum spielt das negative Vorzeichen bei −8 für die Länge keine Rolle?`,options:['Beim Quadrieren wird das Ergebnis nie negativ: (−8)² = 64.','Weil man das Minuszeichen einfach weglassen darf, ohne zu rechnen.','Es spielt eine Rolle: Die Strecke ist dann kürzer.'],correct:0,explain:'Minus mal Minus ergibt Plus. Längen sind nie negativ.',hint:'Rechne (−8) · (−8).'},
-    {type:'mc',q:`Wie lang ist die Strecke, wenn man umgekehrt von B nach A geht, also |${vec('BA')}|?`,options:['Genauso lang: 10 cm',`Länge −10 cm`,'Doppelt so lang: 20 cm'],correct:0,explain:`${vec('BA')} = ${cvec('−6',8)} zeigt in die Gegenrichtung, ist aber genauso lang.`,hint:'Der Vektor zeigt in die andere Richtung. Ändert sich dadurch seine Länge?'}
+    {type:'mc',q:`Wie lang ist die Strecke, wenn man umgekehrt von B nach A geht, also |${vec('BA')}|?`,options:['Genauso lang: 10 LE',`Länge −10 LE`,'Doppelt so lang: 20 LE'],correct:0,explain:`${vec('BA')} = ${cvec('−6',8)} zeigt in die Gegenrichtung, ist aber genauso lang.`,hint:'Der Vektor zeigt in die andere Richtung. Ändert sich dadurch seine Länge?'}
    ],done);
  }},
  {title:'Rechtwinklige Dreiecke im Koordinatensystem',render(body,done){
@@ -1574,11 +1893,24 @@ const STATIONS={
    body.append(h('p',{html:`Das Dreieck ABC hat die Eckpunkte ${ptS('A',-2,3)}, ${ptS('B',2,1)} und ${ptS('C',5,7)}. Ist es rechtwinklig? Nach Augenmaß kann man das nicht sicher entscheiden – rechne mit der Umkehrung des Satzes des Pythagoras (Station 3).`}));
    body.append(h('div',{html:triFig(T)}));
    guided(body,[
-    {type:'num',q:`${vec('AB')} = ${cvec(4,'−2')}. Berechne ${len('AB')}².`,unit:'cm²',answer:20,tol:.001,hint:'4² + (−2)² = 16 + 4'},
-    {type:'num',q:`${vec('BC')} = ${cvec(3,6)}. Berechne ${len('BC')}².`,unit:'cm²',answer:45,tol:.001,hint:'3² + 6² = 9 + 36'},
-    {type:'num',q:`Stelle ${vec('AC')} selbst auf und berechne ${len('AC')}².`,unit:'cm²',answer:65,tol:.001,hint:`${vec('AC')} = ${cvec('5 − (−2)','7 − 3')} = ${cvec(7,4)}`},
+    {type:'num',q:`${vec('AB')} = ${cvec(4,'−2')}. Berechne ${len('AB')}².`,unit:'LE²',answer:20,tol:.001,hint:'4² + (−2)² = 16 + 4'},
+    {type:'num',q:`${vec('BC')} = ${cvec(3,6)}. Berechne ${len('BC')}².`,unit:'LE²',answer:45,tol:.001,hint:'3² + 6² = 9 + 36'},
+    {type:'num',q:`Stelle ${vec('AC')} selbst auf und berechne ${len('AC')}².`,unit:'LE²',answer:65,tol:.001,hint:`${vec('AC')} = ${cvec('5 − (−2)','7 − 3')} = ${cvec(7,4)}`},
     {type:'mc',q:'Vergleiche: 20 + 45 = 65. Was folgt daraus?',options:['Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei B.','Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei C.','Das Dreieck ist rechtwinklig, der rechte Winkel liegt bei A.','Das Dreieck ist nicht rechtwinklig.'],correct:0,explain:`${ov('AC')} ist die längste Seite. Der rechte Winkel liegt ihr gegenüber, also bei B.`,hint:'Der rechte Winkel liegt der längsten Seite gegenüber.'},
     {type:'mc',q:`Ein anderes Dreieck PQR hat ${len('PQ')}² = 10, ${len('QR')}² = 20 und ${len('PR')}² = 40. Ist es rechtwinklig?`,options:['Nein, denn 10 + 20 = 30 ≠ 40.','Ja, denn 10 + 20 + 40 = 70.','Ja, der rechte Winkel liegt bei Q.'],correct:0,explain:'Die beiden kleineren Quadrate ergeben zusammen nicht das größte.',hint:'Addiere die beiden kleineren Werte und vergleiche mit dem größten.'}
+   ],done);
+ }},
+ {title:'Gleichschenklig? Gleich weit entfernt?',render(body,done){
+   const T={A:[-2,1],B:[4,-1],C:[2,5]};
+   body.append(h('p',{html:`Mit Streckenlängen kannst du auch nachweisen, dass ein Dreieck <b>gleichschenklig</b> ist: Zwei Seiten müssen gleich lang sein. Das Dreieck hat die Eckpunkte ${ptS('A',-2,1)}, ${ptS('B',4,-1)} und ${ptS('C',2,5)}.`}));
+   body.append(h('div',{html:triFig(T)}));
+   guided(body,[
+    {type:'num',q:`Berechne ${len('AB')}² mit ${vec('AB')} = ${cvec(6,'−2')}.`,unit:'LE²',answer:40,tol:.001,hint:'6² + (−2)² = 36 + 4'},
+    {type:'num',q:`Berechne ${len('BC')}² mit ${vec('BC')} = ${cvec('−2',6)}.`,unit:'LE²',answer:40,tol:.001,hint:'(−2)² + 6² = 4 + 36'},
+    {type:'num',q:`Berechne ${len('AC')}².`,unit:'LE²',answer:32,tol:.001,hint:`${vec('AC')} = ${cvec(4,4)}`},
+    {type:'mc',q:'Was folgt daraus?',options:[`Das Dreieck ist gleichschenklig mit ${len('AB')} = ${len('BC')}; die Spitze ist B.`,'Das Dreieck ist gleichseitig.','Das Dreieck ist nicht gleichschenklig.'],correct:0,explain:`${len('AB')} = ${len('BC')} = √40 LE, die Basis ist ${ov('AC')}.`,hint:'Welche Quadrate sind gleich groß?'},
+    {type:'mc',html:`<div class="info">Jetzt umgekehrt: Ein Punkt B(x | 0) auf der x-Achse soll von ${ptS('A',-2,4)} und ${ptS('C',4,2)} gleich weit entfernt sein. Die Längen hängen von x ab.</div>`+s7fig([['A',[-2,4]],['C',[4,2]]]),q:`Welcher Term gilt für ${len('AB')}²?`,options:['(x + 2)² + 16','(x − 2)² + 16','(x + 2)² − 16','x² + 4²'],correct:0,explain:`${vec('AB')} = ${cvec('x − (−2)','0 − 4')} = ${cvec('x + 2','−4')}`,hint:'„Spitze minus Fuß“: B minus A.'},
+    {type:'mc',q:`Mit ${len('CB')}² = (x − 4)² + 4 folgt aus ${len('AB')}² = ${len('CB')}²: x² + 4x + 20 = x² − 8x + 20. Welche Lösung hat die Gleichung?`,options:['x = 0, also B(0 | 0)','x = 2, also B(2 | 0)','x = −2, also B(−2 | 0)','keine Lösung'],correct:0,explain:'4x = −8x ⇒ 12x = 0 ⇒ x = 0. Probe: |AB|² = 4 + 16 = 20 und |CB|² = 16 + 4 = 20.',hint:'Die x²-Terme und die 20 fallen weg.'}
    ],done);
  }},
  merkStep(7),
@@ -1586,8 +1918,8 @@ const STATIONS={
  {title:'Exit-Ticket',render(body,done){exitTicket(body,7,[
    [{q:`Welche Koordinaten hat der Vektor ${vec('PQ')} mit ${ptS('P',2,1)} und ${ptS('Q',6,4)}?`,options:[cvec(4,3),cvec(8,5),cvec('−4','−3'),cvec(3,4)],explain:`„Spitze minus Fuß“: ${vec('PQ')} = ${cvec('6 − 2','4 − 1')} = ${cvec(4,3)}`},
     {q:`Welche Koordinaten hat der Vektor ${vec('AB')} mit ${ptS('A',-1,3)} und ${ptS('B',3,-2)}?`,options:[cvec(4,'−5'),cvec(2,1),cvec('−4',5),cvec(4,5)],explain:`${vec('AB')} = ${cvec('3 − (−1)','−2 − 3')} = ${cvec(4,'−5')}`}],
-   [{q:`Wie lang ist die Strecke ${ov('PQ')} mit ${ptS('P',1,1)} und ${ptS('Q',7,9)} (Längeneinheit 1 cm)?`,options:['10 cm','14 cm','100 cm',`${sq('14')} cm`],explain:`${vec('PQ')} = ${cvec(6,8)}; ${len('PQ')} = ${sq('6² + 8²')} = √100 = 10 cm`},
-    {q:`Wie lang ist die Strecke ${ov('AB')} mit ${ptS('A',-2,-1)} und ${ptS('B',3,11)} (Längeneinheit 1 cm)?`,options:['13 cm','17 cm','169 cm',`${sq('17')} cm`],explain:`${vec('AB')} = ${cvec(5,12)}; ${len('AB')} = ${sq('5² + 12²')} = √169 = 13 cm`}],
+   [{q:`Wie lang ist die Strecke ${ov('PQ')} mit ${ptS('P',1,1)} und ${ptS('Q',7,9)}?`,options:['10 LE','14 LE','100 LE',`${sq('14')} LE`],explain:`${vec('PQ')} = ${cvec(6,8)}; ${len('PQ')} = ${sq('6² + 8²')} = √100 = 10 LE`},
+    {q:`Wie lang ist die Strecke ${ov('AB')} mit ${ptS('A',-2,-1)} und ${ptS('B',3,11)}?`,options:['13 LE','17 LE','169 LE',`${sq('17')} LE`],explain:`${vec('AB')} = ${cvec(5,12)}; ${len('AB')} = ${sq('5² + 12²')} = √169 = 13 LE`}],
    [{q:`Ist das Dreieck ABC mit ${ptS('A',0,0)}, ${ptS('B',4,2)} und ${ptS('C',2,6)} rechtwinklig?`,options:['Ja, der rechte Winkel liegt bei B.','Ja, der rechte Winkel liegt bei A.','Ja, der rechte Winkel liegt bei C.','Nein, es ist nicht rechtwinklig.'],explain:`${len('AB')}² = 4² + 2² = 20; ${len('BC')}² = (−2)² + 4² = 20; ${len('AC')}² = 2² + 6² = 40. 20 + 20 = 40 ⇒ rechtwinklig, der rechte Winkel liegt der längsten Seite ${ov('AC')} gegenüber, also bei B.`},
     {q:`Ist das Dreieck ABC mit ${ptS('A',0,0)}, ${ptS('B',5,1)} und ${ptS('C',2,5)} rechtwinklig?`,options:['Nein, es ist nicht rechtwinklig.','Ja, der rechte Winkel liegt bei A.','Ja, der rechte Winkel liegt bei B.','Ja, der rechte Winkel liegt bei C.'],explain:`${len('AB')}² = 26; ${len('BC')}² = (−3)² + 4² = 25; ${len('AC')}² = 2² + 5² = 29. Längste Seite ${ov('AC')}: 26 + 25 = 51 ≠ 29 ⇒ nicht rechtwinklig.`}]
  ],done);}}
@@ -1603,7 +1935,7 @@ const STATIONS={
     {type:'mc',q:`Wie lautet allgemein der Punkt ${PN} in Abhängigkeit von x?`,options:[`${PN}(x | 0,5x + 1)`,`${PN}(0,5x + 1 | x)`,`${PN}(x | 0,5)`,`${PN}(x | x + 1)`],correct:0,explain:'Die x-Koordinate bleibt x, die y-Koordinate ist der Term der Geradengleichung.',hint:'y = 0,5x + 1'},
     {type:'mc',q:`Stelle den Vektor ${VQP}(x) von ${ptS('Q',6,-1)} zu ${PN}(x | 0,5x + 1) auf.`,options:[cvec('x − 6','0,5x + 2'),cvec('x − 6','0,5x'),cvec('x + 6','0,5x + 2'),cvec('x − 6','0,5x + 1')],correct:0,explain:`„Spitze minus Fuß“: ${cvec('x − 6','0,5x + 1 − (−1)')} = ${cvec('x − 6','0,5x + 2')}`,hint:'Bei der y-Koordinate: 0,5x + 1 − (−1). Minus mal Minus!'},
     {type:'mc',q:`Berechne ${LQP}² = (x − 6)² + (0,5x + 2)² und vereinfache.`,options:['1,25x² − 10x + 40','0,25x² − 10x + 40','1,25x² − 14x + 40','1,25x² − 10x + 32'],correct:0,explain:'(x − 6)² = x² − 12x + 36 und (0,5x + 2)² = 0,25x² + 2x + 4. Zusammen: 1,25x² − 10x + 40.',hint:'Binomische Formeln: (x − 6)² = x² − 12x + 36; (0,5x + 2)² = 0,25x² + 2x + 4.'},
-    {type:'num',q:`Teste den Term: Berechne ${LQP} für x = 0 (zwei Nachkommastellen).`,unit:'cm',answer:6.32,tol:.0051,hint:`${LQP}² = 1,25 · 0² − 10 · 0 + 40 = 40, dann die Wurzel ziehen.`}
+    {type:'num',q:`Teste den Term: Berechne ${LQP} für x = 0 (zwei Nachkommastellen).`,unit:'LE',answer:6.32,tol:.0051,hint:`${LQP}² = 1,25 · 0² − 10 · 0 + 40 = 40, dann die Wurzel ziehen.`}
    ],done);
  }},
  {title:'Die kürzeste Strecke',render(body,done){
@@ -1613,7 +1945,7 @@ const STATIONS={
     {type:'num',q:'Schritt 2: Welche Zahl wird in der Klammer ergänzt? x² − 8x + ?',answer:16,tol:.001,hint:'(8 : 2)² = 4²'},
     {type:'mc',q:'Schritt 3 und 4: 1,25(x² − 8x + 4² − 4²) + 40 = 1,25[(x − 4)² − 16] + 40. Fasse zusammen.',options:['1,25(x − 4)² + 20','1,25(x − 4)² + 24','1,25(x − 4)² + 40','1,25(x + 4)² + 20'],correct:0,explain:'1,25 · (−16) + 40 = −20 + 40 = 20',hint:'Die −16 wird auch mit 1,25 multipliziert.'},
     {type:'num',q:'Für welchen Wert von x ist die Strecke am kürzesten?',answer:4,tol:.001,hint:'Wann ist (x − 4)² gleich 0?'},
-    {type:'num',q:`Berechne die minimale Länge ${len('QP<sub>0</sub>')} = √20 cm (zwei Nachkommastellen).`,unit:'cm',answer:4.47,tol:.0051,hint:'Taschenrechner: √20'},
+    {type:'num',q:`Berechne die minimale Länge ${len('QP<sub>0</sub>')} = √20 LE (zwei Nachkommastellen).`,unit:'LE',answer:4.47,tol:.0051,hint:'Taschenrechner: √20'},
     {type:'mc',q:'Welche Koordinaten hat der Punkt P<sub>0</sub> mit der kürzesten Strecke?',options:[ptS('P<sub>0</sub>',4,3),ptS('P<sub>0</sub>',4,20),ptS('P<sub>0</sub>',3,4),ptS('P<sub>0</sub>',4,2)],correct:0,explain:'y = 0,5 · 4 + 1 = 3',hint:'Setze x = 4 in y = 0,5x + 1 ein.'},
     {type:'mc',html:coordSvg({x0:-3,x1:9,y0:-3,y1:7,w:340,lines:[{m:.5,t:1,label:'g'}],segs:[{a:[6,-1],b:[4,3],col:'#ea580c',w:.07}],rights:[{V:[4,3],p1:[6,-1],p2:[8,5]}],pts:[{n:'Q',p:[6,-1]},{n:'P<tspan font-size=".32" dy=".12">0</tspan>',p:[4,3],d:[-.2,-.25]}]}),q:`Denke an das Experiment: Was gilt für die kürzeste Strecke ${ov('QP<sub>0</sub>')}?`,options:['Sie steht senkrecht auf der Geraden g.','Sie verläuft parallel zur y-Achse.','Sie verläuft parallel zur x-Achse.','Sie ist genau halb so lang wie |QP<sub>n</sub>| für x = 0.'],correct:0,explain:'Die kürzeste Verbindung von einem Punkt zu einer Geraden steht immer senkrecht auf der Geraden. Ihre Länge heißt Abstand des Punktes von der Geraden.',hint:'Im Experiment erschien bei x = 4 ein Zeichen für den rechten Winkel.'}
    ],done);
@@ -1623,8 +1955,8 @@ const STATIONS={
  {title:'Exit-Ticket',render(body,done){exitTicket(body,8,[
    [{q:`Die Punkte ${PN}(x | 0,5x + 1) liegen auf g. Welcher Vektor gilt für ${VQP}(x) mit ${ptS('Q',2,-1)}?`,options:[cvec('x − 2','0,5x + 2'),cvec('x − 2','0,5x'),cvec('x + 2','0,5x + 2'),cvec('2 − x','0,5x + 1')],explain:`${VQP}(x) = ${cvec('x − 2','0,5x + 1 − (−1)')} = ${cvec('x − 2','0,5x + 2')}`},
     {q:`Die Punkte ${PN}(x | 2x − 1) liegen auf g. Welcher Vektor gilt für ${VQP}(x) mit ${ptS('Q',3,1)}?`,options:[cvec('x − 3','2x − 2'),cvec('x − 3','2x'),cvec('x + 3','2x − 2'),cvec('x − 3','2x − 1')],explain:`${VQP}(x) = ${cvec('x − 3','2x − 1 − 1')} = ${cvec('x − 3','2x − 2')}`}],
-   [{q:`Für die Länge der Strecken gilt ${LQP}² = 2(x − 3)² + 8 (in cm²). Was folgt daraus?`,options:[`Für x = 3 ist die Strecke am kürzesten: √8 cm ≈ 2,83 cm`,`Für x = −3 ist die Strecke am kürzesten: √8 cm ≈ 2,83 cm`,`Für x = 3 ist die Strecke am kürzesten: 8 cm`,'Für x = 3 ist die Strecke am längsten.'],explain:'(x − 3)² ≥ 0 und für x = 3 gleich 0. Der kleinste Wert von |QPn|² ist 8, die kürzeste Strecke also √8 cm ≈ 2,83 cm.'},
-    {q:`Für die Länge der Strecken gilt ${LQP}² = 1,25(x − 2)² + 5 (in cm²). Was folgt daraus?`,options:[`Für x = 2 ist die Strecke am kürzesten: √5 cm ≈ 2,24 cm`,`Für x = −2 ist die Strecke am kürzesten: √5 cm ≈ 2,24 cm`,`Für x = 2 ist die Strecke am kürzesten: 5 cm`,'Für x = 2 ist die Strecke am längsten.'],explain:'(x − 2)² ≥ 0 und für x = 2 gleich 0. Der kleinste Wert von |QPn|² ist 5, die kürzeste Strecke also √5 cm ≈ 2,24 cm.'}],
+   [{q:`Für die Länge der Strecken gilt ${LQP}² = 2(x − 3)² + 8 (in LE²). Was folgt daraus?`,options:[`Für x = 3 ist die Strecke am kürzesten: √8 LE ≈ 2,83 LE`,`Für x = −3 ist die Strecke am kürzesten: √8 LE ≈ 2,83 LE`,`Für x = 3 ist die Strecke am kürzesten: 8 LE`,'Für x = 3 ist die Strecke am längsten.'],explain:'(x − 3)² ≥ 0 und für x = 3 gleich 0. Der kleinste Wert von |QPn|² ist 8, die kürzeste Strecke also √8 LE ≈ 2,83 LE.'},
+    {q:`Für die Länge der Strecken gilt ${LQP}² = 1,25(x − 2)² + 5 (in LE²). Was folgt daraus?`,options:[`Für x = 2 ist die Strecke am kürzesten: √5 LE ≈ 2,24 LE`,`Für x = −2 ist die Strecke am kürzesten: √5 LE ≈ 2,24 LE`,`Für x = 2 ist die Strecke am kürzesten: 5 LE`,'Für x = 2 ist die Strecke am längsten.'],explain:'(x − 2)² ≥ 0 und für x = 2 gleich 0. Der kleinste Wert von |QPn|² ist 5, die kürzeste Strecke also √5 LE ≈ 2,24 LE.'}],
    [{q:`Vereinfache ${LQP}² = (x − 4)² + (x + 2)².`,options:['2x² − 4x + 20','2x² − 12x + 20','x² − 4x + 20','2x² + 20'],explain:'(x − 4)² = x² − 8x + 16 und (x + 2)² = x² + 4x + 4. Zusammen: 2x² − 4x + 20.'},
     {q:`Vereinfache ${LQP}² = (x − 2)² + (0,5x + 1)².`,options:['1,25x² − 3x + 5','1,25x² − 5x + 5','0,25x² − 3x + 5','1,25x² + 5'],explain:'(x − 2)² = x² − 4x + 4 und (0,5x + 1)² = 0,25x² + x + 1. Zusammen: 1,25x² − 3x + 5.'}]
  ],done);}}
@@ -1639,21 +1971,46 @@ const STATIONS={
    nextBtn(body,'Abschluss-Check starten →',done);
  }},
  {title:'Abschluss-Check',render:abschluss}
+ ]},
+10:{title:'Zusatz: Kathetensatz und Höhensatz',zusatz:true,komp:'Vertiefung: Mit dem Kathetensatz und dem Höhensatz Seitenlängen, Hypotenusenabschnitte und Höhen im rechtwinkligen Dreieck berechnen.',
+ steps:[
+ {title:'Entdecken: Quadrate und Rechtecke',render(body,done){
+   body.append(h('div',{class:'info',html:'Zeichne im rechtwinkligen Dreieck ABC (γ = 90°) die Höhe h auf die Hypotenuse ein. Ihr Fußpunkt D teilt die Hypotenuse c in die <b>Hypotenusenabschnitte</b> q = '+len('AD')+' und p = '+len('DB')+'.'}));
+   body.append(h('div',{html:altSvg({a:'a = 20 cm',b:'b = 15 cm',c:'c = 25 cm',p:'p = 16 cm',q:'q = 9 cm',h:'h = 12 cm'})+'<p class="muted" style="text-align:center;margin:0">Skizze nicht maßstabsgetreu</p>'}));
+   guided(body,[
+    {type:'num',q:'Flächeninhalt des Quadrats über der Kathete a: a² = ?',unit:'cm²',answer:400,tol:.001,hint:'(20 cm)²'},
+    {type:'num',q:'Flächeninhalt des Rechtecks aus Hypotenuse c und Abschnitt p: c · p = ?',unit:'cm²',answer:400,tol:.001,hint:'25 cm · 16 cm'},
+    {type:'num',q:'Prüfe auch die andere Seite: b² = (15 cm)² und c · q = 25 cm · 9 cm. Wie groß sind beide?',unit:'cm²',answer:225,tol:.001,hint:'15 · 15 und 25 · 9'},
+    {type:'mc',q:'Was hast du entdeckt (Kathetensatz)?',options:['Das Quadrat über einer Kathete ist so groß wie das Rechteck aus der Hypotenuse und dem anliegenden Hypotenusenabschnitt: a² = c · p, b² = c · q.','a² = p · q','a² = c · q','a + b = c'],correct:0,explain:'p liegt an a, q liegt an b.',hint:'Vergleiche deine Ergebnisse.'},
+    {type:'num',q:'Höhe: h² = (12 cm)² = ? Vergleiche mit p · q = 16 cm · 9 cm.',unit:'cm²',answer:144,tol:.001,hint:'12 · 12'},
+    {type:'mc',q:'Was hast du entdeckt (Höhensatz)?',options:['h² = p · q','h² = c · p','h = p + q','h² = a² − b²'],correct:0,explain:'Das Quadrat über der Höhe ist so groß wie das Rechteck aus den beiden Hypotenusenabschnitten.',hint:'144 = 16 · 9'}
+   ],done);
+ }},
+ merkStep(10),
+ {title:'Üben',render(body,done){practice(body,10,{leicht:s10leicht,standard:s10standard,plus:s10plus},3,done);}},
+ {title:'Exit-Ticket',render(body,done){exitTicket(body,10,[
+   [{q:'Im rechtwinkligen Dreieck (γ = 90°) ist p = 9 cm und q = 4 cm. Wie lang ist die Höhe h?',options:['6 cm','36 cm','13 cm','√13 cm'],explain:'Höhensatz: h² = p · q = 36 cm², also h = 6 cm.'},
+    {q:'Im rechtwinkligen Dreieck (γ = 90°) ist p = 8 cm und q = 2 cm. Wie lang ist die Höhe h?',options:['4 cm','16 cm','10 cm','√10 cm'],explain:'Höhensatz: h² = p · q = 16 cm², also h = 4 cm.'}],
+   [{q:'Im rechtwinkligen Dreieck (γ = 90°) ist c = 10 cm und p = 3,6 cm. Wie lang ist die Kathete a?',options:['6 cm','36 cm','√13,6 cm','8 cm'],explain:'Kathetensatz: a² = c · p = 36 cm², also a = 6 cm.'},
+    {q:'Im rechtwinkligen Dreieck (γ = 90°) ist c = 25 cm und q = 9 cm. Wie lang ist die Kathete b?',options:['15 cm','225 cm','√34 cm','20 cm'],explain:'Kathetensatz: b² = c · q = 225 cm², also b = 15 cm.'}],
+   [{q:'Welche Aussage ist der Kathetensatz?',options:['a² = c · p','a² = p · q','a² = c² + b²','a = c · p'],explain:'Das Kathetenquadrat ist so groß wie das Rechteck aus Hypotenuse und anliegendem Abschnitt.'},
+    {q:'Welche Aussage ist der Höhensatz?',options:['h² = p · q','h² = c · p','h = p · q','h² = p + q'],explain:'Das Quadrat über der Höhe ist so groß wie das Rechteck aus den beiden Hypotenusenabschnitten.'}]
+ ],done);}}
  ]}
 };
 
 /* ====== Ansichten ====== */
-function unlocked(n){return TEACHER||n===1||!!state[n-1];}
+function unlocked(n){return TEACHER||n===1||(n===10?!!state[3]:!!state[n-1]);}
 function home(){
   app.innerHTML='';
-  const doneN=Object.keys(state).filter(k=>STATIONS[k]).length;
+  const doneN=Object.keys(state).filter(k=>STATIONS[k]&&!STATIONS[k].zusatz).length;
   app.append(h('div',{class:'card'},h('h2',{},'Rechtwinklige Dreiecke'),
     h('p',{html:'Du erarbeitest dieses Kapitel selbstständig. Du entdeckst Regeln, schreibst Merkkästen (<span style="background:#fff7d6;padding:0 6px;border:1px solid #e0b400;border-radius:4px">✏️ Merkheft</span>) in dein Merkheft ab, übst auf deinem Niveau und schließt jede Station mit einem Exit-Ticket ab.'}),
     h('p',{class:'muted'},'Du brauchst: Merkheft, Stift, Taschenrechner, Geodreieck.'),
     h('div',{class:'pb'},h('i',{style:`width:${doneN/9*100}%`})),h('p',{class:'muted'},`${doneN} von 9 Stationen geschafft`)));
   const hasData=Object.keys(state).length>0;
   const list=h('div',{class:'stations'});
-  Object.keys(STATIONS).forEach(k=>{const n=+k,st=STATIONS[n];const b=h('button',{class:'stn'+(state[n]?' ok':''),type:'button'},h('div',{class:'nr'},state[n]?'✓':String(n)),h('div',{},h('div',{class:'t'},st.title),h('div',{class:'s'},st.komp)));if(!unlocked(n))b.disabled=true;b.addEventListener('click',()=>station(n));list.append(b);});
+  Object.keys(STATIONS).forEach(k=>{const n=+k,st=STATIONS[n];if(st.zusatz)list.append(h('p',{class:'muted',style:'margin:14px 0 4px'},'Zusatz (freiwillig, ab Station 3 freigeschaltet, zählt nicht für den Abschluss-Check):'));const b=h('button',{class:'stn'+(state[n]?' ok':''),type:'button'},h('div',{class:'nr'},state[n]?'✓':(st.zusatz?'Z':String(n))),h('div',{},h('div',{class:'t'},st.title),h('div',{class:'s'},st.komp)));if(!unlocked(n))b.disabled=true;b.addEventListener('click',()=>station(n));list.append(b);});
   app.append(list);
   if(TEACHER)app.append(teacherCard());
   if(hasData)app.append(h('div',{class:'card'},h('p',{class:'muted',style:'margin-top:0'},'Arbeitest du an einem geteilten iPad? Dann setze am Ende deinen Fortschritt zurück, damit die nächste Person von vorne beginnt.'),
@@ -1676,7 +2033,7 @@ function teacherCard(){
 }
 function station(n){
   const st=STATIONS[n];app.innerHTML='';
-  app.append(h('div',{class:'card'},h('h2',{},`Station ${n}: ${st.title}`),h('p',{class:'muted',html:'<b>Ziel:</b> '+st.komp})));
+  app.append(h('div',{class:'card'},h('h2',{},st.zusatz?st.title:`Station ${n}: ${st.title}`),h('p',{class:'muted',html:'<b>Ziel:</b> '+st.komp})));
   const list=h('div');app.append(list);
   state.prog=state.prog||{};
   // bereits erledigte Schritte (nach Neuladen) zusammengeklappt anzeigen, nicht noch einmal bearbeiten müssen
@@ -1701,9 +2058,9 @@ function merkheft(){
   app.append(h('div',{class:'card'},h('h2',{},'📒 Merkheft-Einträge'),h('p',{class:'muted'},'Hier findest du alle Merkkästen der geschafften Stationen zum Nachlesen oder Ausdrucken.')));
   const ns=Object.keys(MERK).filter(k=>state[k]||TEACHER);
   if(!ns.length)app.append(h('div',{class:'card'},'Noch keine Einträge – schließe zuerst eine Station ab.'));
-  ns.forEach(k=>app.append(h('div',{class:'merk'},h('span',{class:'tag'},`Station ${k}`),h('div',{html:MERK[k].html}))));
+  ns.forEach(k=>app.append(h('div',{class:'merk'},h('span',{class:'tag'},STATIONS[k].zusatz?'Zusatz':`Station ${k}`),h('div',{html:MERK[k].html}))));
   if(ns.length)app.append(h('button',{class:'btn',type:'button',onclick:()=>{
-    const pa=document.getElementById('printArea');pa.innerHTML='<h2>Merkheft-Einträge · Rechtwinklige Dreiecke</h2>'+ns.map(k=>`<div class="merk"><div class="tag">Station ${k}: ${MERK[k].title}</div>${MERK[k].html}</div>`).join('');
+    const pa=document.getElementById('printArea');pa.innerHTML='<h2>Merkheft-Einträge · Rechtwinklige Dreiecke</h2>'+ns.map(k=>`<div class="merk"><div class="tag">${STATIONS[k].zusatz?'Zusatz':'Station '+k}: ${MERK[k].title}</div>${MERK[k].html}</div>`).join('');
     document.body.classList.add('printing');const end=()=>document.body.classList.remove('printing');window.addEventListener('afterprint',end,{once:true});window.print();setTimeout(end,4000);
   }},'🖨 Drucken / Als PDF sichern'));
   window.scrollTo(0,0);
