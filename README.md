@@ -20,15 +20,16 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 
 | Nr. | Station | Stand |
 |---|---|---|
-| 1 | Den Satz des Pythagoras entdecken | Beta – in Prüfung |
-| 2 | Seitenlängen berechnen (Hypotenuse, Kathete, Einheiten, Lage des rechten Winkels) | Beta – in Prüfung |
-| 3 | Umkehrung: Rechtwinkligkeit prüfen | Beta – in Prüfung |
-| 4 | Satz des Pythagoras in ebenen Figuren | Beta – in Prüfung |
+| 1 | Den Satz des Pythagoras entdecken und begründen (Ergänzungsfigur) | Beta – in Prüfung |
+| 2 | Seitenlängen berechnen (Hypotenuse, Kathete, Einheiten, Lage des rechten Winkels, nur positive Lösung) | Beta – in Prüfung |
+| 3 | Umkehrung: Rechtwinkligkeit prüfen (spitz-/stumpfwinklig, pythagoräische Zahlentripel) | Beta – in Prüfung |
+| 4 | Satz des Pythagoras in ebenen Figuren (Rechteck, Quadrat d = a√2, gleichschenkliges und gleichseitiges Dreieck, Raute, Drachenviereck, Trapez) | Beta – in Prüfung |
 | 5 | Funktionale Abhängigkeiten und Extremwerte (Strecken und Flächen mit wandernden Punkten, Auffrischung quadratische Ergänzung) | Beta – in Prüfung |
-| 6 | Pythagoras in Körpern (Quader, Würfel, gerade quadratische Pyramide) | Beta – in Prüfung |
-| 7 | Koordinatensystem: Strecken als Betrag eines Vektors, Rechtwinkligkeit von Dreiecken prüfen | Beta – in Prüfung |
-| 8 | Streckenlänge in Abhängigkeit von x (Punkte P<sub>n</sub> auf einer Geraden, fester Punkt Q, kürzeste Strecke per quadratischer Ergänzung) | Beta – in Prüfung |
+| 6 | Pythagoras in Körpern (Quader, Würfel, gerade Pyramide mit quadratischer und rechteckiger Grundfläche, Zylinder) | Beta – in Prüfung |
+| 7 | Koordinatensystem: Betrag eines Vektors, Streckenlängen, Rechtwinkligkeit und Gleichschenkligkeit prüfen, besondere Vierecke nachweisen, Punkt auf der x-Achse | Beta – in Prüfung |
+| 8 | Streckenlänge in Abhängigkeit von x (Punkte P<sub>n</sub> auf einer Geraden, kürzeste Strecke per quadratischer Ergänzung, gleichschenklige Dreiecke in einer Schar) | Beta – in Prüfung |
 | 9 | Abschluss-Check | Beta – in Prüfung |
+| Z | Zusatz: Kathetensatz und Höhensatz (freiwillig, ab Station 3 freigeschaltet, nicht Teil des Abschluss-Checks) | Beta – in Prüfung |
 
 **Abschluss-Check (Station 9):** 12 zufällig erzeugte Aufgaben aus den Stationen 1–8 mit insgesamt 18 Punkten (je 1 oder 2 Punkte), ein Versuch pro Aufgabe, die Rückmeldung kommt erst in der Auswertung. Bestanden ab 9 Punkten (50 %). Die Auswertung zeigt die Punkte je Station mit Wiederholungsempfehlung und alle Aufgaben mit Lösungsweg. Ab 9 Punkten erscheint die Check-in-Karte mit Kontrollcode, sonst kann der Check mit neuen Aufgaben wiederholt werden. Keine Note.
 
@@ -38,7 +39,21 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 
 - [ ] **Prüfung und Freigabe** aller Stationen 1–9 (fachliche Richtigkeit, Lehrplanbezug LehrplanPLUS M9, Niveau der Aufgaben)
 - [ ] **Erklärvideos:** Für die Stationen 1–8 sind noch keine passenden Erklärvideos eingetragen (in `VIDEOS` steht überall `videoId:null`). Aktuell erscheint nur ein Button mit einer YouTube-Suche. Passende Videos müssen ausgewählt, geprüft und eingetragen werden (siehe „Erklärvideos einbinden“).
-- [ ] Sinus, Kosinus und Tangens (Lehrplan)
+- [ ] Lehrplanbezug der Zusatzstation (Kathetensatz und Höhensatz) klären: im Buch auf einer Vertiefungsseite (S. 89), nicht im Grundwissen S. 99.
+- [ ] Nicht umgesetzt (Vertiefungs- und Anwendungsseiten des Buchs): Wurzelspirale und Kunst (S. 90), Sichtweite zum Horizont (S. 91), regelmäßiges Sechseck und Faltaufgaben (S. 92), Rauten-Scharen mit Geometrieprogramm (S. 97).
+
+Sinus, Kosinus und Tangens gehören nicht zu diesem Kapitel (Buch S. 80–99) und sind deshalb hier nicht vorgesehen.
+
+## Abgleich mit dem Schulbuch (Kapitel 5, S. 80–99)
+
+Der Lernpfad wurde mit dem Kapitel abgeglichen. Reihenfolge und Kernthemen entsprechen dem Buch: Satz und Umkehrung → ebene Figuren → funktionale Abhängigkeiten → Raum → Koordinatensystem → funktionale Abhängigkeiten im Koordinatensystem. Die fünf Kompetenzen der Grundwissen-Seite (S. 99) entsprechen den Bereichen des Abschluss-Checks. Ergänzt bzw. angeglichen wurden:
+
+- Begründung des Satzes mit der Ergänzungsfigur (Station 1), Hinweis „keine negative Lösung“ (Station 2), spitz-/stumpfwinklige Dreiecke und Zahlentripel (Station 3)
+- gleichseitiges Dreieck, Drachenviereck, Quadratdiagonale (Station 4); Pyramide mit rechteckiger Grundfläche und Zylinder (Station 6); Betrag eines Vektors, Gleichschenkligkeit, besondere Vierecke, Punkt auf der x-Achse (Station 7); gleichschenklige Dreiecke in einer Schar (Station 8); Zusatzstation Kathetensatz und Höhensatz
+- Schreibweise: Längen im Koordinatensystem in LE (Quadrate in LE²), Flächen in FE; Pyramide mit E (Mitte von AB) und F (Mitte von BC), Seitenflächenhöhen h<sub>a</sub> und h<sub>b</sub>; Einheiten werden in den Merkkästen in jeder Rechenzeile mitgeschrieben.
+- Die Diagonalen im Quader heißen wie in der Quader-Tabelle des Buchs (S. 93 Nr. 3): e = Flächendiagonale der Grundfläche, d = Raumdiagonale. Das Buch verwendet beim Würfel (S. 93 Nr. 1) die umgekehrte Bezeichnung.
+
+**Hinweis:** In Station 1, 4, 6 und 7 sind neue Schritte hinzugekommen. Auf Geräten mit gespeichertem Fortschritt aus einer älteren Version kann die Station deshalb an einem anderen Schritt fortsetzen. Im Zweifel „Fortschritt zurücksetzen“.
 
 ## Nutzung
 
@@ -86,6 +101,7 @@ Die Schreibweisen folgen dem [Zeichenkatalog des ISB für Mathematik an der Real
 - Winkelmaße α, β, γ; Umfang u; Flächeninhalt A
 - Vektoren mit Pfeil darüber, Koordinaten als Spaltenvektor; Punkte P(x | y)
 - wandernde Punkte mit Index n (P<sub>n</sub>, Q<sub>n</sub>); Schrägbilder mit Verzerrungswinkel 45° und Verkürzungsfaktor ½, verdeckte Kanten gestrichelt
+- Längen im Koordinatensystem in Längeneinheiten (LE), Flächeninhalte in Flächeneinheiten (FE)
 
 
 Alle Aufgaben, Merkkästen und Texte sind eigene Formulierungen. Es sind keine Inhalte aus Schulbüchern oder Leistungsnachweisen übernommen.
