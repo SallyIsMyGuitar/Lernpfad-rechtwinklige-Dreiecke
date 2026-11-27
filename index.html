@@ -95,14 +95,15 @@ details summary{cursor:pointer}
 // Erklärvideos: videoId (YouTube) eintragen -> wird datenschutzfreundlich (youtube-nocookie) eingebettet.
 // Ohne videoId erscheint ein Button mit YouTube-Suche zum Suchbegriff.
 const VIDEOS={
-  s1:{videoId:null,query:'Satz des Pythagoras Herleitung Erklärung Katheten Hypotenuse'},
-  s2:{videoId:null,query:'Satz des Pythagoras Hypotenuse und Kathete berechnen'},
-  s3:{videoId:null,query:'Umkehrung Satz des Pythagoras rechtwinklig nachweisen'},
-  s4:{videoId:null,query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'},
-  s5:{videoId:null,query:'Extremwert quadratische Ergänzung Streckenlänge Satz des Pythagoras'},
-  s6:{videoId:null,query:'Raumdiagonale Quader Pyramide Satz des Pythagoras'},
-  s7:{videoId:null,query:'Länge einer Strecke Koordinatensystem Betrag Vektor Pythagoras'},
-  s8:{videoId:null,query:'Streckenlänge in Abhängigkeit von x Gerade minimale Länge quadratische Ergänzung'}
+  // Vorschläge aus der YouTube-Suche, vor dem Unterrichtseinsatz von der Lehrkraft prüfen. Alternative jeweils im Kommentar.
+  s1:{videoId:'-R0GdIPE7ko',query:'Satz des Pythagoras Herleitung Erklärung Katheten Hypotenuse'}, // Alt.: AXS5OfzmY5s
+  s2:{videoId:'gPWw5y4smhw',query:'Satz des Pythagoras Hypotenuse und Kathete berechnen'}, // Alt.: 66LCWQlzM_g
+  s3:{videoId:'vvnCaAW_9Tc',query:'Umkehrung Satz des Pythagoras rechtwinklig nachweisen'}, // Alt.: VvmSddhPykY
+  s4:{videoId:'hnVrwahmekk',query:'Satz des Pythagoras gleichschenkliges Dreieck Raute Höhe'}, // Alt.: QgUUlTbyUKQ
+  s5:{videoId:'KJF_wdryWMI',query:'Extremwert quadratische Ergänzung Streckenlänge Satz des Pythagoras'}, // Alt.: GuUwKjE76B0
+  s6:{videoId:'6NsbJYZolUk',query:'Raumdiagonale Quader Pyramide Satz des Pythagoras'}, // Alt.: V2ln5UAbvUw
+  s7:{videoId:'aTHSNqj5NNM',query:'Länge einer Strecke Koordinatensystem Betrag Vektor Pythagoras'}, // Alt.: WXT2eBFFtu4
+  s8:{videoId:'ys4pdSN6_sk',query:'Streckenlänge in Abhängigkeit von x Gerade minimale Länge quadratische Ergänzung'} // Alt.: EBAOSt9zTJs
 };
 const KEY='lernpfad-rechtwinklige-dreiecke-v1';
 const TEACHER=new URLSearchParams(location.search).has('lehrer');
@@ -395,7 +396,7 @@ function nextBtn(body,label,fn){const b=h('button',{class:'btn',type:'button'},l
 function videoBlock(body,key,text){
   const v=VIDEOS[key];
   const box=h('div',{class:'info'},h('div',{html:text}));
-  if(v.videoId){box.append(h('div',{html:`<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px" src="https://www.youtube-nocookie.com/embed/${v.videoId}" allowfullscreen loading="lazy"></iframe>`}));}
+  if(v.videoId){box.append(h('div',{html:`<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:10px;margin-top:8px" src="https://www.youtube-nocookie.com/embed/${v.videoId}" allowfullscreen loading="lazy"></iframe>`}));box.append(h('a',{style:'display:inline-block;margin-top:6px;font-size:.9em',target:'_blank',rel:'noopener',href:'https://www.youtube.com/results?search_query='+encodeURIComponent(v.query)},'Weitere Erklärvideos auf YouTube suchen'));}
   else box.append(h('a',{class:'btn',style:'display:inline-block;text-decoration:none;margin-top:8px',target:'_blank',rel:'noopener',href:'https://www.youtube.com/results?search_query='+encodeURIComponent(v.query)},'▶ Erklärvideo auf YouTube suchen'));
   body.append(box);
 }

@@ -38,7 +38,18 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 ### Noch offen
 
 - [ ] **Prüfung und Freigabe** aller Stationen 1–9 (fachliche Richtigkeit, Lehrplanbezug LehrplanPLUS M9, Niveau der Aufgaben)
-- [ ] **Erklärvideos:** Für die Stationen 1–8 sind noch keine passenden Erklärvideos eingetragen (in `VIDEOS` steht überall `videoId:null`). Aktuell erscheint nur ein Button mit einer YouTube-Suche. Passende Videos müssen ausgewählt, geprüft und eingetragen werden (siehe „Erklärvideos einbinden“).
+- [ ] **Erklärvideos prüfen:** Für die Stationen 1–8 sind Videos aus der YouTube-Suche eingetragen (je eine Alternative als Kommentar in `VIDEOS`). Sie sind noch **nicht angesehen und geprüft**. Inhaltliche Lücken: Station 5 behandelt nur die quadratische Ergänzung (ohne Pythagoras), Station 6 nur Quader und Würfel (ohne Pyramide und Zylinder).
+
+  | Station | Video-ID | Alternative |
+  |---|---|---|
+  | 1 | `-R0GdIPE7ko` (Ergänzungsbeweis) | `AXS5OfzmY5s` |
+  | 2 | `gPWw5y4smhw` (Hypotenuse und Kathete berechnen) | `66LCWQlzM_g` |
+  | 3 | `vvnCaAW_9Tc` (Rechtwinkligkeit prüfen) | `VvmSddhPykY` |
+  | 4 | `hnVrwahmekk` (gleichschenkliges Dreieck) | `QgUUlTbyUKQ` |
+  | 5 | `KJF_wdryWMI` (Extremwert mit quadratischer Ergänzung) | `GuUwKjE76B0` |
+  | 6 | `6NsbJYZolUk` (Flächen- und Raumdiagonale) | `V2ln5UAbvUw` |
+  | 7 | `aTHSNqj5NNM` (Längen im Koordinatensystem) | `WXT2eBFFtu4` |
+  | 8 | `ys4pdSN6_sk` (Streckenlänge in Abhängigkeit von x) | `EBAOSt9zTJs` |
 - [ ] Lehrplanbezug der Zusatzstation (Kathetensatz und Höhensatz) klären: im Buch auf einer Vertiefungsseite (S. 89), nicht im Grundwissen S. 99.
 - [ ] Nicht umgesetzt (Vertiefungs- und Anwendungsseiten des Buchs): Wurzelspirale und Kunst (S. 90), Sichtweite zum Horizont (S. 91), regelmäßiges Sechseck und Faltaufgaben (S. 92), Rauten-Scharen mit Geometrieprogramm (S. 97).
 
@@ -69,7 +80,7 @@ Der Lernpfad wurde mit dem Kapitel abgeglichen. Reihenfolge und Kernthemen entsp
 
 ## Erklärvideos einbinden
 
-Ganz oben im Skript der Datei steht die Konfiguration `VIDEOS`. Pro Station kann eine YouTube-Video-ID eingetragen werden. Das Video wird dann datenschutzfreundlich (`youtube-nocookie.com`) eingebettet. Ohne ID erscheint ein Button mit einer YouTube-Suche zum angegebenen Suchbegriff.
+Ganz oben im Skript der Datei steht die Konfiguration `VIDEOS`. Pro Station kann eine YouTube-Video-ID eingetragen werden. Das Video wird dann datenschutzfreundlich (`youtube-nocookie.com`) eingebettet. Unter dem Video steht ein Link zur YouTube-Suche mit dem angegebenen Suchbegriff. Ohne ID erscheint nur ein Button mit dieser Suche.
 
 ```js
 const VIDEOS={
