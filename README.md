@@ -16,6 +16,14 @@ Die Seite besteht aus **einer einzigen Datei** (`index.html`) ohne Abhängigkeit
 
 Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen, Drucken oder als PDF sichern.
 
+## Zusatzaufgaben
+
+52 freiwillige Aufgaben (4–6 je Station, dazu „Gemischte Aufgaben“ und Aufgaben zur Zusatzstation), jeweils mit Niveau (🟢 leicht, 🟡 standard, 🔴 plus). Unter jeder Aufgabe lassen sich ein **Tipp** und die **Schritt-für-Schritt-Lösung** getrennt aufklappen. Es gibt keine Eingabe und keine automatische Prüfung: Die Schülerinnen und Schüler rechnen im Heft und vergleichen selbst. Die Aufgaben zählen nicht für Exit-Ticket, Freischaltung oder Abschluss-Check.
+
+- **In jeder Station:** zugeklappter Abschnitt „🧩 Zusatzaufgaben“ unter den Schritten, sichtbar sobald die Station freigeschaltet ist.
+- **Im Kopf der Seite:** Button „🧩 Zusatzaufgaben“ mit allen Aufgaben der freigeschalteten Stationen, druckbar bzw. als PDF (wahlweise mit Tipps und Lösungen).
+- Enthalten sind auch Vertiefungen wie Wurzelspirale, Sichtweite zum Horizont, regelmäßiges Sechseck und 16:9-Bildschirme.
+
 ## Stationen
 
 | Nr. | Station | Stand |
@@ -40,7 +48,7 @@ Im Kopf der Seite gibt es eine Übersicht aller Merkheft-Einträge zum Nachlesen
 - [ ] **Prüfung und Freigabe** aller Stationen 1–9 (fachliche Richtigkeit, Lehrplanbezug LehrplanPLUS M9, Niveau der Aufgaben)
 - [ ] **Erklärvideos:** Für die Stationen 1–8 sind noch keine passenden Erklärvideos eingetragen (in `VIDEOS` steht überall `videoId:null`). Aktuell erscheint nur ein Button mit einer YouTube-Suche. Passende Videos müssen ausgewählt, geprüft und eingetragen werden (siehe „Erklärvideos einbinden“).
 - [ ] Lehrplanbezug der Zusatzstation (Kathetensatz und Höhensatz) klären: im Buch auf einer Vertiefungsseite (S. 89), nicht im Grundwissen S. 99.
-- [ ] Nicht umgesetzt (Vertiefungs- und Anwendungsseiten des Buchs): Wurzelspirale und Kunst (S. 90), Sichtweite zum Horizont (S. 91), regelmäßiges Sechseck und Faltaufgaben (S. 92), Rauten-Scharen mit Geometrieprogramm (S. 97).
+- [ ] Nicht umgesetzt (Vertiefungsseiten des Buchs): Kunst-Aufgaben (S. 90), Faltaufgaben (S. 92), Rauten-Scharen mit Geometrieprogramm (S. 97). Wurzelspirale, Horizont, Sechseck und Rauten als Quadrat sind als Zusatzaufgaben enthalten.
 
 Sinus, Kosinus und Tangens gehören nicht zu diesem Kapitel (Buch S. 80–99) und sind deshalb hier nicht vorgesehen.
 

@@ -70,13 +70,17 @@ svg .hit:hover{stroke:rgba(37,99,235,.35)}
 .cv{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap}.cvp{font-size:2.1em;font-weight:200;line-height:1;transform:scaleX(.65)}.cvi{display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;font-size:.9em;padding:0 1px}
 button.opt.sel{border-color:var(--blue);background:#eef4ff;opacity:1}
 details summary{cursor:pointer}
+.xbox>summary{font-size:17px;padding:2px 0}
+.xa{border-top:1px dashed var(--line);padding:10px 0 12px}
+.xa .xh{margin:0 0 4px}.xniv{font-size:13px;color:var(--mut);margin-left:6px}
+.xa details{margin-top:6px}.xa summary{color:var(--blue);font-weight:600;font-size:15px}
 #printArea{display:none}
 @media print{
  body.printing header.top,body.printing main{display:none}
  body.printing #printArea{display:block}
  body.printing{background:#fff;font-size:14px}
  #printArea h2{margin:14px 0 6px}
- .merk{break-inside:avoid}
+ .merk,.xa{break-inside:avoid}
 }
 </style>
 </head>
@@ -85,6 +89,7 @@ details summary{cursor:pointer}
   <h1>Lernpfad · Rechtwinklige Dreiecke</h1>
   <button id="bHome" type="button">Übersicht</button>
   <button id="bMerk" type="button">📒 Merkheft-Einträge</button>
+  <button id="bExtra" type="button">🧩 Zusatzaufgaben</button>
 </header>
 <main id="app"></main>
 <div id="printArea"></div>
@@ -1999,6 +2004,213 @@ const STATIONS={
  ]}
 };
 
+/* ====== Zusatzaufgaben (freiwillig, ohne Prüfung; Tipp und Lösung zum Aufklappen) ====== */
+const EXTRA={
+1:[
+ {n:'leicht',q:`Im Dreieck KLM liegt der rechte Winkel bei L. Gib die Hypotenuse an und formuliere den Satz des Pythagoras für dieses Dreieck.`,
+  tip:`Die Hypotenuse liegt dem rechten Winkel gegenüber, also dem Punkt L.`,
+  sol:`<div>Hypotenuse: ${ov('KM')} (gegenüber von L)</div><div>Katheten: ${ov('KL')} und ${ov('LM')}</div><div><b>${len('KL')}² + ${len('LM')}² = ${len('KM')}²</b></div>`},
+ {n:'leicht',q:`Die Quadrate über den Katheten eines rechtwinkligen Dreiecks haben die Flächeninhalte 12 cm² und 13 cm². Wie groß ist der Flächeninhalt des Quadrats über der Hypotenuse? Wie lang ist die Hypotenuse?`,
+  tip:`Die beiden Kathetenquadrate zusammen sind so groß wie das Hypotenusenquadrat.`,
+  sol:`<div>c² = 12 cm² + 13 cm² = <b>25 cm²</b></div><div>c = <b>5 cm</b></div>`},
+ {n:'standard',q:`Das Quadrat über der Hypotenuse hat den Flächeninhalt 50 cm², das Quadrat über einer Kathete 18 cm². Berechne den Flächeninhalt des dritten Quadrats und die Längen beider Katheten (zwei Nachkommastellen).`,
+  tip:`Kathetenquadrat = Hypotenusenquadrat − anderes Kathetenquadrat. Die Seitenlänge eines Quadrats ist die Wurzel aus dem Flächeninhalt.`,
+  sol:`<div>b² = 50 cm² − 18 cm² = <b>32 cm²</b></div><div>a = √18 cm ≈ <b>4,24 cm</b>; b = √32 cm ≈ <b>5,66 cm</b></div>`},
+ {n:'standard',q:`Schneide Quadrate mit den Seitenlängen 1,2 cm; 1,5 cm; 1,6 cm; 2 cm und 2,5 cm aus. Welche drei Quadrate kannst du so aneinanderlegen, dass sie ein rechtwinkliges Dreieck einschließen? Begründe durch Rechnung.`,
+  tip:`Berechne alle Flächeninhalte. Suche zwei Quadrate, die zusammen so groß sind wie ein drittes.`,
+  sol:`<div>Flächeninhalte: 1,44 cm²; 2,25 cm²; 2,56 cm²; 4 cm²; 6,25 cm²</div><div>1,44 cm² + 2,56 cm² = 4 cm² ⇒ <b>1,2 cm; 1,6 cm; 2 cm</b></div><div>2,25 cm² + 4 cm² = 6,25 cm² ⇒ <b>1,5 cm; 2 cm; 2,5 cm</b></div><div>Alle anderen Kombinationen ergeben keine Gleichheit.</div>`},
+ {n:'plus',q:`Vier gleiche rechtwinklige Dreiecke mit den Katheten a und b (a &lt; b) und der Hypotenuse c werden so in ein Quadrat mit der Seitenlänge c gelegt, dass jede Hypotenuse eine Quadratseite bildet. In der Mitte bleibt ein kleines Quadrat frei.<br>a) Fertige eine Skizze an. Wie lang ist die Seite des kleinen Quadrats?<br>b) Zeige mit dieser Figur, dass c² = a² + b² gilt.`,
+  tip:`Entlang einer Seite des kleinen Quadrats liegen die lange Kathete b eines Dreiecks und die kurze Kathete a des nächsten. Großes Quadrat = vier Dreiecke + kleines Quadrat.`,
+  sol:`<div>a) Seitenlänge des kleinen Quadrats: <b>b − a</b></div><div>b) c² = 4 · ${HALF} · a · b + (b − a)²</div><div>c² = 2ab + b² − 2ab + a²</div><div><b>c² = a² + b²</b></div>`}
+],
+2:[
+ {n:'leicht',q:`Im Dreieck ABC ist γ = 90°, a = 9 cm und b = 40 cm. Berechne c.`,
+  tip:`Bei γ = 90° ist c die Hypotenuse: c² = a² + b².`,
+  sol:`<div>c² = (9 cm)² + (40 cm)² = 81 cm² + 1600 cm² = 1681 cm²</div><div><b>c = 41 cm</b></div>`},
+ {n:'leicht',q:`Eine 5,0 m lange Leiter lehnt an einer senkrechten Hauswand. Ihr Fuß steht 1,4 m von der Wand entfernt. In welcher Höhe berührt die Leiter die Wand?`,
+  tip:`Skizze: Wand und Boden bilden den rechten Winkel, die Leiter ist die Hypotenuse.`,
+  sol:`<div>h² = (5,0 m)² − (1,4 m)² = 25 m² − 1,96 m² = 23,04 m²</div><div><b>h = 4,8 m</b></div><div>Die Leiter berührt die Wand in 4,8 m Höhe.</div>`},
+ {n:'standard',q:`Im Dreieck ABC ist β = 90°, a = 0,48 m und c = 14 cm. Berechne die Länge der dritten Seite.`,
+  tip:`Bei β = 90° liegt die Hypotenuse gegenüber von B – das ist b. Rechne zuerst alle Längen in cm um.`,
+  sol:`<div>Hypotenuse ist b; a = 0,48 m = 48 cm</div><div>b² = (48 cm)² + (14 cm)² = 2304 cm² + 196 cm² = 2500 cm²</div><div><b>b = 50 cm</b></div>`},
+ {n:'standard',q:`Ein Schrank ist 2,20 m hoch und 55 cm tief. Er liegt auf dem Rücken und soll im Zimmer aufgerichtet werden. Das Zimmer ist 2,30 m hoch. Kann der Schrank aufgestellt werden, ohne ihn auseinanderzubauen?`,
+  tip:`Beim Aufrichten dreht sich der Schrank um eine untere Kante. Entscheidend ist die Diagonale der Seitenwand.`,
+  sol:`<div>d² = (220 cm)² + (55 cm)² = 48 400 cm² + 3025 cm² = 51 425 cm²</div><div>d ≈ 226,8 cm</div><div>226,8 cm &lt; 230 cm ⇒ <b>Der Schrank kann aufgestellt werden</b> (es bleiben nur etwa 3 cm Platz).</div>`},
+ {n:'plus',q:`Ein Fernseher im Format 16 : 9 hat eine Bildschirmdiagonale von 140 cm. Berechne die Breite und die Höhe des Bildschirms (eine Nachkommastelle).`,
+  tip:`Setze Breite = 16k und Höhe = 9k. Dann gilt (16k)² + (9k)² = (140 cm)².`,
+  sol:`<div>(16k)² + (9k)² = (140 cm)²</div><div>256k² + 81k² = 19 600 cm² ⇒ 337k² = 19 600 cm²</div><div>k² ≈ 58,16 cm² ⇒ k ≈ 7,626 cm</div><div>Breite = 16k ≈ <b>122,0 cm</b>; Höhe = 9k ≈ <b>68,6 cm</b></div>`}
+],
+3:[
+ {n:'leicht',q:`Ein Dreieck hat die Seitenlängen 7 cm, 24 cm und 25 cm. Ist es rechtwinklig?`,
+  tip:`Die längste Seite ist 25 cm. Vergleiche 7² + 24² mit 25².`,
+  sol:`<div>(7 cm)² + (24 cm)² = 49 cm² + 576 cm² = 625 cm²</div><div>(25 cm)² = 625 cm²</div><div><b>Gleich ⇒ das Dreieck ist rechtwinklig</b>; der rechte Winkel liegt gegenüber der 25 cm langen Seite.</div>`},
+ {n:'leicht',q:`Ein Dreieck hat die Seitenlängen 6 cm, 9 cm und 11 cm. Ist es rechtwinklig, spitzwinklig oder stumpfwinklig?`,
+  tip:`Vergleiche die Summe der Quadrate der beiden kürzeren Seiten mit dem Quadrat der längsten Seite.`,
+  sol:`<div>(6 cm)² + (9 cm)² = 36 cm² + 81 cm² = 117 cm²</div><div>(11 cm)² = 121 cm²</div><div>117 cm² &lt; 121 cm² ⇒ <b>nicht rechtwinklig, sondern stumpfwinklig</b></div>`},
+ {n:'standard',q:`Prüfe, ob das Dreieck mit den Seitenlängen 2,4 dm; 70 mm und 25 cm rechtwinklig ist.`,
+  tip:`Rechne zuerst alle Längen in dieselbe Einheit um, z. B. in cm.`,
+  sol:`<div>2,4 dm = 24 cm; 70 mm = 7 cm</div><div>(7 cm)² + (24 cm)² = 49 cm² + 576 cm² = 625 cm² = (25 cm)²</div><div><b>Das Dreieck ist rechtwinklig.</b></div>`},
+ {n:'standard',q:`Ein Seil ist durch Knoten in 30 gleich lange Abschnitte geteilt. Es soll so zu einem Dreieck gespannt werden, dass ein rechter Winkel entsteht. Wie viele Abschnitte muss jede Seite haben?`,
+  tip:`Gesucht ist ein pythagoräisches Zahlentripel mit der Summe 30. Probiere bekannte Tripel aus.`,
+  sol:`<div>(3; 4; 5): Summe 12 – Vielfache haben die Summe 24, 36, … – passt nicht.</div><div>(5; 12; 13): 5 + 12 + 13 = 30 ✓; 5² + 12² = 25 + 144 = 169 = 13²</div><div><b>5, 12 und 13 Abschnitte</b></div>`},
+ {n:'plus',q:`Ein Dreieck hat die Seitenlängen x cm, (x + 7) cm und (x + 8) cm. Für welchen Wert von x ist es rechtwinklig?`,
+  tip:`Die längste Seite ist (x + 8) cm. Stelle die Gleichung x² + (x + 7)² = (x + 8)² auf und löse sie.`,
+  sol:`<div>x² + (x + 7)² = (x + 8)²</div><div>x² + x² + 14x + 49 = x² + 16x + 64</div><div>x² − 2x − 15 = 0 ⇒ (x − 5)(x + 3) = 0</div><div>x = 5 (x = −3 entfällt, da Längen positiv sind)</div><div><b>x = 5</b>: Seiten 5 cm, 12 cm, 13 cm</div>`}
+],
+4:[
+ {n:'leicht',q:`Ein Rechteck ist 24 cm lang und 7 cm breit. Berechne die Länge der Diagonale.`,
+  tip:`Die Diagonale ist die Hypotenuse eines rechtwinkligen Dreiecks mit Länge und Breite als Katheten.`,
+  sol:`<div>d² = (24 cm)² + (7 cm)² = 576 cm² + 49 cm² = 625 cm²</div><div><b>d = 25 cm</b></div>`},
+ {n:'leicht',q:`Eine Raute hat die Diagonalen e = 18 cm und f = 24 cm. Berechne die Seitenlänge, den Umfang und den Flächeninhalt.`,
+  tip:`Die halben Diagonalen sind die Katheten. Flächeninhalt der Raute: A = ½ · e · f.`,
+  sol:`<div>a² = (9 cm)² + (12 cm)² = 81 cm² + 144 cm² = 225 cm² ⇒ <b>a = 15 cm</b></div><div>u = 4 · 15 cm = <b>60 cm</b></div><div>A = ${HALF} · 18 cm · 24 cm = <b>216 cm²</b></div>`},
+ {n:'standard',q:`Berechne die Höhe und den Flächeninhalt eines gleichseitigen Dreiecks mit der Seitenlänge 10 cm (zwei Nachkommastellen).`,
+  tip:`Die Höhe halbiert die Grundseite: h² = (10 cm)² − (5 cm)². Oder: h = ${fr('a','2')} · √3.`,
+  sol:`<div>h² = (10 cm)² − (5 cm)² = 75 cm² ⇒ h = 5 · √3 cm ≈ <b>8,66 cm</b></div><div>A = ${HALF} · 10 cm · 5√3 cm = 25 · √3 cm² ≈ <b>43,30 cm²</b></div>`},
+ {n:'standard',q:`Ein gleichschenkliges Trapez hat die parallelen Seiten 30 cm und 14 cm. Die Schenkel sind 17 cm lang. Berechne die Höhe und den Flächeninhalt.`,
+  tip:`Zeichne die Höhen ein. An jeder Seite entsteht ein rechtwinkliges Dreieck mit der waagrechten Kathete (30 cm − 14 cm) : 2.`,
+  sol:`<div>Waagrechte Kathete: (30 cm − 14 cm) : 2 = 8 cm</div><div>h² = (17 cm)² − (8 cm)² = 289 cm² − 64 cm² = 225 cm² ⇒ <b>h = 15 cm</b></div><div>A = ${HALF} · (30 cm + 14 cm) · 15 cm = <b>330 cm²</b></div>`},
+ {n:'plus',q:`Im Drachenviereck ABCD mit der Symmetrieachse AC ist ${len('AB')} = 10 cm, ${len('BC')} = 17 cm und die Diagonale ${len('BD')} = 16 cm. Berechne die Länge der Diagonale ${ov('AC')}, den Flächeninhalt und den Umfang.`,
+  tip:`E ist der Schnittpunkt der Diagonalen. ${ov('AC')} halbiert ${ov('BD')} senkrecht: ${len('BE')} = 8 cm. Berechne ${len('AE')} und ${len('EC')} getrennt.`,
+  sol:`<div>${len('AE')}² = (10 cm)² − (8 cm)² = 36 cm² ⇒ ${len('AE')} = 6 cm</div><div>${len('EC')}² = (17 cm)² − (8 cm)² = 225 cm² ⇒ ${len('EC')} = 15 cm</div><div>${len('AC')} = 6 cm + 15 cm = <b>21 cm</b></div><div>A = ${HALF} · 21 cm · 16 cm = <b>168 cm²</b>; u = 2 · (10 cm + 17 cm) = <b>54 cm</b></div>`},
+ {n:'plus',q:`Ein regelmäßiges Sechseck hat die Seitenlänge 4 cm. Berechne seinen Flächeninhalt (zwei Nachkommastellen).`,
+  tip:`Verbinde den Mittelpunkt mit allen Ecken: Es entstehen sechs gleichseitige Dreiecke mit der Seitenlänge 4 cm.`,
+  sol:`<div>Höhe eines Teildreiecks: h² = (4 cm)² − (2 cm)² = 12 cm² ⇒ h = 2√3 cm ≈ 3,46 cm</div><div>A<sub>Dreieck</sub> = ${HALF} · 4 cm · 2√3 cm = 4√3 cm²</div><div>A = 6 · 4√3 cm² = 24√3 cm² ≈ <b>41,57 cm²</b></div>`}
+],
+5:[
+ {n:'leicht',q:`Im Quadrat ABCD mit der Seitenlänge 6 cm liegen Punkte P<sub>n</sub> auf ${ov('AB')} und Q<sub>n</sub> auf ${ov('BC')} mit ${len('AP<sub>n</sub>')} = ${len('BQ<sub>n</sub>')} = x cm.<br>a) Gib ${len('P<sub>n</sub>B')} in Abhängigkeit von x an. b) Welche Werte darf x annehmen? c) Berechne ${len('P<sub>1</sub>Q<sub>1</sub>')} für x = 2 (zwei Nachkommastellen).`,
+  tip:`Das Dreieck P<sub>n</sub>BQ<sub>n</sub> hat bei B einen rechten Winkel.`,
+  sol:`<div>a) ${len('P<sub>n</sub>B')} = (6 − x) cm</div><div>b) 0 &lt; x &lt; 6</div><div>c) ${len('P<sub>1</sub>Q<sub>1</sub>')}² = [(6 − 2)² + 2²] cm² = 20 cm² ⇒ ${len('P<sub>1</sub>Q<sub>1</sub>')} ≈ <b>4,47 cm</b></div>`},
+ {n:'standard',q:`Für die Strecken aus Aufgabe 1 gilt ${len('P<sub>n</sub>Q<sub>n</sub>')}² = [(6 − x)² + x²] cm². Bestimme mit der quadratischen Ergänzung die kürzeste Strecke und den zugehörigen Wert für x.`,
+  tip:`Multipliziere aus, klammere den Faktor vor x² aus und ergänze quadratisch.`,
+  sol:`<div>(6 − x)² + x² = 2x² − 12x + 36</div><div>= 2(x² − 6x + 3² − 3²) + 36 = 2(x − 3)² + 18</div><div>Für <b>x = 3</b>: ${len('P<sub>0</sub>Q<sub>0</sub>')} = √18 cm ≈ <b>4,24 cm</b></div>`},
+ {n:'standard',q:`Im Rechteck ABCD ist ${len('AB')} = 8 cm und ${len('BC')} = 5 cm. P<sub>n</sub> liegt auf ${ov('AB')} und Q<sub>n</sub> auf ${ov('BC')} mit ${len('AP<sub>n</sub>')} = ${len('BQ<sub>n</sub>')} = x cm. Gib die Werte für x an und berechne die kürzeste Strecke ${ov('P<sub>0</sub>Q<sub>0</sub>')}.`,
+  tip:`Q<sub>n</sub> muss auf ${ov('BC')} liegen – das begrenzt x stärker als ${ov('AB')}.`,
+  sol:`<div>0 &lt; x &lt; 5</div><div>${len('P<sub>n</sub>Q<sub>n</sub>')}² = [(8 − x)² + x²] cm² = (2x² − 16x + 64) cm² = [2(x − 4)² + 32] cm²</div><div>x = 4 liegt im erlaubten Bereich ⇒ ${len('P<sub>0</sub>Q<sub>0</sub>')} = √32 cm ≈ <b>5,66 cm</b></div>`},
+ {n:'standard',q:`Im Quadrat ABCD (Seitenlänge 8 cm) entstehen mit ${len('P<sub>n</sub>B')} = (8 − x) cm und ${len('BQ<sub>n</sub>')} = x cm rechtwinklige Dreiecke P<sub>n</sub>BQ<sub>n</sub>. Für welchen Wert von x ist der Flächeninhalt am größten? Berechne A<sub>max</sub>.`,
+  tip:`A(x) = ½ · (8 − x) · x. Bringe den Term in die Scheitelform.`,
+  sol:`<div>A(x) = ${HALF} · (8 − x) · x cm² = (−0,5x² + 4x) cm²</div><div>= [−0,5(x² − 8x + 4² − 4²)] cm² = [−0,5(x − 4)² + 8] cm²</div><div>Für <b>x = 4</b>: <b>A<sub>max</sub> = 8 cm²</b></div>`},
+ {n:'plus',q:`Ein rechtwinkliges Dreieck ABC hat die Kathetenlängen ${len('AB')} = 6 cm und ${len('AC')} = 8 cm. Die kürzere Kathete wird um x cm verlängert, die längere gleichzeitig um x cm verkürzt. So entstehen Dreiecke AB<sub>n</sub>C<sub>n</sub>.<br>a) Stelle ${len('B<sub>n</sub>C<sub>n</sub>')} in Abhängigkeit von x dar. b) Für welchen Wert von x ist die Hypotenuse am kürzesten?`,
+  tip:`Die neuen Katheten sind (6 + x) cm und (8 − x) cm.`,
+  sol:`<div>a) ${len('B<sub>n</sub>C<sub>n</sub>')}² = [(6 + x)² + (8 − x)²] cm² = (2x² − 4x + 100) cm²</div><div>${len('B<sub>n</sub>C<sub>n</sub>')} = ${sq('2x² − 4x + 100')} cm; 0 ≤ x &lt; 8</div><div>b) 2x² − 4x + 100 = 2(x − 1)² + 98</div><div>Für <b>x = 1</b>: ${len('B<sub>0</sub>C<sub>0</sub>')} = √98 cm ≈ <b>9,90 cm</b></div>`}
+],
+6:[
+ {n:'leicht',q:`Ein Quader hat die Kantenlängen a = 12 cm, b = 4 cm und c = 3 cm. Berechne die Flächendiagonale e der Grundfläche und die Raumdiagonale d.`,
+  tip:`Erst e² = a² + b², dann d² = e² + c².`,
+  sol:`<div>e² = (12 cm)² + (4 cm)² = 160 cm² ⇒ e ≈ <b>12,65 cm</b></div><div>d² = 160 cm² + (3 cm)² = 169 cm² ⇒ <b>d = 13 cm</b></div>`},
+ {n:'leicht',q:`Ein Würfel hat die Kantenlänge 8 cm. Berechne die Länge einer Flächendiagonale und die Länge der Raumdiagonale.`,
+  tip:`Würfel: e = a · √2 und d = a · √3.`,
+  sol:`<div>e = 8 · √2 cm ≈ <b>11,31 cm</b></div><div>d = 8 · √3 cm ≈ <b>13,86 cm</b></div>`},
+ {n:'standard',q:`Eine Sporthalle ist 27 m lang, 15 m breit und 7 m hoch. Ein WLAN-Router hängt in einer oberen Ecke. Sein Signal reicht 30 m weit. Erreicht es jede Stelle der Halle?`,
+  tip:`Die am weitesten entfernte Stelle ist die gegenüberliegende untere Ecke. Berechne die Raumdiagonale.`,
+  sol:`<div>d² = (27 m)² + (15 m)² + (7 m)² = 729 m² + 225 m² + 49 m² = 1003 m²</div><div>d ≈ 31,67 m &gt; 30 m ⇒ <b>Nein</b>, die gegenüberliegende Ecke wird nicht erreicht.</div>`},
+ {n:'standard',q:`Eine gerade quadratische Pyramide hat die Grundkante a = 10 cm und die Höhe h = 12 cm. Berechne die Seitenflächenhöhe h<sub>a</sub>, die Seitenkante s (zwei Nachkommastellen) und den Oberflächeninhalt.`,
+  tip:`Stützdreieck MES: h<sub>a</sub>² = h² + (a/2)². Stützdreieck BES: s² = h<sub>a</sub>² + (a/2)².`,
+  sol:`<div>h<sub>a</sub>² = (12 cm)² + (5 cm)² = 169 cm² ⇒ <b>h<sub>a</sub> = 13 cm</b></div><div>s² = (13 cm)² + (5 cm)² = 194 cm² ⇒ s ≈ <b>13,93 cm</b></div><div>O = (10 cm)² + 4 · ${HALF} · 10 cm · 13 cm = 100 cm² + 260 cm² = <b>360 cm²</b></div>`},
+ {n:'standard',q:`Eine gerade Pyramide hat eine rechteckige Grundfläche mit a = 12 cm und b = 8 cm. Ihre Höhe ist 9 cm. Berechne h<sub>a</sub>, h<sub>b</sub> und die Seitenkante s (zwei Nachkommastellen).`,
+  tip:`h<sub>a</sub>² = h² + (b/2)²; h<sub>b</sub>² = h² + (a/2)²; s² = h² + |AM|² mit |AM| = ½ · |AC|.`,
+  sol:`<div>h<sub>a</sub>² = (9 cm)² + (4 cm)² = 97 cm² ⇒ h<sub>a</sub> ≈ <b>9,85 cm</b></div><div>h<sub>b</sub>² = (9 cm)² + (6 cm)² = 117 cm² ⇒ h<sub>b</sub> ≈ <b>10,82 cm</b></div><div>${len('AC')}² = (12 cm)² + (8 cm)² = 208 cm² ⇒ ${len('AM')}² = 208 cm² : 4 = 52 cm²</div><div>s² = 81 cm² + 52 cm² = 133 cm² ⇒ s ≈ <b>11,53 cm</b></div>`},
+ {n:'plus',q:`Ein Festzelt hat eine quadratische Grundfläche mit 6 m Seitenlänge. Die senkrechten Wände sind 2 m hoch, das Zelt ist insgesamt 4,5 m hoch. Das Dach ist eine Pyramide. Ihre vier Dachkanten und die Mittellinien der vier Dachflächen (vom Rand zur Spitze) bestehen aus Stahlrohren. Wie viele Meter Stahlrohr werden für das Dach benötigt?`,
+  tip:`Höhe der Dachpyramide: 4,5 m − 2 m. Die Mittellinien sind die Seitenflächenhöhen h<sub>a</sub>, die Dachkanten die Seitenkanten s.`,
+  sol:`<div>Dachhöhe h = 4,5 m − 2 m = 2,5 m; halbe Grundkante 3 m</div><div>h<sub>a</sub>² = (2,5 m)² + (3 m)² = 15,25 m² ⇒ h<sub>a</sub> ≈ 3,905 m</div><div>s² = 15,25 m² + (3 m)² = 24,25 m² ⇒ s ≈ 4,924 m</div><div>Rohrlänge = 4 · 3,905 m + 4 · 4,924 m ≈ <b>35,3 m</b></div>`}
+],
+7:[
+ {n:'leicht',q:`Berechne den Betrag des Vektors ${vec('v')} = ${cvec(5,'−12')}.`,
+  tip:`|${vec('v')}| = ${sq('v<sub>x</sub>² + v<sub>y</sub>²')}`,
+  sol:`<div>|${vec('v')}| = ${sq('5² + (−12)²')} LE = √169 LE = <b>13 LE</b></div>`},
+ {n:'leicht',q:`Berechne die Länge der Strecke ${ov('AB')} mit ${ptS('A',-3,1)} und ${ptS('B',5,7)}.`,
+  tip:`Stelle zuerst ${vec('AB')} auf („Spitze minus Fuß“).`,
+  sol:`<div>${vec('AB')} = ${cvec('5 − (−3)','7 − 1')} = ${cvec(8,6)}</div><div>${len('AB')} = ${sq('8² + 6²')} LE = √100 LE = <b>10 LE</b></div>`},
+ {n:'standard',q:`Zeige durch Rechnung, dass das Dreieck ABC mit ${ptS('A',-2,-1)}, ${ptS('B',4,1)} und ${ptS('C',2,7)} gleichschenklig und rechtwinklig ist. Wo liegt der rechte Winkel?`,
+  tip:`Berechne die Quadrate aller drei Seitenlängen.`,
+  sol:`<div>${len('AB')}² = (6² + 2²) LE² = 40 LE²</div><div>${len('BC')}² = [(−2)² + 6²] LE² = 40 LE²</div><div>${len('AC')}² = (4² + 8²) LE² = 80 LE²</div><div>${len('AB')} = ${len('BC')} ⇒ gleichschenklig; 40 + 40 = 80 ⇒ rechtwinklig</div><div><b>Der rechte Winkel liegt bei B</b> (gegenüber der längsten Seite ${ov('AC')}).</div>`},
+ {n:'standard',q:`Zeige, dass das Viereck ABCD mit ${ptS('A',-2,-1)}, ${ptS('B',2,2)}, ${ptS('C',2,7)} und ${ptS('D',-2,4)} eine Raute, aber kein Quadrat ist. Berechne den Flächeninhalt.`,
+  tip:`Raute: vier gleich lange Seiten. Quadrat: zusätzlich gleich lange Diagonalen. Flächeninhalt: A = ½ · e · f.`,
+  sol:`<div>${len('AB')}² = (4² + 3²) LE² = 25 LE²; ${len('BC')}² = 5² LE² = 25 LE²; ${len('CD')}² = [(−4)² + (−3)²] LE² = 25 LE²; ${len('DA')}² = (−5)² LE² = 25 LE²</div><div>Alle Seiten 5 LE ⇒ Raute</div><div>${len('AC')}² = (4² + 8²) LE² = 80 LE²; ${len('BD')}² = [(−4)² + 2²] LE² = 20 LE² ⇒ Diagonalen verschieden ⇒ <b>kein Quadrat</b></div><div>A = ${HALF} · √80 LE · √20 LE = ${HALF} · 40 FE = <b>20 FE</b></div>`},
+ {n:'plus',q:`Der Punkt P liegt auf der y-Achse und ist von ${ptS('A',-4,2)} und ${ptS('B',2,6)} gleich weit entfernt. Berechne die Koordinaten von P.`,
+  tip:`P(0 | y). Setze ${len('AP')}² = ${len('BP')}² – die y²-Terme fallen weg.`,
+  sol:`<div>${len('AP')}² = 4² + (y − 2)² = y² − 4y + 20</div><div>${len('BP')}² = (−2)² + (y − 6)² = y² − 12y + 40</div><div>y² − 4y + 20 = y² − 12y + 40 ⇒ 8y = 20 ⇒ y = 2,5</div><div><b>P(0 | 2,5)</b></div>`},
+ {n:'plus',q:`Von einem Sitzplatz ${ptS('P',1,2)} aus sieht man eine Bühne ${ov('AB')} mit ${ptS('A',-1,6)} und ${ptS('B',5,4)}. Zeige, dass man die Bühne unter einem Winkel von 90° sieht.`,
+  tip:`Untersuche das Dreieck ABP mit der Umkehrung des Satzes des Pythagoras.`,
+  sol:`<div>${len('PA')}² = [(−2)² + 4²] LE² = 20 LE²; ${len('PB')}² = (4² + 2²) LE² = 20 LE²</div><div>${len('AB')}² = [6² + (−2)²] LE² = 40 LE²</div><div>20 + 20 = 40 ⇒ <b>Das Dreieck ABP ist bei P rechtwinklig</b>; man sieht die Bühne unter 90°.</div>`}
+],
+8:[
+ {n:'leicht',q:`Die Punkte P<sub>n</sub>(x | 0,5x + 2) liegen auf der Geraden g. Gegeben ist ${ptS('Q',4,0)}. Stelle ${vec('QP<sub>n</sub>')}(x) auf und berechne ${len('QP<sub>1</sub>')} für x = 2 (zwei Nachkommastellen).`,
+  tip:`„Spitze minus Fuß“: ${vec('QP<sub>n</sub>')} = ${cvec('x − 4','0,5x + 2 − 0')}.`,
+  sol:`<div>${vec('QP<sub>n</sub>')}(x) = ${cvec('x − 4','0,5x + 2')}</div><div>x = 2: ${vec('QP<sub>1</sub>')} = ${cvec('−2',3)} ⇒ ${len('QP<sub>1</sub>')} = ${sq('(−2)² + 3²')} LE = √13 LE ≈ <b>3,61 LE</b></div>`},
+ {n:'standard',q:`Bestimme für die Strecken aus Aufgabe 1 die kürzeste Streckenlänge ${len('QP<sub>0</sub>')} und die Koordinaten von P<sub>0</sub>.`,
+  tip:`${len('QP<sub>n</sub>')}² = (x − 4)² + (0,5x + 2)². Ausmultiplizieren, dann quadratisch ergänzen.`,
+  sol:`<div>${len('QP<sub>n</sub>')}² = [(x − 4)² + (0,5x + 2)²] LE² = (1,25x² − 6x + 20) LE²</div><div>= [1,25(x² − 4,8x + 2,4² − 2,4²) + 20] LE² = [1,25(x − 2,4)² + 12,8] LE²</div><div>Für x = 2,4: ${len('QP<sub>0</sub>')} = √12,8 LE ≈ <b>3,58 LE</b>; <b>P<sub>0</sub>(2,4 | 3,2)</b></div>`},
+ {n:'standard',q:`Die Punkte C<sub>n</sub>(x | x + 1) liegen auf der Geraden g. Mit ${ptS('A',0,0)} und ${ptS('B',6,0)} bilden sie Dreiecke ABC<sub>n</sub>. Für welchen Wert von x ist das Dreieck gleichschenklig mit der Basis ${ov('AB')}? Berechne für dieses Dreieck die Schenkellänge und den Flächeninhalt.`,
+  tip:`Setze ${len('AC<sub>n</sub>')}² = ${len('BC<sub>n</sub>')}².`,
+  sol:`<div>${len('AC<sub>n</sub>')}² = x² + (x + 1)²; ${len('BC<sub>n</sub>')}² = (x − 6)² + (x + 1)²</div><div>x² = (x − 6)² ⇒ 0 = −12x + 36 ⇒ <b>x = 3</b>; C<sub>0</sub>(3 | 4)</div><div>Schenkel: ${len('AC<sub>0</sub>')} = ${sq('3² + 4²')} LE = <b>5 LE</b></div><div>A = ${HALF} · 6 LE · 4 LE = <b>12 FE</b></div>`},
+ {n:'plus',q:`${ptS('A',2,-1)} und die Punkte C<sub>n</sub>(x | −0,5x + 4) auf der Geraden g sind gegenüberliegende Eckpunkte von Rauten AB<sub>n</sub>C<sub>n</sub>D<sub>n</sub>. Die Diagonale ${ov('B<sub>n</sub>D<sub>n</sub>')} ist immer 4 LE lang. Für welche Werte von x ist die Raute ein Quadrat? Gib die Seitenlänge des Quadrats an.`,
+  tip:`Eine Raute ist ein Quadrat, wenn beide Diagonalen gleich lang sind: ${len('AC<sub>n</sub>')} = 4 LE.`,
+  sol:`<div>${len('AC<sub>n</sub>')}² = [(x − 2)² + (−0,5x + 5)²] LE² = (1,25x² − 9x + 29) LE²</div><div>1,25x² − 9x + 29 = 16 ⇒ 1,25x² − 9x + 13 = 0</div><div>x = ${fr('9 ± √(81 − 65)','2,5')} = ${fr('9 ± 4','2,5')} ⇒ <b>x = 2</b> oder <b>x = 5,2</b></div><div>Seitenlänge: a² + a² = (4 LE)² ⇒ a = 2√2 LE ≈ <b>2,83 LE</b></div>`},
+ {n:'plus',q:`Die Punkte B<sub>n</sub>(x | 2x − 3) liegen auf der Geraden g. Gegeben ist ${ptS('A',5,6)}. Berechne die kürzeste Streckenlänge ${len('AB<sub>0</sub>')} und zeige, dass ${ov('AB<sub>0</sub>')} senkrecht auf g steht.`,
+  tip:`Nach der quadratischen Ergänzung: Prüfe, ob ${vec('AB<sub>0</sub>')} und der Richtungsvektor ${cvec(1,2)} von g senkrecht stehen (Skalarprodukt 0 oder Steigungen).`,
+  sol:`<div>${len('AB<sub>n</sub>')}² = [(x − 5)² + (2x − 9)²] LE² = (5x² − 46x + 106) LE² = [5(x − 4,6)² + 0,2] LE²</div><div>x = 4,6: B<sub>0</sub>(4,6 | 6,2); ${len('AB<sub>0</sub>')} = √0,2 LE ≈ <b>0,45 LE</b></div><div>${vec('AB<sub>0</sub>')} = ${cvec('−0,4','0,2')}: Steigung −0,5; g hat die Steigung 2; 2 · (−0,5) = −1 ⇒ <b>senkrecht</b></div>`}
+],
+9:[
+ {n:'leicht',q:`Eine quadratische Holzplatte (2,30 m × 2,30 m, sehr dünn) soll durch eine 1,00 m breite und 2,10 m hohe Tür getragen werden. Geht das, wenn man sie schräg hält?`,
+  tip:`Vergleiche die Seitenlänge der Platte mit der Diagonale der Türöffnung.`,
+  sol:`<div>d² = (1,00 m)² + (2,10 m)² = 5,41 m² ⇒ d ≈ 2,33 m</div><div>2,30 m &lt; 2,33 m ⇒ <b>Ja</b>, die Platte passt schräg gerade hindurch.</div>`},
+ {n:'standard',q:`Eine Rampe ist 6 m lang und überwindet einen Höhenunterschied von 50 cm. Wie lang ist die Rampe waagrecht gemessen? Wie groß ist ihre Steigung in Prozent?`,
+  tip:`Die Rampe ist die Hypotenuse. Steigung = Höhenunterschied : waagrechte Länge.`,
+  sol:`<div>w² = (6 m)² − (0,5 m)² = 35,75 m² ⇒ w ≈ <b>5,98 m</b></div><div>Steigung = 0,5 m : 5,98 m ≈ 0,084 = <b>8,4 %</b></div>`},
+ {n:'standard',q:`Ein Kletterseil hängt von der 7 m hohen Hallendecke herab; 1 m davon liegt auf dem Boden. Wie weit kann man das Seil seitlich wegziehen, bis es gespannt gerade noch den Boden berührt?`,
+  tip:`Das Seil ist insgesamt 8 m lang. Gespannt ist es die Hypotenuse, die Deckenhöhe eine Kathete.`,
+  sol:`<div>Seillänge 7 m + 1 m = 8 m</div><div>x² = (8 m)² − (7 m)² = 15 m² ⇒ x ≈ <b>3,87 m</b></div>`},
+ {n:'plus',q:`Wie weit kann man von einem 50 m hohen Aussichtsturm an der Küste bei klarer Sicht bis zum Horizont sehen? Rechne mit dem Erdradius r = 6370 km.`,
+  tip:`Die Sichtlinie berührt die Erdkugel; dort steht sie senkrecht auf dem Erdradius. Hypotenuse: r + h.`,
+  sol:`<div>h = 50 m = 0,05 km</div><div>s² = (r + h)² − r² = (6370,05 km)² − (6370 km)² ≈ 637 km²</div><div>s ≈ <b>25,2 km</b></div>`},
+ {n:'plus',q:`Eine Wurzelspirale beginnt mit einem rechtwinkligen Dreieck mit zwei 1 cm langen Katheten. An die Hypotenuse wird jeweils ein neues rechtwinkliges Dreieck mit einer 1 cm langen Kathete angesetzt. Wie lang ist die Hypotenuse des n-ten Dreiecks? Das wievielte Dreieck hat eine √10 cm lange Hypotenuse?`,
+  tip:`Berechne die ersten Hypotenusen: c<sub>1</sub>² = 1² + 1², c<sub>2</sub>² = c<sub>1</sub>² + 1², …`,
+  sol:`<div>c<sub>1</sub> = √2 cm; c<sub>2</sub> = ${sq('2 + 1')} cm = √3 cm; c<sub>3</sub> = √4 cm = 2 cm; …</div><div>c<sub>n</sub> = <b>${sq('n + 1')} cm</b></div><div>√(n + 1) = √10 ⇒ <b>n = 9</b> (≈ 3,16 cm)</div>`}
+],
+10:[
+ {n:'leicht',q:`In einem rechtwinkligen Dreieck (γ = 90°) sind die Hypotenusenabschnitte p = 4 cm und q = 9 cm. Berechne die Höhe h.`,
+  tip:`Höhensatz: h² = p · q.`,
+  sol:`<div>h² = 4 cm · 9 cm = 36 cm² ⇒ <b>h = 6 cm</b></div>`},
+ {n:'leicht',q:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist c = 20 cm und p = 5 cm. Berechne die Kathete a.`,
+  tip:`Kathetensatz: a² = c · p.`,
+  sol:`<div>a² = 20 cm · 5 cm = 100 cm² ⇒ <b>a = 10 cm</b></div>`},
+ {n:'standard',q:`Im rechtwinkligen Dreieck ABC (γ = 90°) ist a = 12 cm und c = 15 cm. Berechne p, q, h und b.`,
+  tip:`Mit a² = c · p erhältst du p, dann q = c − p.`,
+  sol:`<div>p = a² : c = 144 cm² : 15 cm = <b>9,6 cm</b>; q = 15 cm − 9,6 cm = <b>5,4 cm</b></div><div>h² = 9,6 cm · 5,4 cm = 51,84 cm² ⇒ <b>h = 7,2 cm</b></div><div>b² = 15 cm · 5,4 cm = 81 cm² ⇒ <b>b = 9 cm</b></div>`},
+ {n:'plus',q:`Ein Rechteck ist 9 cm lang und 4 cm breit. Beschreibe, wie man mit dem Höhensatz ein flächengleiches Quadrat konstruieren kann. Wie lang ist seine Seite?`,
+  tip:`Setze p = 9 cm und q = 4 cm aneinander. Über der Gesamtstrecke liegt ein rechtwinkliges Dreieck mit der Spitze auf dem Thaleskreis.`,
+  sol:`<div>1. Strecke ${ov('AB')} mit 9 cm + 4 cm = 13 cm zeichnen, Teilpunkt D markieren.</div><div>2. Thaleskreis über ${ov('AB')} zeichnen.</div><div>3. Senkrechte zu ${ov('AB')} in D; Schnittpunkt mit dem Thaleskreis ist C.</div><div>4. ${ov('CD')} ist die Höhe h: h² = 9 cm · 4 cm = 36 cm² ⇒ <b>h = 6 cm</b> = Seitenlänge des Quadrats.</div>`}
+]
+};
+const XNIV={leicht:'🟢 leicht',standard:'🟡 standard',plus:'🔴 plus'};
+function extraList(n){
+  const box=h('div');
+  EXTRA[n].forEach((a,i)=>box.append(h('div',{class:'xa'},
+    h('p',{class:'xh',html:`<b>Aufgabe ${i+1}</b> <span class="xniv">${XNIV[a.n]}</span>`}),h('div',{html:a.q}),
+    h('details',{class:'xtip'},h('summary',{},'💡 Tipp anzeigen'),h('div',{class:'hint',html:a.tip})),
+    h('details',{class:'xsol'},h('summary',{},'✅ Lösung anzeigen'),h('div',{class:'sol',html:a.sol})))));
+  return box;
+}
+function extraTitle(k){return STATIONS[k].zusatz?STATIONS[k].title:k==='9'||k===9?'Gemischte Aufgaben (alle Stationen)':`Station ${k}: ${STATIONS[k].title}`;}
+function extraBox(n){
+  return h('details',{class:'card xbox'},h('summary',{html:`<b>🧩 Zusatzaufgaben</b> <span class="muted">(${EXTRA[n].length} Aufgaben, freiwillig)</span>`}),
+    h('p',{class:'muted'},'Rechne im Heft. Öffne erst den Tipp, wenn du nicht weiterkommst, und vergleiche danach mit der Lösung. Die Aufgaben zählen nicht für das Exit-Ticket.'),extraList(n));
+}
+function extraPage(){
+  app.innerHTML='';
+  app.append(h('div',{class:'card'},h('h2',{},'🧩 Zusatzaufgaben'),h('p',{class:'muted'},'Freiwillige Aufgaben zum Weiterüben – zu jeder freigeschalteten Station. Rechne im Heft, öffne bei Bedarf den Tipp und vergleiche mit der Lösung.')));
+  const ks=Object.keys(EXTRA).filter(k=>unlocked(+k));
+  ks.forEach(k=>app.append(h('div',{class:'card'},h('h3',{},extraTitle(k)),extraList(k))));
+  const cb=h('input',{type:'checkbox',id:'xprSol'});
+  app.append(h('div',{class:'card'},h('label',{for:'xprSol',style:'cursor:pointer'},cb,' Tipps und Lösungen mitdrucken'),h('br'),h('button',{class:'btn',type:'button',onclick:()=>{
+    const pa=document.getElementById('printArea'),ws=cb.checked;
+    pa.innerHTML='<h2>Zusatzaufgaben · Rechtwinklige Dreiecke</h2>'+ks.map(k=>`<h3>${extraTitle(k)}</h3>`+EXTRA[k].map((a,i)=>`<div class="xa"><p><b>Aufgabe ${i+1}</b> (${a.n})</p><div>${a.q}</div>${ws?`<div class="hint">Tipp: ${a.tip}</div><div class="sol">${a.sol}</div>`:''}</div>`).join('')).join('');
+    document.body.classList.add('printing');const end=()=>document.body.classList.remove('printing');window.addEventListener('afterprint',end,{once:true});window.print();setTimeout(end,4000);
+  }},'🖨 Drucken / Als PDF sichern')));
+  window.scrollTo(0,0);
+}
+
 /* ====== Ansichten ====== */
 function unlocked(n){return TEACHER||n===1||(n===10?!!state[3]:!!state[n-1]);}
 function home(){
@@ -2035,6 +2247,7 @@ function station(n){
   const st=STATIONS[n];app.innerHTML='';
   app.append(h('div',{class:'card'},h('h2',{},st.zusatz?st.title:`Station ${n}: ${st.title}`),h('p',{class:'muted',html:'<b>Ziel:</b> '+st.komp})));
   const list=h('div');app.append(list);
+  if(EXTRA[n])app.append(extraBox(n));
   state.prog=state.prog||{};
   // bereits erledigte Schritte (nach Neuladen) zusammengeklappt anzeigen, nicht noch einmal bearbeiten müssen
   let i=Math.min(state.prog[n]||0,st.steps.length-1);
@@ -2067,6 +2280,7 @@ function merkheft(){
 }
 document.getElementById('bHome').addEventListener('click',home);
 document.getElementById('bMerk').addEventListener('click',merkheft);
+document.getElementById('bExtra').addEventListener('click',extraPage);
 home();
 </script>
 </body>
